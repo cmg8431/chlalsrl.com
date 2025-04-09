@@ -1,0 +1,17 @@
+{
+  // Formatting using Prettier by default for all languages
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Formatting using Prettier for JavaScript, overrides VSCode default.
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  "todo-tree.filtering.excludeGlobs": ["**/node_modules", "**/dist", "**/compiled"],
+  "todo-tree.general.tags": ["BUG", "FIXME", "TODO", "[ ]", "[x]"],
+
+  "cSpell.words": ["celery", "pretendard"],
+  "typescript.tsdk": "node_modules/typescript/lib"
+}

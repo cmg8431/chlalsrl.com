@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    // Linting / Formatting
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "usernamehw.errorlens",
+    "YoavBls.pretty-ts-errors",
+
+    // PR management / Reviewing
+    "github.vscode-pull-request-github",
+
+    // Showing todo comments
+    "gruntfuggly.todo-tree",
+
+    "bradlc.vscode-tailwindcss"
+  ]
+}
