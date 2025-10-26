@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 
-import { LocaleType, SUPPORTED_LOCALES } from "@/shared";
-import { CONTENT_CATEGORIES, ContentCategory } from "@/shared/libs/content";
 import {
+  CONTENT_CATEGORIES,
+  ContentCategory,
   getContentBySlug,
   getContentSlugs,
-} from "@/shared/libs/content/server";
+} from "@/features/blog";
+import { LocaleType, SUPPORTED_LOCALES } from "@/shared";
 
 interface ContentPageProps {
   params: Promise<{

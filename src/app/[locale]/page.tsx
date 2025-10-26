@@ -1,7 +1,7 @@
 import Link from "next/link";
 
+import { getAllContentsForLocale } from "@/features/blog";
 import { LocaleType, LanguageSwitcher } from "@/shared";
-import { getAllContentsForLocale } from "@/shared/libs/content/server";
 
 export default async function Home({
   params,
