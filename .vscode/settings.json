@@ -1,10 +1,17 @@
 {
-  "search.exclude": {
-    "**/.yarn": true,
-    "**/.pnp.*": true
+  // Formatting using Prettier by default for all languages
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Formatting using Prettier for JavaScript, overrides VSCode default.
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "typescript.tsdk": ".yarn/sdks/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
-  "eslint.nodePath": ".yarn/sdks"
+
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  "todo-tree.filtering.excludeGlobs": ["**/node_modules", "**/dist", "**/compiled"],
+  "todo-tree.general.tags": ["BUG", "FIXME", "TODO", "[ ]", "[x]"],
+
+  "cSpell.words": ["celery", "pretendard"],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

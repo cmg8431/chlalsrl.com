@@ -1,0 +1,20 @@
+name: "Pull Request Assigner"
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, ready_for_review]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}-lint
+  cancel-in-progress: true
+
+jobs:
+  assigner:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: kentaro-m/auto-assign-action@v2.0.0
+        with:
+          configuration-path: ".github/configs/pr-assigner.yaml"
