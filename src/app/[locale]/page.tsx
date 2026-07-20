@@ -1,7 +1,38 @@
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 
-import { getAllContentsForLocale } from "@/features/blog";
-import { LocaleType, LanguageSwitcher } from "@/shared";
+import { getAllContentsForLocale, PostList } from "@/features/blog";
+import {
+  CopyEmailButton,
+  GithubIcon,
+  LinkedinIcon,
+  localizedNames,
+  LocaleType,
+  Reveal,
+  RssIcon,
+  translation,
+  Wordmark,
+  XIcon,
+} from "@/shared";
+
+const SECTIONS = [
+  { path: "blog", key: "blog", disabled: false },
+  // 이력서는 작업 중 — 완성되면 disabled만 풀면 된다
+  { path: "resume", key: "resume", disabled: true },
+] as const;
+
+const CONNECT = [
+  { label: "GitHub", href: "https://github.com/cmg8431", Icon: GithubIcon },
+  { label: "X", href: "https://twitter.com/cmg8431", Icon: XIcon },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/cmg8431/",
+    Icon: LinkedinIcon,
+  },
+  { label: "RSS", href: "/rss.xml", Icon: RssIcon },
+] as const;
+
+const ICON_BUTTON_CLASS =
+  "rounded-full p-2 text-faint transition-colors hover:bg-soft hover:text-bright";
 
 export default async function Home({
   params,
@@ -9,65 +40,118 @@ export default async function Home({
   params: Promise<{ locale: LocaleType }>;
 }) {
   const { locale } = await params;
+  const { t } = await translation(locale);
   const contents = getAllContentsForLocale(locale);
 
   return (
-    <div className="">
-      <LanguageSwitcher />
-
-      <div className="space-y-6 mt-8">
-        {contents.length === 0 ? (
-          <p className="text-gray-500">No contents found.</p>
-        ) : (
-          contents.map((content) => (
-            <article
-              key={`${content.category}-${content.slug}`}
-              className="border-b border-gray-200 pb-6"
+    <div className="space-y-16">
+      {/* intro */}
+      <Reveal>
+        <section className="pt-6">
+          <h1 className="text-2xl font-semibold tracking-tight text-bright">
+            <span className="vt-wordmark inline-block">
+              <Wordmark
+                primary={localizedNames(locale).primary}
+                secondary={localizedNames(locale).secondary}
+              />
+            </span>
+          </h1>
+          <p className="mt-1.5 text-sm text-muted">
+            Product Engineer at{" "}
+            <a
+              href="https://link.inpock.co.kr/"
+              target="_blank"
+              rel="noreferrer"
+              className="link-quiet"
             >
-              <Link
-                href={`/${locale}/contents/${content.category}/${content.slug}`}
-                className="block hover:opacity-80 transition-opacity"
+              @inpock
+            </a>
+          </p>
+          <p className="mt-5 max-w-lg whitespace-pre-line break-keep leading-relaxed">
+            {t("home.tagline")}
+          </p>
+
+          <div className="-mx-2 mt-5 flex gap-1">
+            <CopyEmailButton
+              email="mingi@ab-z.com"
+              className={ICON_BUTTON_CLASS}
+            />
+            {CONNECT.map(({ label, href, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target={href.startsWith("http") ? "_blank" : undefined}
+                rel="noreferrer"
+                aria-label={label}
+                title={label}
+                className={ICON_BUTTON_CLASS}
               >
-                <div className="mb-2">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium uppercase">
-                    {content.category}
+                <Icon />
+              </a>
+            ))}
+          </div>
+        </section>
+      </Reveal>
+
+      {/* sections */}
+      <Reveal delay={60}>
+        <nav>
+          <ul>
+            {SECTIONS.map(({ path, key, disabled }) => {
+              const inner = (
+                <>
+                  <span>
+                    <span className="block font-medium text-bright">
+                      {t(`sections.${key}.title`)}
+                    </span>
+                    <span className="mt-0.5 block text-sm text-muted">
+                      {t(`sections.${key}.description`)}
+                    </span>
                   </span>
-                </div>
-                <h2 className="text-2xl font-semibold mb-2">
-                  {content.frontmatter.title}
-                </h2>
-                <p className="text-gray-600 mb-2">
-                  {content.frontmatter.description}
-                </p>
-                <div className="flex items-center gap-4 text-sm text-gray-500">
-                  <time dateTime={content.frontmatter.date}>
-                    {new Date(content.frontmatter.date).toLocaleDateString(
-                      locale,
-                      {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      }
-                    )}
-                  </time>
-                  {content.frontmatter.tags && (
-                    <div className="flex gap-2">
-                      {content.frontmatter.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2 py-1 bg-gray-100 rounded text-xs"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+                  {disabled ? (
+                    <span className="shrink-0 rounded-full bg-soft px-2.5 py-1 text-[11px] leading-none text-faint">
+                      {t(`sections.${key}.badge`)}
+                    </span>
+                  ) : (
+                    <span className="arrow text-faint transition-colors group-hover:text-bright">
+                      →
+                    </span>
                   )}
-                </div>
-              </Link>
-            </article>
-          ))
-        )}
-      </div>
+                </>
+              );
+
+              return (
+                <li key={path}>
+                  {disabled ? (
+                    <div className="flex items-center justify-between border-b border-line py-5 opacity-55">
+                      {inner}
+                    </div>
+                  ) : (
+                    <Link
+                      href={`/${locale}/${path}`}
+                      className="arrow-link group flex items-center justify-between border-b border-line py-5"
+                    >
+                      {inner}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </Reveal>
+
+      {/* recent writing */}
+      {contents.length > 0 && (
+        <Reveal delay={60}>
+          <section>
+            <h2 className="mb-1 text-sm font-medium text-bright">
+              {t("home.recent")}
+            </h2>
+            <PostList contents={contents.slice(0, 3)} locale={locale} />
+          </section>
+        </Reveal>
+      )}
     </div>
   );
 }
