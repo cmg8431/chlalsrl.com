@@ -16,7 +16,6 @@ import {
 
 const SECTIONS = [
   { path: "blog", key: "blog", disabled: false },
-  { path: "guestbook", key: "guestbook", disabled: false },
   // 이력서는 작업 중 — 완성되면 disabled만 풀면 된다
   { path: "resume", key: "resume", disabled: true },
 ] as const;

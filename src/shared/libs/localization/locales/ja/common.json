@@ -13,11 +13,8 @@
       "title": "履歴書",
       "description": "どんな問題を、なぜ、どう解いてきたか",
       "badge": "作業中"
-    },
-    "guestbook": {
-      "title": "ゲストブック",
-      "description": "通りすがりの足跡を残してください"
     }
+
   },
   "categories": {
     "all": "すべて",
@@ -64,8 +61,7 @@
     "theme-dark": "ダークモード",
     "theme-light": "ライトモード",
     "konami": "🎮 コナミコマンド発見!あなたは本物だ",
-    "theme-system": "システムテーマに従います",
-    "guestbook": "ゲストブックに一言どうぞ"
+    "theme-system": "システムテーマに従います"
   },
   "resume": {
     "print": "印刷",

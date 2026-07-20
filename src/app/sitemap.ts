@@ -20,11 +20,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency: "weekly",
         priority: 0.8,
       },
-      {
-        url: `${SITE_URL}/${locale}/guestbook`,
-        changeFrequency: "weekly",
-        priority: 0.5,
-      },
       // 이력서는 작업 중이라 사이트맵에서 제외 — 오픈 시 복구
     );
 
