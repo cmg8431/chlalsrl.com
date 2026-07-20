@@ -1,0 +1,284 @@
+import { notFound } from "next/navigation";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import { Link } from "next-view-transitions";
+import rehypePrettyCode from "rehype-pretty-code";
+import remarkGfm from "remark-gfm";
+
+import {
+  CodeBlock,
+  Comments,
+  CopyLinkButton,
+  LikeButton,
+  extractToc,
+  findContentBySlug,
+  getAllContentsForLocale,
+  getAllSlugs,
+  MdxH2,
+  MdxH3,
+  PostList,
+  readingMinutes,
+  Toc,
+  ZoomImage,
+} from "@/features/blog";
+import {
+  IslandSignal,
+  LocaleType,
+  Reveal,
+  SUPPORTED_LOCALES,
+  translation,
+} from "@/shared";
+
+const SITE_URL = "https://chlalsrl.com";
+
+const MDX_OPTIONS = {
+  mdxOptions: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [
+      [
+        rehypePrettyCode,
+        {
+          theme: { light: "github-light", dark: "github-dark" },
+          keepBackground: false,
+        },
+      ],
+    ],
+  },
+  // rehype 플러그인 타입이 next-mdx-remote 옵션 타입과 어긋나 단언이 필요
+} as unknown as React.ComponentProps<typeof MDXRemote>["options"];
+
+interface PostPageProps {
+  params: Promise<{ locale: LocaleType; slug: string }>;
+}
+
+export function generateStaticParams() {
+  const allParams: Array<{ locale: LocaleType; slug: string }> = [];
+
+  for (const slug of getAllSlugs()) {
+    for (const locale of SUPPORTED_LOCALES) {
+      allParams.push({ locale, slug });
+    }
+  }
+
+  return allParams;
+}
+
+export async function generateMetadata({ params }: PostPageProps) {
+  const { locale, slug } = await params;
+  const content = findContentBySlug(slug, locale);
+
+  if (!content) {
+    return { title: "Not Found" };
+  }
+
+  const { title, description, date, updated, tags } = content.frontmatter;
+  const path = `/blog/${slug}`;
+  const url = `${SITE_URL}/${locale}${path}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: url,
+      languages: Object.fromEntries(
+        SUPPORTED_LOCALES.map((loc) => [loc, `${SITE_URL}/${loc}${path}`])
+      ),
+    },
+    openGraph: {
+      type: "article",
+      title,
+      description,
+      url,
+      locale,
+      publishedTime: date,
+      modifiedTime: updated ?? date,
+      tags,
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+  };
+}
+
+function formatDate(date: string, locale: string): string {
+  return new Date(date).toLocaleDateString(locale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+export default async function PostPage({ params }: PostPageProps) {
+  const { locale, slug } = await params;
+  const { t } = await translation(locale);
+  const content = findContentBySlug(slug, locale);
+
+  if (!content) {
+    notFound();
+  }
+
+  const toc = extractToc(content.content);
+  const minutes = readingMinutes(content.content);
+  const { title, description, date, updated, tags } = content.frontmatter;
+
+  const all = getAllContentsForLocale(locale);
+  const index = all.findIndex((item) => item.slug === slug);
+  const newer = index > 0 ? all[index - 1] : undefined;
+  const older = index >= 0 ? all[index + 1] : undefined;
+
+  const related = tags?.length
+    ? all
+        .filter(
+          (item) =>
+            item.slug !== slug &&
+            item.frontmatter.tags?.some((tag) => tags.includes(tag))
+        )
+        .slice(0, 3)
+    : [];
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    description,
+    datePublished: date,
+    dateModified: updated ?? date,
+    inLanguage: locale,
+    keywords: tags?.join(", "),
+    author: {
+      "@type": "Person",
+      name: "Mingi Choe",
+      url: SITE_URL,
+    },
+    mainEntityOfPage: `${SITE_URL}/${locale}/blog/${slug}`,
+  };
+
+  return (
+    <article className="post-layout expand-x">
+      <IslandSignal
+        message={t("island.reading", { minutes })}
+        icon="clock"
+        readingMinutes={minutes}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <div className="post-main">
+        <Reveal>
+          <Link
+            href={`/${locale}/blog`}
+            className="arrow-link text-xs text-faint transition-colors hover:text-muted"
+          >
+            <span className="arrow inline-block rotate-180">→</span>{" "}
+            {t("post.back")}
+          </Link>
+
+          <header className="mt-10">
+            <h1 className="text-2xl font-semibold leading-snug tracking-tight text-bright">
+              <span
+                className="inline-block"
+                style={
+                  {
+                    viewTransitionName: `post-${content.category}-${slug}`,
+                    viewTransitionClass: "vt-morph",
+                  } as React.CSSProperties
+                }
+              >
+                {title}
+              </span>
+            </h1>
+            <p className="mt-3 text-muted">{description}</p>
+            <div className="mt-6 flex flex-wrap items-center gap-3 text-xs text-faint">
+              <time dateTime={date} className="font-mono tabular-nums">
+                {formatDate(date, locale)}
+              </time>
+              {updated && (
+                <span className="font-mono tabular-nums">
+                  · {t("post.updated", { date: formatDate(updated, locale) })}
+                </span>
+              )}
+              <CopyLinkButton label={t("post.copy-link")} />
+            </div>
+            {tags && tags.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {tags.map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/${locale}/blog/tag/${encodeURIComponent(tag)}`}
+                    className="rounded-full bg-soft px-2.5 py-1 text-[11px] leading-none text-muted transition-colors hover:bg-line hover:text-bright"
+                  >
+                    {tag}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </header>
+        </Reveal>
+
+        <Reveal delay={80}>
+          <div className="prose-blog mt-10 border-t border-line pt-10">
+            <MDXRemote
+              source={content.content}
+              components={{
+                img: ZoomImage,
+                h2: MdxH2,
+                h3: MdxH3,
+                pre: CodeBlock,
+              }}
+              options={MDX_OPTIONS}
+            />
+          </div>
+        </Reveal>
+
+        <LikeButton slug={slug} />
+
+        {related.length > 0 && (
+          <section className="mt-16 border-t border-line pt-8">
+            <h2 className="mb-1 text-sm font-medium text-bright">
+              {t("post.related")}
+            </h2>
+            <PostList contents={related} locale={locale} />
+          </section>
+        )}
+
+        {(older || newer) && (
+          <nav className="mt-16 grid gap-3 border-t border-line pt-8 sm:grid-cols-2">
+            {older ? (
+              <Link
+                href={`/${locale}/blog/${older.slug}`}
+                className="group rounded-xl border border-line p-4 transition-colors hover:border-faint hover:bg-soft"
+              >
+                <span className="text-xs text-faint">← {t("post.prev")}</span>
+                <span className="mt-1 block truncate text-sm text-foreground transition-colors group-hover:text-bright">
+                  {older.frontmatter.title}
+                </span>
+              </Link>
+            ) : (
+              <span className="hidden sm:block" />
+            )}
+            {newer && (
+              <Link
+                href={`/${locale}/blog/${newer.slug}`}
+                className="group rounded-xl border border-line p-4 text-right transition-colors hover:border-faint hover:bg-soft"
+              >
+                <span className="text-xs text-faint">{t("post.next")} →</span>
+                <span className="mt-1 block truncate text-sm text-foreground transition-colors group-hover:text-bright">
+                  {newer.frontmatter.title}
+                </span>
+              </Link>
+            )}
+          </nav>
+        )}
+
+        <Comments slug={slug} />
+      </div>
+
+      <aside className="post-aside">
+        <Toc items={toc} label={t("post.toc")} />
+      </aside>
+    </article>
+  );
+}

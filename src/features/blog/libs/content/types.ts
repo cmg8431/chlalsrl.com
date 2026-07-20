@@ -5,6 +5,8 @@ export interface ContentFrontmatter {
   title: string;
   description: string;
   date: string;
+  /** 마지막 수정일 — 있으면 상세에 함께 표기되고 SEO modifiedTime으로 쓰인다 */
+  updated?: string;
   tags?: string[];
   author?: string;
   thumbnail?: string;

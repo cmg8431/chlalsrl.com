@@ -3,6 +3,8 @@ import path from "path";
 
 import matter from "gray-matter";
 
+import { CONTENT_CATEGORIES } from "./types";
+
 import type { Content, ContentCategory } from "./types";
 import type { LocaleType } from "@/shared";
 
@@ -33,9 +35,13 @@ const findContentPath = (
   const slugDir = getSlugDir(category, slug);
   if (!fs.existsSync(slugDir)) return null;
 
-  for (const ext of FILE_EXTENSIONS) {
-    const filePath = path.join(slugDir, `${locale}${ext}`);
-    if (fs.existsSync(filePath)) return filePath;
+  // 요청 로케일 → en → ko 순 폴백: 번역이 없는 로케일(ja 등)에서도 글이 보이게
+  const candidates = [...new Set([locale, "en", "ko"])];
+  for (const candidate of candidates) {
+    for (const ext of FILE_EXTENSIONS) {
+      const filePath = path.join(slugDir, `${candidate}${ext}`);
+      if (fs.existsSync(filePath)) return filePath;
+    }
   }
 
   return null;
@@ -96,7 +102,6 @@ export function getAllContents(
 }
 
 export function getAllContentsForLocale(locale: LocaleType): Content[] {
-  const { CONTENT_CATEGORIES } = require("./types");
   const allContents: Content[] = [];
 
   for (const category of CONTENT_CATEGORIES) {
@@ -106,47 +111,25 @@ export function getAllContentsForLocale(locale: LocaleType): Content[] {
   return allContents.sort(sortByDate);
 }
 
-export function getContentsByTag(
-  locale: LocaleType,
-  category: ContentCategory,
-  tag: string
-): Content[] {
-  return getAllContents(locale, category).filter((content) =>
-    content.frontmatter.tags?.includes(tag)
-  );
-}
-
-export function getAllTags(
-  locale: LocaleType,
-  category: ContentCategory
-): string[] {
-  const contents = getAllContents(locale, category);
-  const tags = new Set<string>();
-
-  contents.forEach((content) => {
-    content.frontmatter.tags?.forEach((tag) => tags.add(tag));
-  });
-
-  return Array.from(tags).sort();
-}
-
-export function hasContentForLocale(
+// URL에 카테고리를 노출하지 않으므로 slug는 카테고리 전체에서 유일해야 한다
+export function findContentBySlug(
   slug: string,
-  locale: LocaleType,
-  category: ContentCategory
-): boolean {
-  return findContentPath(category, slug, locale) !== null;
+  locale: LocaleType
+): Content | null {
+  for (const category of CONTENT_CATEGORIES) {
+    const content = getContentBySlug(slug, locale, category);
+    if (content) return content;
+  }
+  return null;
 }
 
-export function getAvailableLocales(
-  slug: string,
-  category: ContentCategory
-): LocaleType[] {
-  const slugDir = getSlugDir(category, slug);
-  if (!fs.existsSync(slugDir)) return [];
-
-  const locales: LocaleType[] = ["ko", "en"];
-  return locales.filter(
-    (locale) => findContentPath(category, slug, locale) !== null
-  );
+export function getAllSlugs(): string[] {
+  const slugs = new Set<string>();
+  for (const category of CONTENT_CATEGORIES) {
+    for (const slug of getContentSlugs(category)) {
+      slugs.add(slug);
+    }
+  }
+  return Array.from(slugs);
 }
+
