@@ -2,10 +2,7 @@
   "home": {
     "tagline": "좋은 제품은 화면 너머의 사람을 이해하는 데서 시작한다고 믿습니다.\n만들고 검증하며 배운 것들을 여기에 남깁니다.",
     "recent": "최근 글",
-    "updates": "업데이트",
-    "history": "전체 히스토리",
-    "all-posts": "모든 글 보기",
-    "projects": "만든 것들"
+    "all-posts": "모든 글 보기"
   },
   "sections": {
     "blog": {

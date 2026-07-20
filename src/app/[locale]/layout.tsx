@@ -11,7 +11,6 @@ import {
   Konami,
   LocaleType,
   MainLayout,
-  SiteFooter,
   SUPPORTED_LOCALES,
   translation,
 } from "@/shared";
@@ -180,17 +179,7 @@ export default async function RootLayout({
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
           />
-          <MainLayout
-            skipLabel={t("a11y.skip")}
-            footer={
-              <SiteFooter
-                commit={getBuildInfo()}
-                repoUrl="https://github.com/cmg8431/chlalsrl.com"
-              />
-            }
-          >
-            {children}
-          </MainLayout>
+          <MainLayout skipLabel={t("a11y.skip")}>{children}</MainLayout>
           <CommandMenu
             items={searchItems}
             placeholder={t("search.placeholder")}

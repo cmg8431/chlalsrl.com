@@ -1,8 +1,6 @@
 import { Link } from "next-view-transitions";
 
 import { getAllContentsForLocale, PostList } from "@/features/blog";
-import { Changelog, getChangelog } from "@/features/changelog";
-import { PROJECTS } from "@/features/projects";
 import {
   CopyEmailButton,
   GithubIcon,
@@ -71,7 +69,6 @@ export default async function Home({
   const contents = getAllContentsForLocale(locale).filter(
     (content) => !content.frontmatter.draft
   );
-  const changelog = getChangelog(6);
 
   return (
     <div className="space-y-16">
@@ -199,63 +196,6 @@ export default async function Home({
           </section>
         </Reveal>
       )}
-
-      {/* projects — 데이터는 features/projects/data.ts에서 수정 */}
-      <Reveal delay={70}>
-        <section>
-          <h2 className="mb-1 text-sm font-medium text-bright">
-            {t("home.projects")}
-          </h2>
-          <ul className="divide-y divide-line">
-            {PROJECTS.map((project) => {
-              const inner = (
-                <>
-                  <span className="flex min-w-0 items-baseline gap-2.5">
-                    <span className="truncate text-foreground transition-colors group-hover:text-bright">
-                      {project.name}
-                    </span>
-                    <span className="hidden truncate text-sm text-muted sm:inline">
-                      {project.description[locale]}
-                    </span>
-                  </span>
-                  <span className="flex shrink-0 items-baseline gap-2 font-mono text-xs tabular-nums text-faint">
-                    {project.period}
-                    {project.href && <span aria-hidden>↗</span>}
-                  </span>
-                </>
-              );
-              return (
-                <li key={project.name}>
-                  {project.href ? (
-                    <a
-                      href={project.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="row-link group -mx-4 flex items-baseline justify-between gap-6 rounded-md px-4 py-4"
-                    >
-                      {inner}
-                    </a>
-                  ) : (
-                    <div className="-mx-4 flex items-baseline justify-between gap-6 px-4 py-4">
-                      {inner}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      </Reveal>
-
-      {/* changelog — 빌드 시점 git log에서 뽑은 사이트 업데이트 히스토리 */}
-      <Reveal delay={80}>
-        <Changelog
-          entries={changelog}
-          title={t("home.updates")}
-          historyLabel={t("home.history")}
-          historyHref={`/${locale}/changelog`}
-        />
-      </Reveal>
     </div>
   );
 }

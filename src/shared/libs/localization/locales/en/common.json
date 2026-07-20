@@ -2,10 +2,7 @@
   "home": {
     "tagline": "I believe good products start with understanding the person behind the screen.\nThis is where I keep what I learn from building and shipping.",
     "recent": "Recent writing",
-    "updates": "Updates",
-    "history": "Full history",
-    "all-posts": "All posts",
-    "projects": "Things I've built"
+    "all-posts": "All posts"
   },
   "sections": {
     "blog": {
