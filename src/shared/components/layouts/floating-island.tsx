@@ -170,7 +170,7 @@ export function FloatingIsland() {
               onClick={() => window.dispatchEvent(new Event("open-search"))}
               aria-label="Search"
               tabIndex={message ? -1 : 0}
-              className="flex h-7 items-center rounded-full bg-soft px-2.5 font-mono text-[11px] text-muted transition-colors hover:bg-line hover:text-bright"
+              className="flex h-8 items-center rounded-full bg-soft px-3.5 font-mono text-[13px] text-muted transition-colors hover:bg-line hover:text-bright"
             >
               ⌘K
             </button>

@@ -451,6 +451,67 @@ html[lang="ja"] .break-keep {
 }
 
 /* ---------- quiet input ---------- */
+/* 좋아요 파티클 — 버튼 중심에서 퍼지는 작은 하트 점 */
+.like-burst {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+.like-burst span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .like-burst span {
+    animation: like-pop 0.55s var(--ease-out) forwards;
+  }
+}
+@keyframes like-pop {
+  0% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy)))
+      scale(0.3);
+  }
+}
+
+/* 본문 외부 링크 — 새 탭으로 나간다는 표시 */
+.prose-blog .external-link::after {
+  content: "↗";
+  margin-left: 0.12em;
+  font-size: 0.72em;
+  vertical-align: super;
+  color: var(--faint);
+}
+
+/* 키보드 사용자용 본문 건너뛰기 — 포커스 전에는 화면 밖 */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: var(--background);
+  border: 1px solid var(--line);
+  font-size: 0.8rem;
+  color: var(--bright);
+  transform: translateY(-200%);
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 .input-quiet {
   width: 100%;
   background: transparent;
