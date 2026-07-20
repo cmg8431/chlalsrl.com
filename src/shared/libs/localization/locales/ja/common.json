@@ -1,0 +1,77 @@
+{
+  "home": {
+    "tagline": "良いプロダクトは、画面の向こうの人を理解することから始まると信じています。\n作りながら学んだことを、ここに残していきます。",
+    "recent": "最近の記事"
+  },
+  "sections": {
+    "blog": {
+      "title": "記事",
+      "description": "作ること、暮らすことの記録"
+    },
+    "resume": {
+      "title": "履歴書",
+      "description": "どんな問題を、なぜ、どう解いてきたか",
+      "badge": "作業中"
+    }
+  },
+  "categories": {
+    "all": "すべて",
+    "dev": "開発",
+    "life": "日常",
+    "stock": "株式"
+  },
+  "blog": {
+    "title": "記事",
+    "search": "タイトルで検索",
+    "empty": "まだ記事がありません。",
+    "no-result": "結果がありません。",
+    "count_other": "{{count}}件の記事"
+  },
+  "post": {
+    "back": "一覧へ",
+    "toc": "目次",
+    "updated": "{{date}} 更新",
+    "prev": "前の記事",
+    "next": "次の記事",
+    "copy-link": "リンクをコピー",
+    "related": "関連記事"
+  },
+  "search": {
+    "placeholder": "記事を検索…",
+    "empty": "結果がありません。"
+  },
+  "island": {
+    "reading": "読むのに約{{minutes}}分かかります",
+    "posts_other": "これまでに{{count}}件の記事を書きました",
+    "copied-link": "リンクをコピーしました",
+    "copied-code": "コードをコピーしました",
+    "copied-email": "メールをコピーしました",
+    "thanks": "ありがとうございます",
+    "locale-switched": "日本語で表示します",
+    "theme-dark": "ダークモード",
+    "theme-light": "ライトモード"
+  },
+  "resume": {
+    "print": "印刷",
+    "experience": "Experience",
+    "projects": "Projects",
+    "skills": "Skills",
+    "education": "Education"
+  },
+  "comments": {
+    "title": "コメント",
+    "name": "名前",
+    "body": "コメントを残してください",
+    "submit": "送信",
+    "posted": "コメントを残しました",
+    "empty": "まだコメントがありません。最初のひとことをどうぞ。",
+    "reply": "返信",
+    "reply-body": "返信を書いてください",
+    "cancel": "キャンセル"
+  },
+  "languages": {
+    "ko": "한국어",
+    "en": "English",
+    "ja": "日本語"
+  }
+}

@@ -1,24 +1,14 @@
-import { InitOptions } from "i18next";
+import { translate, type TFunction } from "./translate";
 
-export const SUPPORTED_LOCALES = ["en", "ko"] as const;
+export const SUPPORTED_LOCALES = ["en", "ko", "ja"] as const;
 export const DEFAULT_LOCALE = "ko" as const;
-export const DEFAULT_NAMESPACE = "common" as const;
 
 export type LocaleType = (typeof SUPPORTED_LOCALES)[number];
-export type NamespaceType = typeof DEFAULT_NAMESPACE | string;
 
-export function getI18nOptions(
-  lang: LocaleType = DEFAULT_LOCALE,
-  ns: NamespaceType = DEFAULT_NAMESPACE
-): InitOptions {
-  return {
-    supportedLngs: [...SUPPORTED_LOCALES],
-    fallbackLng: DEFAULT_LOCALE,
-    lng: lang,
-    fallbackNS: DEFAULT_NAMESPACE,
-    defaultNS: DEFAULT_NAMESPACE,
-    ns,
-  };
+export async function translation(
+  locale: LocaleType
+): Promise<{ t: TFunction }> {
+  return { t: (key, params) => translate(locale, key, params) };
 }
 
 export function changeLanguage(newLocale: LocaleType) {
@@ -35,6 +25,13 @@ export function changeLanguage(newLocale: LocaleType) {
   if (newLocale === currentLocale) return;
 
   document.cookie = `locale=${newLocale}; path=/; max-age=31536000`;
+
+  // 리로드 후 아일랜드가 "언어 변경" 알림을 띄울 수 있게 플래그를 남긴다
+  try {
+    sessionStorage.setItem("locale-switched", newLocale);
+  } catch {
+    /* private mode */
+  }
 
   let pathWithoutLocale = pathname;
   if (currentLocale) {

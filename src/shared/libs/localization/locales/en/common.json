@@ -1,3 +1,79 @@
 {
-  "hello": "Hello 2025"
+  "home": {
+    "tagline": "I believe good products start with understanding the person behind the screen.\nThis is where I keep what I learn from building and shipping.",
+    "recent": "Recent writing"
+  },
+  "sections": {
+    "blog": {
+      "title": "Writing",
+      "description": "Notes on building and living"
+    },
+    "resume": {
+      "title": "Resume",
+      "description": "What I've solved, why, and how",
+      "badge": "In progress"
+    }
+  },
+  "blog": {
+    "title": "Writing",
+    "search": "Search by title",
+    "empty": "Nothing here yet.",
+    "no-result": "No results.",
+    "count_one": "{{count}} post",
+    "count_other": "{{count}} posts"
+  },
+  "post": {
+    "back": "Back",
+    "toc": "On this page",
+    "updated": "Updated {{date}}",
+    "prev": "Previous",
+    "next": "Next",
+    "copy-link": "Copy link",
+    "related": "Related"
+  },
+  "search": {
+    "placeholder": "Search posts…",
+    "empty": "No results."
+  },
+  "island": {
+    "reading": "About {{minutes}} min to read",
+    "posts_one": "{{count}} post so far",
+    "posts_other": "{{count}} posts so far",
+    "copied-link": "Link copied",
+    "copied-code": "Code copied",
+    "copied-email": "Email copied",
+    "thanks": "Thanks!",
+    "locale-switched": "Now in English",
+    "theme-dark": "Dark mode",
+    "theme-light": "Light mode"
+  },
+  "resume": {
+    "print": "Print",
+    "experience": "Experience",
+    "projects": "Projects",
+    "skills": "Skills",
+    "education": "Education"
+  },
+  "categories": {
+    "all": "All",
+    "dev": "Dev",
+    "life": "Life",
+    "stock": "Stocks"
+  },
+  "comments": {
+    "title": "Comments",
+    "name": "Name",
+    "body": "Leave a thought",
+    "submit": "Post",
+    "posted": "Comment posted",
+    "empty": "No comments yet. Be the first.",
+    "reply": "Reply",
+    "reply-body": "Write a reply",
+    "cancel": "Cancel"
+  },
+  "languages": {
+    "ko": "한국어",
+    "en": "English",
+    "ja": "日本語"
+  }
 }

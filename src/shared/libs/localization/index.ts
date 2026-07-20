@@ -1,3 +1,4 @@
 export * from "./helpers";
-export { translation } from "./server";
+export { translate, type TFunction, type TranslationKey } from "./translate";
 export { useLocale } from "./use-locale";
+export { useT } from "./use-t";
