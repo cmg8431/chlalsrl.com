@@ -1,26 +1,740 @@
 @import "tailwindcss";
 
 :root {
-  --background: #1b1b1a;
-  --foreground: #171717;
+  color-scheme: light;
+  --background: #fcfcfb;
+  --background-soft: #f4f4f2;
+  --foreground: #37352f;
+  --bright: #191919;
+  --muted: #73726e;
+  --faint: #a8a7a2;
+  --line: #e8e7e4;
+  --island-bg: #ffffff;
+  --island-border: #e8e7e4;
+  --island-shadow:
+    0 1px 2px rgb(25 25 25 / 0.05),
+    0 12px 28px -14px rgb(25 25 25 / 0.22);
+}
+
+/* 다크: Radix Sand Dark 기반 웜 뉴트럴 잉크 톤 — 라이트(웜 페이퍼)와 같은 계열 */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #111110;
+  --background-soft: #222221;
+  --foreground: #cbc9c3;
+  --bright: #eeeeec;
+  --muted: #94928b;
+  --faint: #6b6963;
+  --line: #2b2b28;
+  --island-bg: #0c0c0b;
+  --island-border: #32322f;
+  --island-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.05),
+    0 1px 2px rgb(0 0 0 / 0.5),
+    0 14px 32px -12px rgb(0 0 0 / 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --background: #111110;
+    --background-soft: #222221;
+    --foreground: #cbc9c3;
+    --bright: #eeeeec;
+    --muted: #94928b;
+    --faint: #6b6963;
+    --line: #2b2b28;
+    --island-bg: #0c0c0b;
+  --island-border: #32322f;
+  --island-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.05),
+    0 1px 2px rgb(0 0 0 / 0.5),
+    0 14px 32px -12px rgb(0 0 0 / 0.6);
+  }
+}
+
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.3, 0.5, 1);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-soft: var(--background-soft);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bright: var(--bright);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --font-sans: var(--font-geist-sans), "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo",
+    -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
+    monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #1b1b1a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo",
+    -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* ja: keep-all은 어절 경계가 없어 줄바꿈이 막힌다 */
+html[lang="ja"] .break-keep {
+  word-break: normal;
+}
+
+::selection {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* ---------- scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border: 3px solid var(--background);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--faint);
+}
+
+/* ---------- reveal ----------
+   fill은 backwards만 — forwards는 transform이 남아 fixed 자손의 기준을 어긋나게 한다 */
+.reveal {
+  animation: reveal-in 0.45s var(--ease-out) backwards;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  .wm-a span,
+  .wm-b span {
+    transition: none !important;
+  }
+}
+
+/* ---------- wordmark: 최민기 ↔ Mingi Choe (hover 시 글자 단위 전환) ---------- */
+.wordmark {
+  display: inline-grid;
+  cursor: pointer;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.wordmark > span {
+  grid-area: 1 / 1;
+}
+.wm-a span,
+.wm-b span {
+  display: inline-block;
+  transition:
+    transform 0.4s var(--ease-out),
+    opacity 0.3s ease;
+  transition-delay: var(--d, 0ms);
+}
+.wm-b span {
+  transform: translateY(0.45em);
+  opacity: 0;
+}
+.wordmark:hover .wm-a span,
+.wordmark:focus-visible .wm-a span {
+  transform: translateY(-0.45em);
+  opacity: 0;
+}
+.wordmark:hover .wm-b span,
+.wordmark:focus-visible .wm-b span {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ---------- page transition ----------
+   루트는 즉시 교체(모바일 스냅샷 합성 비용 제거) — 모션은 Reveal과 개별 요소 모핑이 담당 */
+::view-transition-old(root) {
+  animation: none;
+  opacity: 0;
+}
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* ---------- dynamic island ---------- */
+.island-wrap {
+  position: fixed;
+  top: max(0.9rem, env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  transition: transform 0.45s var(--ease-spring);
+}
+/* 페이드 금지 — 반투명 순간이 생기면 콘텐츠 위에서 비쳐 보인다 */
+.island-wrap.is-hidden {
+  transform: translateY(calc(-100% - 1.6rem));
+}
+.island {
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.75rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--island-border);
+  border-radius: 999px;
+  background: var(--island-bg);
+  box-shadow: var(--island-shadow);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    width 0.35s var(--ease-spring),
+    transform 0.35s var(--ease-spring);
+}
+.island:hover {
+  transform: scale(1.04);
+}
+.island.has-msg {
+  animation: island-pop 0.35s var(--ease-spring);
+}
+@keyframes island-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 메시지는 중앙 오버레이, 너비는 JS FLIP — 중앙 기준 대칭 확장 */
+.island-msg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: max-content;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bright);
+  opacity: 0;
+  filter: blur(6px);
+  transform: translate(-50%, -50%) scale(0.9);
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    filter 0.18s ease,
+    transform 0.32s var(--ease-spring);
+}
+.island.has-msg .island-msg {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate(-50%, -50%) scale(1);
+}
+.island.has-msg {
+  cursor: pointer;
+}
+.island-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+  transition:
+    opacity 0.18s ease,
+    filter 0.18s ease,
+    transform 0.32s var(--ease-spring);
+}
+.island.has-msg .island-controls {
+  opacity: 0;
+  filter: blur(6px);
+  transform: scale(0.92);
+  pointer-events: none;
+}
+
+/* 읽기 진행 바 (--p: 0~1, rAF 갱신) */
+.page-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 45;
+  width: 100%;
+  height: 2px;
+  background: var(--bright);
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: reduce) {
+  .island,
+  .island-msg,
+  .island-controls {
+    transition: opacity 0.2s ease;
+    animation: none !important;
+    filter: none !important;
+  }
+  .island-msg {
+    transform: translate(-50%, -50%) !important;
+  }
+  .island-controls {
+    transform: none !important;
+  }
+}
+
+/* ---------- post layout ---------- */
+.post-aside {
+  display: none;
+}
+@media (min-width: 80rem) {
+  .post-layout {
+    display: grid;
+    grid-template-columns: 1fr 13rem;
+    gap: 4rem;
+  }
+  .post-aside {
+    display: block;
+  }
+  .toc {
+    position: sticky;
+    top: 5rem;
+    animation: reveal-in 0.45s var(--ease-out) backwards;
+    animation-delay: 160ms;
+  }
+}
+
+/* ---------- heading anchors ---------- */
+.heading-anchor {
+  color: inherit;
+  text-decoration: none !important;
+}
+.heading-anchor:hover::after {
+  content: " #";
+  color: var(--faint);
+}
+
+/* ---------- command menu ---------- */
+.cmd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: color-mix(in srgb, var(--background) 70%, transparent);
+  backdrop-filter: blur(6px);
+  animation: zoom-fade 0.2s ease;
+}
+.cmd-panel {
+  margin: 18vh auto 0;
+  width: min(calc(100% - 2rem), 30rem);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--background);
+  box-shadow: 0 24px 64px -16px rgb(0 0 0 / 0.25);
+  animation: cmd-pop 0.25s var(--ease-out);
+}
+@keyframes cmd-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+.cmd-input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.95rem;
+  color: var(--foreground);
+}
+.cmd-input::placeholder {
+  color: var(--faint);
+}
+.cmd-input:focus {
+  outline: none;
+}
+.cmd-list {
+  max-height: 40vh;
+  overflow-y: auto;
+  padding: 0.4rem;
+}
+.cmd-item {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--foreground);
+  transition: background-color 0.15s ease;
+}
+.cmd-item.is-active {
+  background: var(--background-soft);
+  color: var(--bright);
+}
+.cmd-hint {
+  display: flex;
+  gap: 1rem;
+  border-top: 1px solid var(--line);
+  padding: 0.5rem 1.1rem;
+  font-size: 0.7rem;
+  color: var(--faint);
+}
+
+/* ---------- quiet links ---------- */
+.link-quiet {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--faint);
+  transition:
+    text-decoration-color 0.25s ease,
+    color 0.25s ease;
+}
+.link-quiet:hover {
+  color: var(--bright);
+  text-decoration-color: var(--bright);
+}
+
+/* ---------- list row hover ---------- */
+.row-link {
+  transition: background-color 0.25s ease;
+}
+.row-link:hover {
+  background: var(--background-soft);
+}
+
+/* ---------- arrow slide (subtle) ---------- */
+.arrow-link .arrow {
+  display: inline-block;
+  transition:
+    transform 0.3s var(--ease-out),
+    opacity 0.3s ease;
+}
+.arrow-link:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* ---------- quiet input ---------- */
+.input-quiet {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--foreground);
+  transition: border-color 0.25s ease;
+}
+.input-quiet::placeholder {
+  color: var(--faint);
+}
+.input-quiet:focus {
+  outline: none;
+  border-color: var(--muted);
+}
+
+/* iOS는 16px 미만 인풋 포커스 시 화면을 자동 확대한다 */
+@media (max-width: 640px) {
+  .input-quiet,
+  .cmd-input {
+    font-size: 16px;
+  }
+}
+
+/* ---------- prose ---------- */
+.prose-blog {
+  line-height: 1.85;
+  overflow-wrap: break-word;
+}
+.prose-blog > * + * {
+  margin-top: 1.2em;
+}
+.prose-blog h1,
+.prose-blog h2,
+.prose-blog h3,
+.prose-blog h4 {
+  color: var(--bright);
+  font-weight: 600;
+  margin-top: 1.9em;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+}
+.prose-blog > :first-child {
+  margin-top: 0 !important;
+}
+/* 헤딩 바로 다음 헤딩(섹션 제목 연쇄)은 간격을 더 좁힌다 */
+.prose-blog :is(h1, h2, h3, h4) + :is(h2, h3, h4) {
+  margin-top: 1em;
+}
+.prose-blog h1 {
+  font-size: 1.4em;
+}
+.prose-blog h2 {
+  font-size: 1.2em;
+}
+.prose-blog h3 {
+  font-size: 1.05em;
+}
+.prose-blog a {
+  color: var(--bright);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--faint);
+  transition: text-decoration-color 0.25s ease;
+}
+.prose-blog a:hover {
+  text-decoration-color: var(--bright);
+}
+.prose-blog strong {
+  color: var(--bright);
+  font-weight: 700;
+}
+.prose-blog code {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  background: var(--background-soft);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.88em;
+}
+.prose-blog pre {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  background: var(--background-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1.1em 1.3em;
+  overflow-x: auto;
+  font-size: 0.88em;
+  line-height: 1.7;
+}
+.prose-blog pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 1em;
+}
+
+/* shiki 듀얼 테마 */
+.prose-blog code[data-theme] span {
+  color: var(--shiki-light);
+}
+:root[data-theme="dark"] .prose-blog code[data-theme] span {
+  color: var(--shiki-dark);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .prose-blog code[data-theme] span {
+    color: var(--shiki-dark);
+  }
+}
+
+/* 코드블록 프레임 */
+.code-frame {
+  position: relative;
+}
+.code-toolbar {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.code-frame:hover .code-toolbar,
+.code-frame:focus-within .code-toolbar {
+  opacity: 1;
+}
+.code-lang {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+}
+.code-copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  border-radius: 6px;
+  color: var(--muted);
+  background: var(--background-soft);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+.code-copy:hover {
+  color: var(--bright);
+  background: var(--line);
+}
+.prose-blog blockquote {
+  border-left: 2px solid var(--line);
+  padding-left: 1.2em;
+  color: var(--muted);
+}
+.prose-blog ul,
+.prose-blog ol {
+  padding-left: 1.3em;
+}
+.prose-blog ul {
+  list-style: disc;
+}
+.prose-blog ol {
+  list-style: decimal;
+}
+.prose-blog li::marker {
+  color: var(--faint);
+}
+.prose-blog li + li {
+  margin-top: 0.4em;
+}
+.prose-blog hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 3em 0;
+}
+.prose-blog img {
+  border-radius: 10px;
+}
+.prose-blog table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92em;
+}
+.prose-blog th,
+.prose-blog td {
+  border-bottom: 1px solid var(--line);
+  padding: 0.5em 0.8em;
+  text-align: left;
+}
+.prose-blog th {
+  color: var(--bright);
+  font-weight: 600;
+}
+
+/* 넓은 화면 확장 — 상세·이력서가 같은 폭 규칙을 공유 */
+@media (min-width: 80rem) {
+  .expand-x {
+    width: calc(100% + 26rem);
+    margin-left: -13rem;
+  }
+}
+
+.vt-wordmark {
+  view-transition-name: wordmark;
+}
+::view-transition-group(wordmark) {
+  animation-duration: 0.35s;
+  animation-timing-function: var(--ease-out);
+}
+
+/* ---------- language menu ---------- */
+.lang-menu {
+  position: fixed;
+  min-width: 9.5rem;
+  padding: 0.3rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--background);
+  box-shadow: 0 16px 40px -16px rgb(0 0 0 / 0.3);
+  animation: cmd-pop 0.2s var(--ease-spring);
+}
+
+/* ---------- focus ---------- */
+:focus-visible {
+  outline: 1.5px solid var(--muted);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- image zoom ---------- */
+.zoom-figure img {
+  cursor: zoom-in;
+  transition: opacity 0.2s ease;
+}
+.zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4vmin;
+  background: color-mix(in srgb, var(--background) 88%, transparent);
+  backdrop-filter: blur(8px);
+  cursor: zoom-out;
+  animation: zoom-fade 0.25s ease;
+}
+.zoom-overlay img {
+  /* 크기는 JS가 뷰포트 기준으로 계산해 지정한다 */
+  border-radius: 10px;
+  will-change: transform;
+}
+@keyframes zoom-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------- print (resume) ---------- */
+@media print {
+  body {
+    background: #ffffff;
+    color: #191919;
+    font-size: 12px;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-area {
+    color: #191919;
+  }
+  .print-area * {
+    color: inherit !important;
+    border-color: #e5e5e5 !important;
+  }
+  .print-area a {
+    text-decoration: none;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
