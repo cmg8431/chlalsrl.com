@@ -64,10 +64,10 @@ export function LikeButton({ slug }: { slug: string }) {
         onClick={toggle}
         aria-pressed={liked}
         aria-label="Like"
-        className={`relative flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all ${
+        className={`relative flex items-center gap-2 rounded-full px-4 py-2 text-sm transition-all ${
           liked
-            ? "border-faint bg-soft text-bright"
-            : "border-line text-muted hover:border-faint hover:text-bright"
+            ? "bg-line text-bright"
+            : "bg-soft text-muted hover:bg-line hover:text-bright"
         }`}
       >
         {burst > 0 && (

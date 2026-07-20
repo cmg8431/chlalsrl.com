@@ -189,7 +189,7 @@ export default async function PostPage({ params }: PostPageProps) {
   };
 
   return (
-    <article className="post-layout expand-x">
+    <article className="post-layout">
       <IslandSignal
         message={t("island.reading", { minutes })}
         icon="clock"
@@ -204,6 +204,10 @@ export default async function PostPage({ params }: PostPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
+      <aside className="post-aside">
+        <Toc items={toc} label={t("post.toc")} />
+      </aside>
+
       <div className="post-main">
         <Reveal>
           <Link
@@ -215,7 +219,7 @@ export default async function PostPage({ params }: PostPageProps) {
           </Link>
 
           <header className="mt-10">
-            <h1 className="text-2xl font-semibold leading-snug tracking-tight text-bright">
+            <h1 className="text-2xl font-semibold leading-snug tracking-tight text-bright sm:text-3xl">
               <span
                 className="inline-block"
                 style={
@@ -247,7 +251,7 @@ export default async function PostPage({ params }: PostPageProps) {
               <div className="mt-4 flex flex-wrap gap-2">
                 <Link
                   href={`/${locale}/blog?c=${content.category}`}
-                  className="flex h-8 items-center gap-2 rounded-full border border-line px-3.5 text-[13px] leading-none text-muted transition-colors hover:border-faint hover:text-bright"
+                  className="flex h-8 items-center gap-2 rounded-full bg-soft px-3.5 text-[13px] leading-none text-muted transition-colors hover:bg-line hover:text-bright"
                 >
                   <span
                     aria-hidden
@@ -272,7 +276,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
         {content.fileLocale !== locale && (
           <Reveal delay={70}>
-            <p className="mt-8 rounded-xl border border-line bg-soft px-4 py-3 text-[13px] leading-relaxed text-muted">
+            <p className="mt-8 rounded-xl bg-soft px-4 py-3 text-[13px] leading-relaxed text-muted">
               {t("post.untranslated")}
             </p>
           </Reveal>
@@ -283,7 +287,7 @@ export default async function PostPage({ params }: PostPageProps) {
         </Reveal>
 
         <Reveal delay={80}>
-          <div className="prose-blog mt-10 border-t border-line pt-10">
+          <div className="prose-blog mt-12">
             <MDXRemote
               source={content.content}
               components={{
@@ -302,7 +306,7 @@ export default async function PostPage({ params }: PostPageProps) {
         <ShareRow title={title} />
 
         {related.length > 0 && (
-          <section className="mt-16 border-t border-line pt-8">
+          <section className="mt-20">
             <h2 className="mb-1 text-sm font-medium text-bright">
               {t("post.related")}
             </h2>
@@ -311,11 +315,11 @@ export default async function PostPage({ params }: PostPageProps) {
         )}
 
         {(older || newer) && (
-          <nav className="mt-16 grid gap-3 border-t border-line pt-8 sm:grid-cols-2">
+          <nav className="mt-16 grid gap-3 sm:grid-cols-2">
             {older ? (
               <Link
                 href={`/${locale}/blog/${older.slug}`}
-                className="group rounded-xl border border-line p-4 transition-colors hover:border-faint hover:bg-soft"
+                className="group rounded-xl bg-soft p-4 transition-colors hover:bg-line"
               >
                 <span className="text-xs text-faint">← {t("post.prev")}</span>
                 <span className="mt-1 block truncate text-sm text-foreground transition-colors group-hover:text-bright">
@@ -328,7 +332,7 @@ export default async function PostPage({ params }: PostPageProps) {
             {newer && (
               <Link
                 href={`/${locale}/blog/${newer.slug}`}
-                className="group rounded-xl border border-line p-4 text-right transition-colors hover:border-faint hover:bg-soft"
+                className="group rounded-xl bg-soft p-4 text-right transition-colors hover:bg-line"
               >
                 <span className="text-xs text-faint">{t("post.next")} →</span>
                 <span className="mt-1 block truncate text-sm text-foreground transition-colors group-hover:text-bright">
@@ -357,10 +361,6 @@ export default async function PostPage({ params }: PostPageProps) {
           topLabel={t("post.top")}
         />
       </div>
-
-      <aside className="post-aside">
-        <Toc items={toc} label={t("post.toc")} />
-      </aside>
     </article>
   );
 }

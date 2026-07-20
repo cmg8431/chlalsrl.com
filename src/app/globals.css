@@ -315,14 +315,17 @@ html[lang="ja"] .break-keep {
 }
 
 /* ---------- post layout ---------- */
+/* 본문은 사이트 중앙 축에 그대로 두고, 목차만 왼쪽 레일로 뺀다 */
 .post-aside {
   display: none;
 }
 @media (min-width: 80rem) {
   .post-layout {
     display: grid;
-    grid-template-columns: 1fr 13rem;
-    gap: 4rem;
+    grid-template-columns: 13rem minmax(0, 1fr) 13rem;
+    gap: 3rem;
+    width: calc(100% + 32rem);
+    margin-left: -16rem;
   }
   .post-aside {
     display: block;
@@ -543,6 +546,11 @@ html[lang="ja"] .break-keep {
   line-height: 1.85;
   overflow-wrap: break-word;
 }
+@media (min-width: 640px) {
+  .prose-blog {
+    font-size: 1.0625rem;
+  }
+}
 .prose-blog > * + * {
   margin-top: 1.2em;
 }
@@ -564,13 +572,14 @@ html[lang="ja"] .break-keep {
   margin-top: 1em;
 }
 .prose-blog h1 {
-  font-size: 1.4em;
+  font-size: 1.45em;
 }
 .prose-blog h2 {
-  font-size: 1.2em;
+  font-size: 1.25em;
+  margin-top: 2.4em;
 }
 .prose-blog h3 {
-  font-size: 1.05em;
+  font-size: 1.08em;
 }
 .prose-blog a {
   color: var(--bright);

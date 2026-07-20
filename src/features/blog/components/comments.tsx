@@ -65,7 +65,7 @@ function CommentForm({
   return (
     <form
       onSubmit={submit}
-      className={`rounded-xl border border-line p-4 ${compact ? "mt-3" : "mt-6"}`}
+      className={`rounded-xl bg-soft p-4 ${compact ? "mt-3" : "mt-6"}`}
     >
       <input
         type="text"
@@ -123,7 +123,7 @@ function CommentForm({
         <button
           type="submit"
           disabled={busy || !author.trim() || !body.trim()}
-          className="rounded-full border border-line px-4 py-1.5 text-sm text-muted transition-colors hover:border-faint hover:text-bright disabled:cursor-default disabled:opacity-40 disabled:hover:border-line disabled:hover:text-muted"
+          className="rounded-full bg-line px-4 py-1.5 text-sm text-muted transition-colors hover:text-bright disabled:cursor-default disabled:opacity-40 disabled:hover:text-muted"
         >
           {t("comments.submit")}
         </button>
@@ -249,7 +249,7 @@ export function Comments({ slug }: { slug: string }) {
     comments?.filter((c) => c.parent_id === id) ?? [];
 
   return (
-    <section className="mt-16 border-t border-line pt-10">
+    <section className="mt-20">
       <h2 className="text-sm font-medium text-bright">
         {t("comments.title")}
         {comments && comments.length > 0 && (
@@ -270,9 +270,9 @@ export function Comments({ slug }: { slug: string }) {
         {comments && comments.length === 0 && (
           <p className="text-sm text-faint">{t("comments.empty")}</p>
         )}
-        <ul className="divide-y divide-line">
+        <ul className="space-y-8">
           {roots.map((comment) => (
-            <li key={comment.id} className="py-5">
+            <li key={comment.id}>
               <CommentBody comment={comment} />
 
               <button

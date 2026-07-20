@@ -13,7 +13,7 @@ export function PostFooterNav({
   topLabel: string;
 }) {
   return (
-    <div className="no-print mt-14 flex items-center justify-between border-t border-line pt-6">
+    <div className="no-print mt-16 flex items-center justify-between">
       <Link
         href={`/${locale}/blog`}
         className="arrow-link text-sm text-faint transition-colors hover:text-bright"
