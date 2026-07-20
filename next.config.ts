@@ -13,9 +13,48 @@ const nextConfig: NextConfig = {
   },
   // OG 이미지 라우트가 fs로 읽는 폰트를 서버 번들에 포함시킨다 (Vercel 트레이싱)
   outputFileTracingIncludes: {
-    "/[locale]/blog/[slug]/opengraph-image": [
+    "/icon": [
       "./node_modules/pretendard/dist/public/static/Pretendard-Bold.otf",
     ],
+    "/apple-icon": [
+      "./node_modules/pretendard/dist/public/static/Pretendard-Bold.otf",
+    ],
+    "/[locale]/opengraph-image": [
+      "./node_modules/pretendard/dist/public/static/Pretendard-Regular.otf",
+      "./node_modules/pretendard/dist/public/static/Pretendard-SemiBold.otf",
+      "./node_modules/pretendard/dist/public/static/Pretendard-ExtraBold.otf",
+    ],
+    "/[locale]/blog/opengraph-image": [
+      "./node_modules/pretendard/dist/public/static/Pretendard-Regular.otf",
+      "./node_modules/pretendard/dist/public/static/Pretendard-SemiBold.otf",
+      "./node_modules/pretendard/dist/public/static/Pretendard-ExtraBold.otf",
+    ],
+    "/[locale]/blog/tag/[tag]/opengraph-image": [
+      "./node_modules/pretendard/dist/public/static/Pretendard-Regular.otf",
+      "./node_modules/pretendard/dist/public/static/Pretendard-SemiBold.otf",
+      "./node_modules/pretendard/dist/public/static/Pretendard-ExtraBold.otf",
+    ],
+    "/[locale]/blog/[slug]/opengraph-image": [
+      "./node_modules/pretendard/dist/public/static/Pretendard-Regular.otf",
+      "./node_modules/pretendard/dist/public/static/Pretendard-SemiBold.otf",
+      "./node_modules/pretendard/dist/public/static/Pretendard-ExtraBold.otf",
+    ],
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+        ],
+      },
+    ];
   },
   // 구 URL(/contents/카테고리/슬러그) → 신 URL(/blog/슬러그)
   async redirects() {
