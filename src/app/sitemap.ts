@@ -20,13 +20,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency: "weekly",
         priority: 0.8,
       },
+      {
+        url: `${SITE_URL}/${locale}/guestbook`,
+        changeFrequency: "weekly",
+        priority: 0.5,
+      },
       // 이력서는 작업 중이라 사이트맵에서 제외 — 오픈 시 복구
     );
 
+    const tags = new Set<string>();
     for (const category of CONTENT_CATEGORIES) {
       for (const slug of getContentSlugs(category)) {
         const content = getContentBySlug(slug, locale, category);
-        if (!content) continue;
+        if (!content || content.frontmatter.draft) continue;
+        content.frontmatter.tags?.forEach((tag) => tags.add(tag));
         entries.push({
           url: `${SITE_URL}/${locale}/blog/${slug}`,
           lastModified: new Date(
@@ -36,6 +43,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
           priority: 0.7,
         });
       }
+    }
+
+    for (const tag of tags) {
+      entries.push({
+        url: `${SITE_URL}/${locale}/blog/tag/${encodeURIComponent(tag)}`,
+        changeFrequency: "monthly",
+        priority: 0.4,
+      });
     }
   }
 
