@@ -1,6 +1,8 @@
 import { Link } from "next-view-transitions";
 
 import { getAllContentsForLocale, PostList } from "@/features/blog";
+import { Changelog, getChangelog } from "@/features/changelog";
+import { PROJECTS } from "@/features/projects";
 import {
   CopyEmailButton,
   GithubIcon,
@@ -16,6 +18,7 @@ import {
 
 const SECTIONS = [
   { path: "blog", key: "blog", disabled: false },
+  { path: "guestbook", key: "guestbook", disabled: false },
   // 이력서는 작업 중 — 완성되면 disabled만 풀면 된다
   { path: "resume", key: "resume", disabled: true },
 ] as const;
@@ -34,6 +37,30 @@ const CONNECT = [
 const ICON_BUTTON_CLASS =
   "rounded-full p-2 text-faint transition-colors hover:bg-soft hover:text-bright";
 
+const SITE_URL = "https://chlalsrl.com";
+const SUPPORTED = ["ko", "en", "ja"] as const;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: LocaleType }>;
+}) {
+  const { locale } = await params;
+  const url = `${SITE_URL}/${locale}`;
+  return {
+    alternates: {
+      canonical: url,
+      languages: {
+        ...Object.fromEntries(
+          SUPPORTED.map((loc) => [loc, `${SITE_URL}/${loc}`])
+        ),
+        "x-default": `${SITE_URL}/ko`,
+      },
+    },
+    openGraph: { url },
+  };
+}
+
 export default async function Home({
   params,
 }: {
@@ -41,7 +68,10 @@ export default async function Home({
 }) {
   const { locale } = await params;
   const { t } = await translation(locale);
-  const contents = getAllContentsForLocale(locale);
+  const contents = getAllContentsForLocale(locale).filter(
+    (content) => !content.frontmatter.draft
+  );
+  const changelog = getChangelog(6);
 
   return (
     <div className="space-y-16">
@@ -148,10 +178,84 @@ export default async function Home({
             <h2 className="mb-1 text-sm font-medium text-bright">
               {t("home.recent")}
             </h2>
-            <PostList contents={contents.slice(0, 3)} locale={locale} />
+            <PostList
+              contents={contents.slice(0, 3)}
+              locale={locale}
+              categoryLabels={Object.fromEntries(
+                contents.map((content) => [
+                  content.category,
+                  t(`categories.${content.category}`),
+                ])
+              )}
+            />
+            {contents.length > 3 && (
+              <Link
+                href={`/${locale}/blog`}
+                className="arrow-link mt-3 inline-block text-sm text-faint transition-colors hover:text-bright"
+              >
+                {t("home.all-posts")} <span className="arrow">→</span>
+              </Link>
+            )}
           </section>
         </Reveal>
       )}
+
+      {/* projects — 데이터는 features/projects/data.ts에서 수정 */}
+      <Reveal delay={70}>
+        <section>
+          <h2 className="mb-1 text-sm font-medium text-bright">
+            {t("home.projects")}
+          </h2>
+          <ul className="divide-y divide-line">
+            {PROJECTS.map((project) => {
+              const inner = (
+                <>
+                  <span className="flex min-w-0 items-baseline gap-2.5">
+                    <span className="truncate text-foreground transition-colors group-hover:text-bright">
+                      {project.name}
+                    </span>
+                    <span className="hidden truncate text-sm text-muted sm:inline">
+                      {project.description[locale]}
+                    </span>
+                  </span>
+                  <span className="flex shrink-0 items-baseline gap-2 font-mono text-xs tabular-nums text-faint">
+                    {project.period}
+                    {project.href && <span aria-hidden>↗</span>}
+                  </span>
+                </>
+              );
+              return (
+                <li key={project.name}>
+                  {project.href ? (
+                    <a
+                      href={project.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="row-link group -mx-4 flex items-baseline justify-between gap-6 rounded-md px-4 py-4"
+                    >
+                      {inner}
+                    </a>
+                  ) : (
+                    <div className="-mx-4 flex items-baseline justify-between gap-6 px-4 py-4">
+                      {inner}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      </Reveal>
+
+      {/* changelog — 빌드 시점 git log에서 뽑은 사이트 업데이트 히스토리 */}
+      <Reveal delay={80}>
+        <Changelog
+          entries={changelog}
+          title={t("home.updates")}
+          historyLabel={t("home.history")}
+          historyHref={`/${locale}/changelog`}
+        />
+      </Reveal>
     </div>
   );
 }
