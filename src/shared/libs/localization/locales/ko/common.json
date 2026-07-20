@@ -1,7 +1,11 @@
 {
   "home": {
     "tagline": "좋은 제품은 화면 너머의 사람을 이해하는 데서 시작한다고 믿습니다.\n만들고 검증하며 배운 것들을 여기에 남깁니다.",
-    "recent": "최근 글"
+    "recent": "최근 글",
+    "updates": "업데이트",
+    "history": "전체 히스토리",
+    "all-posts": "모든 글 보기",
+    "projects": "만든 것들"
   },
   "sections": {
     "blog": {
@@ -12,6 +16,10 @@
       "title": "이력서",
       "description": "어떤 문제를, 왜, 어떻게 풀어왔는지",
       "badge": "작업 중"
+    },
+    "guestbook": {
+      "title": "방명록",
+      "description": "지나가는 흔적을 남겨주세요"
     }
   },
   "blog": {
@@ -19,7 +27,9 @@
     "search": "제목으로 검색",
     "empty": "아직 글이 없습니다.",
     "no-result": "검색 결과가 없습니다.",
-    "count_other": "{{count}}개의 글"
+    "count_other": "{{count}}개의 글",
+    "draft": "작성중",
+    "reset": "필터 초기화"
   },
   "post": {
     "back": "목록으로",
@@ -28,11 +38,17 @@
     "prev": "이전 글",
     "next": "다음 글",
     "copy-link": "링크 복사",
-    "related": "관련 글"
+    "related": "관련 글",
+    "share-x": "X에 공유",
+    "top": "맨 위로",
+    "minutes": "{{minutes}}분 읽기",
+    "untranslated": "이 글은 아직 한국어 번역이 없어 원문으로 보여드려요."
   },
   "search": {
     "placeholder": "글 검색…",
-    "empty": "결과가 없습니다."
+    "empty": "결과가 없습니다.",
+    "page": "페이지",
+    "recent": "최근 본 글"
   },
   "island": {
     "reading": "읽는 데 약 {{minutes}}분 걸려요",
@@ -43,7 +59,10 @@
     "thanks": "고마워요",
     "locale-switched": "한국어로 표시합니다",
     "theme-dark": "다크 모드",
-    "theme-light": "라이트 모드"
+    "theme-light": "라이트 모드",
+    "konami": "🎮 코나미 커맨드 발견! 당신은 진짜다",
+    "theme-system": "시스템 테마를 따라요",
+    "guestbook": "방명록에 인사를 남겨보세요"
   },
   "resume": {
     "print": "인쇄",
@@ -73,5 +92,16 @@
     "ko": "한국어",
     "en": "English",
     "ja": "日本語"
+  },
+  "a11y": {
+    "skip": "본문으로 건너뛰기"
+  },
+  "nav": {
+    "home": "홈"
+  },
+  "changelog": {
+    "title": "체인지로그",
+    "description": "이 사이트가 바뀌어 온 기록 — 커밋에서 자동 생성",
+    "empty": "기록이 없습니다."
   }
 }

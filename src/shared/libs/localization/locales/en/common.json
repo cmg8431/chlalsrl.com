@@ -1,7 +1,11 @@
 {
   "home": {
     "tagline": "I believe good products start with understanding the person behind the screen.\nThis is where I keep what I learn from building and shipping.",
-    "recent": "Recent writing"
+    "recent": "Recent writing",
+    "updates": "Updates",
+    "history": "Full history",
+    "all-posts": "All posts",
+    "projects": "Things I've built"
   },
   "sections": {
     "blog": {
@@ -12,6 +16,10 @@
       "title": "Resume",
       "description": "What I've solved, why, and how",
       "badge": "In progress"
+    },
+    "guestbook": {
+      "title": "Guestbook",
+      "description": "Leave a trace as you pass by"
     }
   },
   "blog": {
@@ -20,7 +28,9 @@
     "empty": "Nothing here yet.",
     "no-result": "No results.",
     "count_one": "{{count}} post",
-    "count_other": "{{count}} posts"
+    "count_other": "{{count}} posts",
+    "draft": "In progress",
+    "reset": "Reset filters"
   },
   "post": {
     "back": "Back",
@@ -29,11 +39,17 @@
     "prev": "Previous",
     "next": "Next",
     "copy-link": "Copy link",
-    "related": "Related"
+    "related": "Related",
+    "share-x": "Share on X",
+    "top": "Back to top",
+    "minutes": "{{minutes}} min read",
+    "untranslated": "This post hasn't been translated yet — showing the original."
   },
   "search": {
     "placeholder": "Search posts…",
-    "empty": "No results."
+    "empty": "No results.",
+    "page": "Page",
+    "recent": "Recently viewed"
   },
   "island": {
     "reading": "About {{minutes}} min to read",
@@ -45,7 +61,10 @@
     "thanks": "Thanks!",
     "locale-switched": "Now in English",
     "theme-dark": "Dark mode",
-    "theme-light": "Light mode"
+    "theme-light": "Light mode",
+    "konami": "🎮 Konami code! You're the real one",
+    "theme-system": "Following system theme",
+    "guestbook": "Say hi in the guestbook"
   },
   "resume": {
     "print": "Print",
@@ -75,5 +94,16 @@
     "ko": "한국어",
     "en": "English",
     "ja": "日本語"
+  },
+  "a11y": {
+    "skip": "Skip to content"
+  },
+  "nav": {
+    "home": "Home"
+  },
+  "changelog": {
+    "title": "Changelog",
+    "description": "How this site has evolved — generated from commits",
+    "empty": "No entries."
   }
 }

@@ -1,7 +1,11 @@
 {
   "home": {
     "tagline": "良いプロダクトは、画面の向こうの人を理解することから始まると信じています。\n作りながら学んだことを、ここに残していきます。",
-    "recent": "最近の記事"
+    "recent": "最近の記事",
+    "updates": "更新履歴",
+    "history": "全履歴",
+    "all-posts": "すべての記事",
+    "projects": "作ったもの"
   },
   "sections": {
     "blog": {
@@ -12,6 +16,10 @@
       "title": "履歴書",
       "description": "どんな問題を、なぜ、どう解いてきたか",
       "badge": "作業中"
+    },
+    "guestbook": {
+      "title": "ゲストブック",
+      "description": "通りすがりの足跡を残してください"
     }
   },
   "categories": {
@@ -25,7 +33,9 @@
     "search": "タイトルで検索",
     "empty": "まだ記事がありません。",
     "no-result": "結果がありません。",
-    "count_other": "{{count}}件の記事"
+    "count_other": "{{count}}件の記事",
+    "draft": "執筆中",
+    "reset": "フィルターをリセット"
   },
   "post": {
     "back": "一覧へ",
@@ -34,11 +44,17 @@
     "prev": "前の記事",
     "next": "次の記事",
     "copy-link": "リンクをコピー",
-    "related": "関連記事"
+    "related": "関連記事",
+    "share-x": "Xでシェア",
+    "top": "トップへ",
+    "minutes": "{{minutes}}分で読める",
+    "untranslated": "この記事はまだ翻訳されていないため、原文を表示しています。"
   },
   "search": {
     "placeholder": "記事を検索…",
-    "empty": "結果がありません。"
+    "empty": "結果がありません。",
+    "page": "ページ",
+    "recent": "最近見た記事"
   },
   "island": {
     "reading": "読むのに約{{minutes}}分かかります",
@@ -49,7 +65,10 @@
     "thanks": "ありがとうございます",
     "locale-switched": "日本語で表示します",
     "theme-dark": "ダークモード",
-    "theme-light": "ライトモード"
+    "theme-light": "ライトモード",
+    "konami": "🎮 コナミコマンド発見!あなたは本物だ",
+    "theme-system": "システムテーマに従います",
+    "guestbook": "ゲストブックに一言どうぞ"
   },
   "resume": {
     "print": "印刷",
@@ -73,5 +92,16 @@
     "ko": "한국어",
     "en": "English",
     "ja": "日本語"
+  },
+  "a11y": {
+    "skip": "本文へスキップ"
+  },
+  "nav": {
+    "home": "ホーム"
+  },
+  "changelog": {
+    "title": "チェンジログ",
+    "description": "このサイトの変遷 — コミットから自動生成",
+    "empty": "記録がありません。"
   }
 }
