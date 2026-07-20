@@ -11,10 +11,14 @@ import {
   type LikeState,
 } from "../libs/guestbook";
 
+const BURST_ANGLES = [-70, -30, 10, 190, 230, 150];
+
 export function LikeButton({ slug }: { slug: string }) {
   const t = useT();
   const [state, setState] = useState<LikeState | null>(null);
   const [busy, setBusy] = useState(false);
+  // 좋아요 순간마다 키를 바꿔 파티클을 새로 그린다
+  const [burst, setBurst] = useState(0);
 
   useEffect(() => {
     if (!guestbookEnabled) return;
@@ -36,6 +40,7 @@ export function LikeButton({ slug }: { slug: string }) {
         likes: prev.likes + (prev.liked ? -1 : 1),
         liked: !prev.liked,
       });
+      if (!prev.liked) setBurst((n) => n + 1);
     }
     try {
       const next = await toggleLike(slug);
@@ -59,12 +64,27 @@ export function LikeButton({ slug }: { slug: string }) {
         onClick={toggle}
         aria-pressed={liked}
         aria-label="Like"
-        className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all ${
+        className={`relative flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all ${
           liked
             ? "border-faint bg-soft text-bright"
             : "border-line text-muted hover:border-faint hover:text-bright"
         }`}
       >
+        {burst > 0 && (
+          <span key={burst} aria-hidden className="like-burst">
+            {BURST_ANGLES.map((angle) => (
+              <span
+                key={angle}
+                style={
+                  {
+                    "--dx": `${Math.cos((angle * Math.PI) / 180) * 34}px`,
+                    "--dy": `${Math.sin((angle * Math.PI) / 180) * 34}px`,
+                  } as React.CSSProperties
+                }
+              />
+            ))}
+          </span>
+        )}
         <svg
           width="15"
           height="15"

@@ -15,8 +15,14 @@ import {
   getAllSlugs,
   MdxH2,
   MdxH3,
+  MdxLink,
+  MobileToc,
+  PostFooterNav,
+  PostKeyboardNav,
   PostList,
+  RecentTracker,
   readingMinutes,
+  ShareRow,
   Toc,
   ZoomImage,
 } from "@/features/blog";
@@ -66,7 +72,7 @@ export async function generateMetadata({ params }: PostPageProps) {
   const { locale, slug } = await params;
   const content = findContentBySlug(slug, locale);
 
-  if (!content) {
+  if (!content || content.frontmatter.draft) {
     return { title: "Not Found" };
   }
 
@@ -79,9 +85,12 @@ export async function generateMetadata({ params }: PostPageProps) {
     description,
     alternates: {
       canonical: url,
-      languages: Object.fromEntries(
-        SUPPORTED_LOCALES.map((loc) => [loc, `${SITE_URL}/${loc}${path}`])
-      ),
+      languages: {
+        ...Object.fromEntries(
+          SUPPORTED_LOCALES.map((loc) => [loc, `${SITE_URL}/${loc}${path}`])
+        ),
+        "x-default": `${SITE_URL}/ko${path}`,
+      },
     },
     openGraph: {
       type: "article",
@@ -91,10 +100,12 @@ export async function generateMetadata({ params }: PostPageProps) {
       locale,
       publishedTime: date,
       modifiedTime: updated ?? date,
+      authors: ["Mingi Choe"],
+      section: content.category,
       tags,
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description,
     },
@@ -114,7 +125,8 @@ export default async function PostPage({ params }: PostPageProps) {
   const { t } = await translation(locale);
   const content = findContentBySlug(slug, locale);
 
-  if (!content) {
+  // 작성중 글은 목록에 제목만 노출 — 상세 접근은 차단
+  if (!content || content.frontmatter.draft) {
     notFound();
   }
 
@@ -122,7 +134,9 @@ export default async function PostPage({ params }: PostPageProps) {
   const minutes = readingMinutes(content.content);
   const { title, description, date, updated, tags } = content.frontmatter;
 
-  const all = getAllContentsForLocale(locale);
+  const all = getAllContentsForLocale(locale).filter(
+    (item) => !item.frontmatter.draft
+  );
   const index = all.findIndex((item) => item.slug === slug);
   const newer = index > 0 ? all[index - 1] : undefined;
   const older = index >= 0 ? all[index + 1] : undefined;
@@ -136,6 +150,26 @@ export default async function PostPage({ params }: PostPageProps) {
         )
         .slice(0, 3)
     : [];
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: `${SITE_URL}/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: t("blog.title"),
+        item: `${SITE_URL}/${locale}/blog`,
+      },
+      { "@type": "ListItem", position: 3, name: title },
+    ],
+  };
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -164,6 +198,10 @@ export default async function PostPage({ params }: PostPageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       <div className="post-main">
@@ -195,6 +233,9 @@ export default async function PostPage({ params }: PostPageProps) {
               <time dateTime={date} className="font-mono tabular-nums">
                 {formatDate(date, locale)}
               </time>
+              <span className="font-mono tabular-nums">
+                · {t("post.minutes", { minutes })}
+              </span>
               {updated && (
                 <span className="font-mono tabular-nums">
                   · {t("post.updated", { date: formatDate(updated, locale) })}
@@ -203,12 +244,23 @@ export default async function PostPage({ params }: PostPageProps) {
               <CopyLinkButton label={t("post.copy-link")} />
             </div>
             {tags && tags.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-1.5">
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link
+                  href={`/${locale}/blog?c=${content.category}`}
+                  className="flex h-8 items-center gap-2 rounded-full border border-line px-3.5 text-[13px] leading-none text-muted transition-colors hover:border-faint hover:text-bright"
+                >
+                  <span
+                    aria-hidden
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: "var(--faint)" }}
+                  />
+                  {t(`categories.${content.category}`)}
+                </Link>
                 {tags.map((tag) => (
                   <Link
                     key={tag}
                     href={`/${locale}/blog/tag/${encodeURIComponent(tag)}`}
-                    className="rounded-full bg-soft px-2.5 py-1 text-[11px] leading-none text-muted transition-colors hover:bg-line hover:text-bright"
+                    className="flex h-8 items-center rounded-full bg-soft px-3.5 text-[13px] leading-none text-muted transition-colors hover:bg-line hover:text-bright"
                   >
                     {tag}
                   </Link>
@@ -218,12 +270,25 @@ export default async function PostPage({ params }: PostPageProps) {
           </header>
         </Reveal>
 
+        {content.fileLocale !== locale && (
+          <Reveal delay={70}>
+            <p className="mt-8 rounded-xl border border-line bg-soft px-4 py-3 text-[13px] leading-relaxed text-muted">
+              {t("post.untranslated")}
+            </p>
+          </Reveal>
+        )}
+
+        <Reveal delay={70}>
+          <MobileToc items={toc} label={t("post.toc")} />
+        </Reveal>
+
         <Reveal delay={80}>
           <div className="prose-blog mt-10 border-t border-line pt-10">
             <MDXRemote
               source={content.content}
               components={{
                 img: ZoomImage,
+                a: MdxLink,
                 h2: MdxH2,
                 h3: MdxH3,
                 pre: CodeBlock,
@@ -234,6 +299,7 @@ export default async function PostPage({ params }: PostPageProps) {
         </Reveal>
 
         <LikeButton slug={slug} />
+        <ShareRow title={title} />
 
         {related.length > 0 && (
           <section className="mt-16 border-t border-line pt-8">
@@ -273,7 +339,23 @@ export default async function PostPage({ params }: PostPageProps) {
           </nav>
         )}
 
+        <PostKeyboardNav
+          prevHref={older ? `/${locale}/blog/${older.slug}` : undefined}
+          nextHref={newer ? `/${locale}/blog/${newer.slug}` : undefined}
+        />
+        <RecentTracker
+          href={`/${locale}/blog/${slug}`}
+          title={title}
+          date={date}
+        />
+
         <Comments slug={slug} />
+
+        <PostFooterNav
+          locale={locale}
+          backLabel={t("post.back")}
+          topLabel={t("post.top")}
+        />
       </div>
 
       <aside className="post-aside">

@@ -1,5 +1,12 @@
-import { getAllContentsForLocale, SearchablePostList } from "@/features/blog";
+import {
+  getAllContentsForLocale,
+  readingMinutes,
+  SearchablePostList,
+} from "@/features/blog";
 import { IslandSignal, LocaleType, Reveal, translation } from "@/shared";
+
+const SITE_URL = "https://chlalsrl.com";
+const SUPPORTED = ["ko", "en", "ja"] as const;
 
 export async function generateMetadata({
   params,
@@ -8,7 +15,21 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const { t } = await translation(locale);
-  return { title: t("blog.title") };
+  const url = `${SITE_URL}/${locale}/blog`;
+  return {
+    title: t("blog.title"),
+    description: t("sections.blog.description"),
+    alternates: {
+      canonical: url,
+      languages: {
+        ...Object.fromEntries(
+          SUPPORTED.map((loc) => [loc, `${SITE_URL}/${loc}/blog`])
+        ),
+        "x-default": `${SITE_URL}/ko/blog`,
+      },
+    },
+    openGraph: { url, title: t("blog.title") },
+  };
 }
 
 export default async function BlogPage({
@@ -27,6 +48,12 @@ export default async function BlogPage({
     href: `/${locale}/blog/${content.slug}`,
     category: content.category,
     categoryLabel: t(`categories.${content.category}`),
+    draft: content.frontmatter.draft,
+    description: content.frontmatter.description,
+    tags: content.frontmatter.tags,
+    minutes: content.frontmatter.draft
+      ? undefined
+      : readingMinutes(content.content),
   }));
 
   const categories = Array.from(
@@ -60,6 +87,8 @@ export default async function BlogPage({
             placeholder={t("blog.search")}
             emptyMessage={t("blog.empty")}
             noResultMessage={t("blog.no-result")}
+            draftLabel={t("blog.draft")}
+            resetLabel={t("blog.reset")}
           />
         </div>
       </Reveal>

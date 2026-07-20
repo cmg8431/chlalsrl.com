@@ -109,6 +109,8 @@ export function ZoomImage({ alt = "", ...props }: ZoomImageProps) {
           {...props}
           ref={inlineRef}
           alt={alt}
+          loading="lazy"
+          decoding="async"
           onClick={() => setOpen(true)}
           style={open ? { visibility: "hidden" } : undefined}
         />

@@ -31,7 +31,7 @@ const findContentPath = (
   category: ContentCategory,
   slug: string,
   locale: LocaleType
-): string | null => {
+): { filePath: string; fileLocale: string } | null => {
   const slugDir = getSlugDir(category, slug);
   if (!fs.existsSync(slugDir)) return null;
 
@@ -40,7 +40,9 @@ const findContentPath = (
   for (const candidate of candidates) {
     for (const ext of FILE_EXTENSIONS) {
       const filePath = path.join(slugDir, `${candidate}${ext}`);
-      if (fs.existsSync(filePath)) return filePath;
+      if (fs.existsSync(filePath)) {
+        return { filePath, fileLocale: candidate };
+      }
     }
   }
 
@@ -71,11 +73,11 @@ export function getContentBySlug(
   locale: LocaleType,
   category: ContentCategory
 ): Content | null {
-  const contentPath = findContentPath(category, slug, locale);
-  if (!contentPath) return null;
+  const found = findContentPath(category, slug, locale);
+  if (!found) return null;
 
   try {
-    const fileContents = fs.readFileSync(contentPath, "utf8");
+    const fileContents = fs.readFileSync(found.filePath, "utf8");
     const { data, content } = matter(fileContents);
 
     return {
@@ -83,6 +85,7 @@ export function getContentBySlug(
       category,
       frontmatter: data as Content["frontmatter"],
       content,
+      fileLocale: found.fileLocale,
     };
   } catch {
     return null;

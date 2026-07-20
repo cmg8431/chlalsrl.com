@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 
-import { islandStore, useT, type TFunction } from "@/shared";
+import { islandStore, useLocale, useT, type TFunction } from "@/shared";
 
-import { formatDateDot } from "../libs/format";
+import { formatRelativeOrDate } from "../libs/format";
 import {
   addComment,
   fetchComments,
@@ -21,6 +21,9 @@ interface CommentFormProps {
   onCancel?: () => void;
 }
 
+const AUTHOR_KEY = "comment-author";
+const BODY_MAX = 1000;
+
 function CommentForm({
   t,
   bodyPlaceholder,
@@ -33,13 +36,30 @@ function CommentForm({
   const [body, setBody] = useState("");
   const [trap, setTrap] = useState(""); // honeypot
 
+  // 이름은 한 번 쓰면 기억해둔다
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(AUTHOR_KEY);
+      if (saved) setAuthor(saved);
+    } catch {
+      /* private mode */
+    }
+  }, []);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const name = author.trim();
     const text = body.trim();
     if (!name || !text || busy || trap) return;
     const ok = await onSubmit(name, text);
-    if (ok) setBody("");
+    if (ok) {
+      setBody("");
+      try {
+        localStorage.setItem(AUTHOR_KEY, name);
+      } catch {
+        /* private mode */
+      }
+    }
   };
 
   return (
@@ -69,6 +89,10 @@ function CommentForm({
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
+        onKeyDown={(e) => {
+          // ⌘/Ctrl+Enter로 바로 등록
+          if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submit(e);
+        }}
         placeholder={bodyPlaceholder}
         aria-label={bodyPlaceholder}
         maxLength={1000}
@@ -76,7 +100,17 @@ function CommentForm({
         required
         className="input-quiet mt-3 resize-none leading-relaxed"
       />
-      <div className="mt-2 flex justify-end gap-2">
+      <div className="mt-2 flex items-center justify-end gap-3">
+        {/* 제한에 가까워질 때만 카운터 노출 */}
+        {body.length > BODY_MAX * 0.8 && (
+          <span
+            className={`font-mono text-[11px] tabular-nums ${
+              body.length >= BODY_MAX ? "text-bright" : "text-faint"
+            }`}
+          >
+            {body.length}/{BODY_MAX}
+          </span>
+        )}
         {onCancel && (
           <button
             type="button"
@@ -98,6 +132,43 @@ function CommentForm({
   );
 }
 
+// 이름 해시로 이모지·배경을 고정 — 같은 작성자는 항상 같은 아바타를 받는다
+const AVATAR_EMOJI = [
+  "🦊", "🐻", "🐼", "🐰", "🦁", "🐯", "🐨", "🐸",
+  "🐙", "🦉", "🐳", "🦄", "🐹", "🐥", "🐢", "🦋",
+];
+const AVATAR_BG = [
+  "hsla(14, 85%, 60%, 0.16)",
+  "hsla(42, 90%, 55%, 0.18)",
+  "hsla(140, 60%, 45%, 0.15)",
+  "hsla(200, 80%, 55%, 0.16)",
+  "hsla(260, 70%, 60%, 0.15)",
+  "hsla(330, 75%, 60%, 0.14)",
+];
+
+function hashName(name: string): number {
+  let hash = 0;
+  for (const ch of name) {
+    hash = (hash * 31 + (ch.codePointAt(0) ?? 0)) >>> 0;
+  }
+  return hash;
+}
+
+function Avatar({ name, small }: { name: string; small: boolean }) {
+  const hash = hashName(name);
+  return (
+    <span
+      aria-hidden
+      style={{ backgroundColor: AVATAR_BG[(hash >> 4) % AVATAR_BG.length] }}
+      className={`flex shrink-0 select-none items-center justify-center rounded-full ${
+        small ? "h-7 w-7 text-[14px]" : "h-8 w-8 text-[16px]"
+      }`}
+    >
+      {AVATAR_EMOJI[hash % AVATAR_EMOJI.length]}
+    </span>
+  );
+}
+
 function CommentBody({
   comment,
   small = false,
@@ -105,16 +176,10 @@ function CommentBody({
   comment: CommentRow;
   small?: boolean;
 }) {
+  const locale = useLocale();
   return (
     <div className="flex gap-3">
-      <span
-        aria-hidden
-        className={`flex shrink-0 select-none items-center justify-center rounded-full bg-soft font-semibold text-muted ${
-          small ? "h-7 w-7 text-[12px]" : "h-8 w-8 text-[13px]"
-        }`}
-      >
-        {comment.author.slice(0, 1).toUpperCase()}
-      </span>
+      <Avatar name={comment.author} small={small} />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2.5">
           <span className="text-sm font-medium text-bright">
@@ -124,7 +189,7 @@ function CommentBody({
             dateTime={comment.created_at}
             className="font-mono text-[11px] tabular-nums text-faint"
           >
-            {formatDateDot(comment.created_at)}
+            {formatRelativeOrDate(comment.created_at, locale)}
           </time>
         </div>
         <p className="mt-1 whitespace-pre-line break-words text-sm leading-relaxed">
