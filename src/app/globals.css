@@ -394,9 +394,18 @@ html[data-reading-size="lg"] .prose-blog {
   }
 }
 
-/* 집중 모드: 뷰포트 중앙 블록만 밝게, 나머지는 흐리게 */
+/* 글자를 키우면 줄당 글자수가 줄어드니 본문 폭도 함께 넓힌다 */
+#main {
+  transition: max-width 0.35s var(--ease-out);
+}
+html[data-reading-size="lg"] #main {
+  max-width: 44rem;
+}
+
+/* 집중 모드: 뷰포트 중앙 밴드는 밝게, 나머지는 흐리게 —
+   전환이 길면 스크롤을 못 따라오는 느낌이라 짧게 끊는다 */
 html[data-reading-focus="on"] .prose-blog > * {
-  transition: opacity 0.4s ease;
+  transition: opacity 0.15s ease;
 }
 @media (prefers-reduced-motion: no-preference) {
   html[data-reading-focus="on"] .prose-blog > *:not(.focus-active) {
@@ -418,21 +427,33 @@ html[data-reading-focus="on"] .prose-blog > * {
   display: flex;
   align-items: baseline;
   gap: 1px;
-  height: 2.6rem;
-  width: 2.6rem;
+  height: 3rem;
+  width: 3rem;
   justify-content: center;
   border-radius: 999px;
-  border: 1px solid var(--island-border);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--island-border));
   background: var(--island-bg);
-  box-shadow: var(--island-shadow);
-  color: var(--muted);
+  box-shadow:
+    var(--island-shadow),
+    0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  font-weight: 600;
   transition:
     color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
     transform 0.2s var(--ease-spring);
 }
 .reading-trigger:hover {
-  color: var(--bright);
+  border-color: var(--accent);
+  box-shadow:
+    var(--island-shadow),
+    0 0 0 5px color-mix(in srgb, var(--accent) 16%, transparent);
   transform: scale(1.06);
+}
+.reading-trigger.is-open {
+  border-color: var(--accent);
+  color: var(--bright);
 }
 .reading-pop {
   width: 12rem;

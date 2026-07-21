@@ -47,7 +47,7 @@ export function ReadingControls() {
     };
   }, [size, focus]);
 
-  // 집중 모드: 뷰포트 중앙에 가장 가까운 본문 블록을 밝힌다
+  // 집중 모드: 뷰포트 중앙 밴드에 걸치는 본문 블록들을 밝힌다
   useEffect(() => {
     if (!focus) return;
     const prose = document.querySelector<HTMLElement>(".prose-blog");
@@ -56,6 +56,7 @@ export function ReadingControls() {
     let raf = 0;
     const update = () => {
       const mid = window.innerHeight / 2;
+      const half = window.innerHeight * 0.3;
       let best: HTMLElement | null = null;
       let bestDist = Infinity;
       for (const b of blocks) {
@@ -65,8 +66,13 @@ export function ReadingControls() {
           bestDist = dist;
           best = b;
         }
+        b.classList.toggle(
+          "focus-active",
+          r.bottom > mid - half && r.top < mid + half
+        );
       }
-      for (const b of blocks) b.classList.toggle("focus-active", b === best);
+      // 큰 블록이 밴드를 다 덮는 경계 상황 대비 — 가장 가까운 블록은 항상 밝힌다
+      best?.classList.add("focus-active");
     };
     const onScroll = () => {
       cancelAnimationFrame(raf);
@@ -127,10 +133,10 @@ export function ReadingControls() {
         onClick={() => setOpen((v) => !v)}
         aria-label={t("reading.title")}
         aria-expanded={open}
-        className="reading-trigger"
+        className={`reading-trigger ${open ? "is-open" : ""}`}
       >
-        <span style={{ fontSize: 12 }}>A</span>
-        <span style={{ fontSize: 17 }}>A</span>
+        <span style={{ fontSize: 13 }}>A</span>
+        <span style={{ fontSize: 19 }}>A</span>
       </button>
     </div>
   );
