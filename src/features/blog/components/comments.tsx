@@ -65,7 +65,7 @@ function CommentForm({
   return (
     <form
       onSubmit={submit}
-      className={`overflow-hidden rounded-xl border border-line bg-soft/40 transition-colors focus-within:border-faint ${
+      className={`comment-card overflow-hidden rounded-xl border border-line bg-soft/40 ${
         compact ? "mt-3" : "mt-6"
       }`}
     >
@@ -86,9 +86,9 @@ function CommentForm({
         aria-label={t("comments.name")}
         maxLength={40}
         required
-        className="w-full bg-transparent px-4 pt-3 pb-2 text-base font-medium text-bright outline-none placeholder:font-normal placeholder:text-faint sm:text-sm"
+        className="w-full bg-transparent px-4 pt-3.5 pb-2.5 text-base font-medium text-bright outline-none placeholder:font-normal placeholder:text-faint sm:text-sm"
       />
-      <div className="mx-4 h-px bg-line" />
+      <div className="comment-divider mx-4 h-px bg-line transition-colors" />
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
@@ -252,7 +252,7 @@ export function Comments({ slug }: { slug: string }) {
     comments?.filter((c) => c.parent_id === id) ?? [];
 
   return (
-    <section className="mt-20">
+    <section className="mt-16">
       <h2 className="text-sm font-medium text-bright">
         {t("comments.title")}
         {comments && comments.length > 0 && (

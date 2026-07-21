@@ -785,6 +785,21 @@ html[data-reading-focus="on"] .prose-blog > * {
   transform: translateY(0);
 }
 
+/* 댓글 입력 카드 — 포커스 시 앰버 톤 테두리 + 옅은 링 */
+.comment-card {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.comment-card:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 9%, transparent);
+}
+/* 카드 안 이름/본문 구분선도 포커스 시 살짝 또렷하게 */
+.comment-card:focus-within .comment-divider {
+  background: color-mix(in srgb, var(--accent) 30%, var(--line));
+}
+
 .input-quiet {
   width: 100%;
   background: transparent;
