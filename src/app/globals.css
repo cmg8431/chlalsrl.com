@@ -840,15 +840,12 @@ html[data-reading-focus="on"] .prose-blog > * {
 }
 
 /* 댓글 입력 카드 — 내부 구분선 없이 여백으로 구획하고,
-   포커스 시 앰버 틴트 링이 은은하게 감싼다 */
+   포커스 시 테두리만 은은하게 또렷해진다(중립 톤) */
 .comment-card {
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
+  transition: border-color 0.25s ease;
 }
 .comment-card:focus-within {
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 10%, transparent);
+  border-color: var(--faint);
 }
 
 .input-quiet {
