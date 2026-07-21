@@ -16,4 +16,5 @@ export * from "./mobile-toc";
 export * from "./mdx-link";
 export * from "./post-footer-nav";
 export * from "./post-nav";
+export * from "./post-swipe";
 export * from "./recent-tracker";

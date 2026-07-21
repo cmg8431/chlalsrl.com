@@ -55,42 +55,7 @@ export function PostNav({
     return () => window.removeEventListener("keydown", onKey);
   }, [older, newer, goOlder, goNewer]);
 
-  // 모바일 좌우 스와이프
-  useEffect(() => {
-    let startX = 0;
-    let startY = 0;
-    let tracking = false;
-
-    const onStart = (e: TouchEvent) => {
-      const touch = e.touches[0];
-      if (e.touches.length !== 1 || !touch) {
-        tracking = false;
-        return;
-      }
-      startX = touch.clientX;
-      startY = touch.clientY;
-      tracking = true;
-    };
-    const onEnd = (e: TouchEvent) => {
-      if (!tracking) return;
-      tracking = false;
-      const touch = e.changedTouches[0];
-      if (!touch) return;
-      const dx = touch.clientX - startX;
-      const dy = touch.clientY - startY;
-      // 가로 이동이 충분히 크고 세로보다 확실히 우세할 때만
-      if (Math.abs(dx) < 72 || Math.abs(dx) < Math.abs(dy) * 1.6) return;
-      if (dx < 0) goNewer();
-      else goOlder();
-    };
-
-    window.addEventListener("touchstart", onStart, { passive: true });
-    window.addEventListener("touchend", onEnd, { passive: true });
-    return () => {
-      window.removeEventListener("touchstart", onStart);
-      window.removeEventListener("touchend", onEnd);
-    };
-  }, [goOlder, goNewer]);
+  // 모바일 좌우 스와이프는 PostSwipe(인터랙티브 드래그)가 담당한다
 
   if (!older && !newer) return null;
 

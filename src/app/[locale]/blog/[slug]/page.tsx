@@ -21,6 +21,7 @@ import {
   MobileToc,
   PostFooterNav,
   PostNav,
+  PostSwipe,
   PostList,
   ReadingControls,
   RecentTracker,
@@ -315,6 +316,26 @@ export default async function PostPage({ params }: PostPageProps) {
         )}
 
         <PostNav
+          older={
+            older
+              ? {
+                  href: `/${locale}/blog/${older.slug}`,
+                  title: older.frontmatter.title,
+                }
+              : undefined
+          }
+          newer={
+            newer
+              ? {
+                  href: `/${locale}/blog/${newer.slug}`,
+                  title: newer.frontmatter.title,
+                }
+              : undefined
+          }
+          prevLabel={t("post.prev")}
+          nextLabel={t("post.next")}
+        />
+        <PostSwipe
           older={
             older
               ? {
