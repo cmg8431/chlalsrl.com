@@ -32,7 +32,7 @@ const CONNECT = [
 ] as const;
 
 const ICON_BUTTON_CLASS =
-  "rounded-full p-2 text-faint transition-colors hover:bg-soft hover:text-bright";
+  "rounded-full p-2 text-faint transition-all hover:bg-soft hover:text-bright active:scale-90";
 
 const SITE_URL = "https://chlalsrl.com";
 const SUPPORTED = ["ko", "en", "ja"] as const;

@@ -65,7 +65,7 @@ function CommentForm({
   return (
     <form
       onSubmit={submit}
-      className={`rounded-xl bg-soft p-4 ${compact ? "mt-3" : "mt-6"}`}
+      className={compact ? "mt-3" : "mt-6"}
     >
       <input
         type="text"
@@ -123,7 +123,7 @@ function CommentForm({
         <button
           type="submit"
           disabled={busy || !author.trim() || !body.trim()}
-          className="rounded-full bg-line px-4 py-1.5 text-sm text-muted transition-colors hover:text-bright disabled:cursor-default disabled:opacity-40 disabled:hover:text-muted"
+          className="rounded-full bg-soft px-4 py-1.5 text-sm text-muted transition-all hover:bg-line hover:text-bright active:scale-95 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-soft disabled:hover:text-muted"
         >
           {t("comments.submit")}
         </button>

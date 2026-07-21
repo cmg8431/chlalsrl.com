@@ -3,7 +3,7 @@
 import { islandStore, useT } from "@/shared";
 
 const BUTTON_CLASS =
-  "flex items-center gap-2 rounded-full bg-soft px-4 py-2 text-sm text-muted transition-colors hover:bg-line hover:text-bright";
+  "flex items-center gap-2 rounded-full px-3 py-2 text-sm text-faint transition-all hover:text-bright active:scale-95";
 
 /** 글 하단 공유 액션 — X 공유 + 링크 복사 */
 export function ShareRow({ title }: { title: string }) {

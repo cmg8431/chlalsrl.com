@@ -248,10 +248,10 @@ export default async function PostPage({ params }: PostPageProps) {
               <CopyLinkButton label={t("post.copy-link")} />
             </div>
             {tags && tags.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px]">
                 <Link
                   href={`/${locale}/blog?c=${content.category}`}
-                  className="flex h-8 items-center gap-2 rounded-full bg-soft px-3.5 text-[13px] leading-none text-muted transition-colors hover:bg-line hover:text-bright"
+                  className="flex items-center gap-1.5 text-muted transition-colors hover:text-bright"
                 >
                   <span
                     aria-hidden
@@ -264,9 +264,9 @@ export default async function PostPage({ params }: PostPageProps) {
                   <Link
                     key={tag}
                     href={`/${locale}/blog/tag/${encodeURIComponent(tag)}`}
-                    className="flex h-8 items-center rounded-full bg-soft px-3.5 text-[13px] leading-none text-muted transition-colors hover:bg-line hover:text-bright"
+                    className="text-faint transition-colors hover:text-bright"
                   >
-                    {tag}
+                    #{tag}
                   </Link>
                 ))}
               </div>
@@ -276,7 +276,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
         {content.fileLocale !== locale && (
           <Reveal delay={70}>
-            <p className="mt-8 rounded-xl bg-soft px-4 py-3 text-[13px] leading-relaxed text-muted">
+            <p className="mt-8 border-l-2 border-line pl-3.5 text-[13px] leading-relaxed text-muted">
               {t("post.untranslated")}
             </p>
           </Reveal>
@@ -315,27 +315,32 @@ export default async function PostPage({ params }: PostPageProps) {
         )}
 
         {(older || newer) && (
-          <nav className="mt-16 grid gap-3 sm:grid-cols-2">
+          <nav className="mt-16 flex items-start justify-between gap-8">
             {older ? (
               <Link
                 href={`/${locale}/blog/${older.slug}`}
-                className="group rounded-xl bg-soft p-4 transition-colors hover:bg-line"
+                className="arrow-link group min-w-0 flex-1"
               >
-                <span className="text-xs text-faint">← {t("post.prev")}</span>
-                <span className="mt-1 block truncate text-sm text-foreground transition-colors group-hover:text-bright">
+                <span className="text-xs text-faint">
+                  <span className="arrow inline-block rotate-180">→</span>{" "}
+                  {t("post.prev")}
+                </span>
+                <span className="mt-1.5 block truncate text-sm text-foreground transition-colors group-hover:text-bright">
                   {older.frontmatter.title}
                 </span>
               </Link>
             ) : (
-              <span className="hidden sm:block" />
+              <span className="flex-1" />
             )}
             {newer && (
               <Link
                 href={`/${locale}/blog/${newer.slug}`}
-                className="group rounded-xl bg-soft p-4 text-right transition-colors hover:bg-line"
+                className="arrow-link group min-w-0 flex-1 text-right"
               >
-                <span className="text-xs text-faint">{t("post.next")} →</span>
-                <span className="mt-1 block truncate text-sm text-foreground transition-colors group-hover:text-bright">
+                <span className="text-xs text-faint">
+                  {t("post.next")} <span className="arrow">→</span>
+                </span>
+                <span className="mt-1.5 block truncate text-sm text-foreground transition-colors group-hover:text-bright">
                   {newer.frontmatter.title}
                 </span>
               </Link>

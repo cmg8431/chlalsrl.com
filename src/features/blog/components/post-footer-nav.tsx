@@ -22,7 +22,7 @@ export function PostFooterNav({
       </Link>
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="flex items-center gap-1.5 text-sm text-faint transition-colors hover:text-bright"
+        className="group flex items-center gap-1.5 text-sm text-faint transition-colors hover:text-bright"
       >
         {topLabel}
         <svg
@@ -35,6 +35,7 @@ export function PostFooterNav({
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden
+          className="transition-transform duration-300 group-hover:-translate-y-0.5"
         >
           <path d="M12 19V5" />
           <path d="m5 12 7-7 7 7" />

@@ -17,11 +17,8 @@ export function MobileToc({
   if (items.length < 2) return null;
 
   return (
-    <details
-      ref={ref}
-      className="no-print mt-8 rounded-xl bg-soft xl:hidden"
-    >
-      <summary className="flex cursor-pointer select-none items-center justify-between px-4 py-3 text-sm font-medium text-bright [&::-webkit-details-marker]:hidden">
+    <details ref={ref} className="no-print mt-8 xl:hidden">
+      <summary className="flex cursor-pointer select-none items-center gap-1.5 text-sm font-medium text-bright [&::-webkit-details-marker]:hidden">
         {label}
         <svg
           width="14"
@@ -38,7 +35,7 @@ export function MobileToc({
           <path d="m6 9 6 6 6-6" />
         </svg>
       </summary>
-      <ul className="space-y-2.5 px-4 pb-4 text-[13px] leading-snug">
+      <ul className="mt-3.5 space-y-2.5 pl-0.5 text-[13px] leading-snug">
         {items.map((item) => (
           <li key={item.id} className={item.depth === 3 ? "pl-3.5" : ""}>
             <a

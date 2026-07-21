@@ -46,10 +46,10 @@ export function Toc({ items, label }: TocProps) {
           <li key={item.id} className={item.depth === 3 ? "pl-3.5" : ""}>
             <a
               href={`#${item.id}`}
-              className={`block transition-colors duration-300 ${
+              className={`block transition-all duration-300 ${
                 activeId === item.id
-                  ? "text-bright"
-                  : "text-faint hover:text-muted"
+                  ? "translate-x-1 text-bright"
+                  : "text-faint hover:translate-x-0.5 hover:text-muted"
               }`}
             >
               {item.text}
