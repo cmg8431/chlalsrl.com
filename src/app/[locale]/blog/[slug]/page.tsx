@@ -20,7 +20,7 @@ import {
   MdxLink,
   MobileToc,
   PostFooterNav,
-  PostKeyboardNav,
+  PostNav,
   PostList,
   ReadingControls,
   RecentTracker,
@@ -226,7 +226,7 @@ export default async function PostPage({ params }: PostPageProps) {
           <header className="mt-10">
             <h1 className="text-2xl font-semibold leading-snug tracking-tight text-bright sm:text-3xl">
               <span
-                className="inline-block"
+                className="post-title-morph inline-block"
                 style={
                   {
                     viewTransitionName: `post-${content.category}-${slug}`,
@@ -314,43 +314,25 @@ export default async function PostPage({ params }: PostPageProps) {
           </section>
         )}
 
-        {(older || newer) && (
-          <nav className="mt-16 flex items-start justify-between gap-8">
-            {older ? (
-              <Link
-                href={`/${locale}/blog/${older.slug}`}
-                className="arrow-link group min-w-0 flex-1"
-              >
-                <span className="text-xs text-faint">
-                  <span className="arrow inline-block rotate-180">→</span>{" "}
-                  {t("post.prev")}
-                </span>
-                <span className="mt-1.5 block truncate text-sm text-foreground transition-colors group-hover:text-bright">
-                  {older.frontmatter.title}
-                </span>
-              </Link>
-            ) : (
-              <span className="flex-1" />
-            )}
-            {newer && (
-              <Link
-                href={`/${locale}/blog/${newer.slug}`}
-                className="arrow-link group min-w-0 flex-1 text-right"
-              >
-                <span className="text-xs text-faint">
-                  {t("post.next")} <span className="arrow">→</span>
-                </span>
-                <span className="mt-1.5 block truncate text-sm text-foreground transition-colors group-hover:text-bright">
-                  {newer.frontmatter.title}
-                </span>
-              </Link>
-            )}
-          </nav>
-        )}
-
-        <PostKeyboardNav
-          prevHref={older ? `/${locale}/blog/${older.slug}` : undefined}
-          nextHref={newer ? `/${locale}/blog/${newer.slug}` : undefined}
+        <PostNav
+          older={
+            older
+              ? {
+                  href: `/${locale}/blog/${older.slug}`,
+                  title: older.frontmatter.title,
+                }
+              : undefined
+          }
+          newer={
+            newer
+              ? {
+                  href: `/${locale}/blog/${newer.slug}`,
+                  title: newer.frontmatter.title,
+                }
+              : undefined
+          }
+          prevLabel={t("post.prev")}
+          nextLabel={t("post.next")}
         />
         <RecentTracker
           href={`/${locale}/blog/${slug}`}

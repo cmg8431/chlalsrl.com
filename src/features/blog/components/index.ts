@@ -15,5 +15,5 @@ export * from "./reading-controls";
 export * from "./mobile-toc";
 export * from "./mdx-link";
 export * from "./post-footer-nav";
-export * from "./post-keyboard-nav";
+export * from "./post-nav";
 export * from "./recent-tracker";

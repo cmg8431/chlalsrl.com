@@ -227,6 +227,16 @@ body::before {
   animation: none;
 }
 
+/* 이전/다음 글 이동(data-nav) — 페이지 전체가 좌우로 슬라이드.
+   기본 즉시-숨김을 상쇄하고 애니메이션은 JS(WAAPI)가 구동한다.
+   제목 모핑은 꺼서 페이지가 한 덩어리로 움직이게 한다 */
+:root[data-nav]::view-transition-old(root) {
+  opacity: 1;
+}
+:root[data-nav] .post-title-morph {
+  view-transition-name: none !important;
+}
+
 /* ---------- dynamic island ---------- */
 .island-wrap {
   position: fixed;
