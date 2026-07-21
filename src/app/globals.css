@@ -839,7 +839,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   transform: translateY(0);
 }
 
-/* ---------- skeleton ---------- */
 /* 모서리는 마크업의 rounded-* 유틸리티가 정한다 — 레이어 밖 규칙이 유틸리티를 이기므로 여기선 미지정 */
 .skeleton {
   position: relative;
