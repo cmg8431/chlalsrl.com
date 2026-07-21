@@ -65,7 +65,9 @@ function CommentForm({
   return (
     <form
       onSubmit={submit}
-      className={compact ? "mt-3" : "mt-6"}
+      className={`overflow-hidden rounded-xl border border-line bg-soft/40 transition-colors focus-within:border-faint ${
+        compact ? "mt-3" : "mt-6"
+      }`}
     >
       <input
         type="text"
@@ -84,8 +86,9 @@ function CommentForm({
         aria-label={t("comments.name")}
         maxLength={40}
         required
-        className="input-quiet max-w-[12rem]"
+        className="w-full bg-transparent px-4 pt-3 pb-2 text-base font-medium text-bright outline-none placeholder:font-normal placeholder:text-faint sm:text-sm"
       />
+      <div className="mx-4 h-px bg-line" />
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
@@ -98,9 +101,9 @@ function CommentForm({
         maxLength={1000}
         rows={compact ? 2 : 3}
         required
-        className="input-quiet mt-3 resize-none leading-relaxed"
+        className="w-full resize-none bg-transparent px-4 py-3 text-base leading-relaxed text-foreground outline-none placeholder:text-faint sm:text-sm"
       />
-      <div className="mt-2 flex items-center justify-end gap-3">
+      <div className="flex items-center justify-end gap-3 px-3 pb-3">
         {/* 제한에 가까워질 때만 카운터 노출 */}
         {body.length > BODY_MAX * 0.8 && (
           <span
@@ -123,7 +126,7 @@ function CommentForm({
         <button
           type="submit"
           disabled={busy || !author.trim() || !body.trim()}
-          className="rounded-full bg-soft px-4 py-1.5 text-sm text-muted transition-all hover:bg-line hover:text-bright active:scale-95 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-soft disabled:hover:text-muted"
+          className="rounded-full bg-line px-4 py-1.5 text-sm text-bright transition-all hover:opacity-80 active:scale-95 disabled:cursor-default disabled:opacity-40 disabled:hover:opacity-40"
         >
           {t("comments.submit")}
         </button>

@@ -304,7 +304,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
         <HighlightShare slug={slug} />
 
-        <div className="mt-16 flex flex-wrap items-center justify-center gap-1 border-t border-line pt-8">
+        <div className="mt-16 flex flex-wrap items-center justify-center gap-2 border-t border-line pt-8">
           <LikeButton slug={slug} />
           <ShareRow title={title} />
         </div>

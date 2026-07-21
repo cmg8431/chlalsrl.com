@@ -63,8 +63,8 @@ export function LikeButton({ slug }: { slug: string }) {
       onClick={toggle}
       aria-pressed={liked}
       aria-label="Like"
-      className={`relative flex items-center gap-2 rounded-full px-3 py-2 text-sm transition-all duration-300 active:scale-95 ${
-        liked ? "text-accent" : "text-faint hover:text-bright"
+      className={`relative flex items-center gap-2 rounded-full px-4 py-2 text-sm transition-all duration-300 hover:-translate-y-0.5 active:scale-95 ${
+        liked ? "bg-line text-accent" : "bg-soft text-muted hover:text-bright"
       }`}
     >
       {burst > 0 && (
