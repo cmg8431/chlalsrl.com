@@ -86,9 +86,9 @@ function CommentForm({
         aria-label={t("comments.name")}
         maxLength={40}
         required
-        className="w-full bg-transparent px-4 pt-3.5 pb-2.5 text-base font-medium text-bright outline-none placeholder:font-normal placeholder:text-faint sm:text-sm"
+        className="w-full appearance-none border-0 bg-transparent px-4 pt-3.5 pb-2.5 text-base font-medium text-bright outline-none placeholder:font-normal placeholder:text-faint sm:text-sm"
       />
-      <div className="mx-4 h-px bg-line" />
+      <div className="h-px bg-line" />
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
@@ -101,7 +101,7 @@ function CommentForm({
         maxLength={1000}
         rows={compact ? 2 : 3}
         required
-        className="w-full resize-none bg-transparent px-4 py-3 text-base leading-relaxed text-foreground outline-none placeholder:text-faint sm:text-sm"
+        className="w-full appearance-none resize-none border-0 bg-transparent px-4 py-3 text-base leading-relaxed text-foreground outline-none placeholder:text-faint sm:text-sm"
       />
       <div className="flex items-center justify-end gap-3 px-3 pb-3">
         {/* 제한에 가까워질 때만 카운터 노출 */}

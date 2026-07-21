@@ -524,19 +524,7 @@ html[data-reading-focus="on"] .prose-blog > * {
   transform: translateX(0.9rem);
 }
 
-/* ---------- 시리즈 라벨(제목 앞) + 태그 ---------- */
-.series-label {
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--accent);
-  transition: opacity 0.2s ease;
-}
-.series-label:hover {
-  opacity: 0.7;
-}
+/* ---------- 태그 ---------- */
 .post-tag {
   color: var(--faint);
   transition: color 0.2s ease;

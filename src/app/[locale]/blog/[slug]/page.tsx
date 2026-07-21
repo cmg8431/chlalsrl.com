@@ -224,13 +224,7 @@ export default async function PostPage({ params }: PostPageProps) {
           </Link>
 
           <header className="mt-10">
-            <Link
-              href={`/${locale}/blog?c=${content.category}`}
-              className="series-label"
-            >
-              {t(`categories.${content.category}`)}
-            </Link>
-            <h1 className="mt-2.5 text-2xl font-semibold leading-snug tracking-tight text-bright sm:text-3xl">
+            <h1 className="text-2xl font-semibold leading-snug tracking-tight text-bright sm:text-3xl">
               <span
                 className="inline-block"
                 style={
