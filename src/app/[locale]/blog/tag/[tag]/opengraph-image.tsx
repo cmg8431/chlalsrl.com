@@ -1,6 +1,15 @@
 import { ImageResponse } from "next/og";
 
-import { loadOgFonts, OG_SIZE, OgSiteCard } from "@/app/_og/card";
+import {
+  loadOgFonts,
+  OG_ACCENT_DEFAULT,
+  OG_SIZE,
+  OgBadge,
+  OgFrame,
+  OgMeta,
+  OgTitle,
+} from "@/app/_og/card";
+import { getAllContentsForLocale } from "@/features/blog";
 
 import type { LocaleType } from "@/shared";
 
@@ -11,19 +20,35 @@ interface ImageProps {
   params: Promise<{ locale: LocaleType; tag: string }>;
 }
 
-const SENTENCE_EN = "Notes on building and living.";
-const SENTENCE: Record<string, string> = {
-  ko: "만들고 살아가며 남기는 기록.",
-  en: SENTENCE_EN,
-  ja: "作ること、暮らすことの記録。",
+const COUNT_LABEL: Record<string, (n: number) => string> = {
+  ko: (n) => `${n}개의 글`,
+  en: (n) => `${n} posts`,
+  ja: (n) => `${n}件の記事`,
 };
 
 export default async function Image({ params }: ImageProps) {
-  const { locale } = await params;
+  const { locale, tag: rawTag } = await params;
+  const tag = decodeURIComponent(rawTag);
   const fonts = await loadOgFonts();
+  const accent = OG_ACCENT_DEFAULT;
+
+  const count = getAllContentsForLocale(locale).filter(
+    (content) =>
+      !content.frontmatter.draft && content.frontmatter.tags?.includes(tag),
+  ).length;
+  const countLabel = (COUNT_LABEL[locale] ?? COUNT_LABEL.en!)(count);
 
   return new ImageResponse(
-    <OgSiteCard sentence={SENTENCE[locale] ?? SENTENCE_EN} />,
+    <OgFrame accent={accent}>
+      <div style={{ display: "flex" }}>
+        <OgBadge label="TAG" />
+      </div>
+      <div style={{ display: "flex", marginTop: 40 }}>
+        <OgTitle size={88}>{`#${tag}`}</OgTitle>
+      </div>
+      <div style={{ display: "flex", flex: 1 }} />
+      <OgMeta items={[countLabel, "chlalsrl.com/blog"]} />
+    </OgFrame>,
     { ...size, fonts },
   );
 }
