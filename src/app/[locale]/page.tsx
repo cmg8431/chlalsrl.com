@@ -71,7 +71,6 @@ export default async function Home({
 
   return (
     <div className="space-y-16">
-      {/* intro */}
       <Reveal>
         <section className="pt-6">
           <h1 className="text-2xl font-semibold tracking-tight text-bright">
@@ -119,7 +118,6 @@ export default async function Home({
         </section>
       </Reveal>
 
-      {/* sections */}
       <Reveal delay={60}>
         <nav>
           <ul>
@@ -167,7 +165,6 @@ export default async function Home({
         </nav>
       </Reveal>
 
-      {/* recent writing */}
       {contents.length > 0 && (
         <Reveal delay={60}>
           <section>

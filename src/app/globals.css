@@ -142,7 +142,6 @@ body::before {
   );
 }
 
-/* ---------- scrollbar ---------- */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -158,8 +157,7 @@ body::before {
   background: var(--faint);
 }
 
-/* ---------- reveal ----------
-   fill은 backwards만 — forwards는 transform이 남아 fixed 자손의 기준을 어긋나게 한다 */
+/* fill은 backwards만 — forwards는 transform이 남아 fixed 자손의 기준을 어긋나게 한다 */
 .reveal {
   animation: reveal-in 0.45s var(--ease-out) backwards;
   animation-delay: var(--reveal-delay, 0ms);
@@ -184,7 +182,6 @@ body::before {
   }
 }
 
-/* ---------- wordmark: 최민기 ↔ Mingi Choe (hover 시 글자 단위 전환) ---------- */
 .wordmark {
   display: inline-grid;
   cursor: pointer;
@@ -217,8 +214,7 @@ body::before {
   opacity: 1;
 }
 
-/* ---------- page transition ----------
-   루트는 즉시 교체(모바일 스냅샷 합성 비용 제거) — 모션은 Reveal과 개별 요소 모핑이 담당 */
+/* 루트는 즉시 교체(모바일 스냅샷 합성 비용 제거) — 모션은 Reveal과 개별 요소 모핑이 담당 */
 ::view-transition-old(root) {
   animation: none;
   opacity: 0;
@@ -237,8 +233,7 @@ body::before {
   view-transition-name: none !important;
 }
 
-/* ---------- 모바일 스와이프 오버레이(당겨서 다음 글) ----------
-   가장자리에서 배경색 그라데이션이 스며 나오고 제목이 떠오른다. 뉴트럴 톤만 사용 */
+/* 가장자리에서 배경색 그라데이션이 스며 나오고 제목이 떠오른다. 뉴트럴 톤만 사용 */
 .swipe-overlay {
   position: fixed;
   top: 0;
@@ -309,7 +304,6 @@ body::before {
   color: var(--bright);
 }
 
-/* ---------- dynamic island ---------- */
 .island-wrap {
   position: fixed;
   top: max(0.9rem, env(safe-area-inset-top));
@@ -438,7 +432,6 @@ body::before {
   }
 }
 
-/* ---------- post layout ---------- */
 /* 본문은 사이트 중앙 축에 그대로 두고, 목차만 왼쪽 레일로 뺀다 */
 .post-aside {
   display: none;
@@ -462,7 +455,6 @@ body::before {
   }
 }
 
-/* ---------- reading settings ---------- */
 html[data-reading-size="sm"] .prose-blog {
   font-size: 0.97rem;
 }
@@ -606,7 +598,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   transform: translateX(0.9rem);
 }
 
-/* ---------- 태그 ---------- */
 .post-tag {
   color: var(--faint);
   transition: color 0.2s ease;
@@ -615,7 +606,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   color: var(--bright);
 }
 
-/* ---------- heading anchors ---------- */
 .heading-anchor {
   color: inherit;
   text-decoration: none !important;
@@ -625,7 +615,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   color: var(--faint);
 }
 
-/* ---------- command menu ---------- */
 .cmd-overlay {
   position: fixed;
   inset: 0;
@@ -696,7 +685,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   color: var(--faint);
 }
 
-/* ---------- command terminal ---------- */
 .cmd-prompt {
   padding-left: 1.1rem;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
@@ -722,7 +710,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   font-size: 0.75rem;
 }
 
-/* ---------- quiet links ---------- */
 .link-quiet {
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -737,7 +724,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   text-decoration-color: var(--bright);
 }
 
-/* ---------- list row hover ---------- */
 .row-link {
   transition: background-color 0.25s ease;
 }
@@ -745,7 +731,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   background: var(--background-soft);
 }
 
-/* ---------- arrow slide (subtle) ---------- */
 .arrow-link .arrow {
   display: inline-block;
   transition:
@@ -756,7 +741,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   transform: translateX(3px);
 }
 
-/* ---------- quiet input ---------- */
 /* 좋아요 파티클 — 버튼 중심에서 퍼지는 작은 하트 점 */
 .like-burst {
   position: absolute;
@@ -791,7 +775,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   }
 }
 
-/* ---------- 문장 하이라이트 공유 바 ---------- */
 .hl-bar {
   position: fixed;
   z-index: 40;
@@ -889,7 +872,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   }
 }
 
-/* ---------- prose ---------- */
 .prose-blog {
   line-height: 1.85;
   overflow-wrap: break-word;
@@ -1104,7 +1086,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   animation-timing-function: var(--ease-out);
 }
 
-/* ---------- language menu ---------- */
 .lang-menu {
   position: fixed;
   min-width: 9.5rem;
@@ -1116,14 +1097,12 @@ html[data-reading-focus="on"] .prose-blog > * {
   animation: cmd-pop 0.2s var(--ease-spring);
 }
 
-/* ---------- focus ---------- */
 :focus-visible {
   outline: 1.5px solid var(--muted);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
-/* ---------- image zoom ---------- */
 .zoom-figure img {
   cursor: zoom-in;
   transition: opacity 0.2s ease;
@@ -1152,7 +1131,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   }
 }
 
-/* ---------- print (resume) ---------- */
 @media print {
   body {
     background: #ffffff;

@@ -17,7 +17,6 @@ export interface PostItem {
   /** 검색 매칭에만 쓰인다 — 화면에는 그리지 않음 */
   description?: string;
   tags?: string[];
-  minutes?: number;
 }
 
 export interface CategoryOption {

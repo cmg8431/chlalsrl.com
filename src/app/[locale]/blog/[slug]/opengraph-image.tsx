@@ -57,7 +57,6 @@ export default async function Image({ params }: ImageProps) {
       <OgFrame accent={accent}>
         <OgTopRow />
 
-        {/* 중앙: 카테고리 + 제목 + 설명 */}
         <div
           style={{
             display: "flex",
@@ -98,7 +97,6 @@ export default async function Image({ params }: ImageProps) {
           )}
         </div>
 
-        {/* 하단: 날짜 + 액센트 시그니처 */}
         <div
           style={{
             display: "flex",

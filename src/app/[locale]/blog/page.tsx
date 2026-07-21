@@ -1,8 +1,4 @@
-import {
-  getAllContentsForLocale,
-  readingMinutes,
-  SearchablePostList,
-} from "@/features/blog";
+import { getAllContentsForLocale, SearchablePostList } from "@/features/blog";
 import { IslandSignal, LocaleType, Reveal, translation } from "@/shared";
 
 const SITE_URL = "https://chlalsrl.com";
@@ -51,9 +47,6 @@ export default async function BlogPage({
     draft: content.frontmatter.draft,
     description: content.frontmatter.description,
     tags: content.frontmatter.tags,
-    minutes: content.frontmatter.draft
-      ? undefined
-      : readingMinutes(content.content),
   }));
 
   const categories = Array.from(

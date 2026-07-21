@@ -37,7 +37,6 @@ export default async function ResumePage({
 
   return (
     <div className="print-area expand-x">
-      {/* header */}
       <Reveal>
         <div className="flex items-start justify-between">
           <div>
@@ -71,7 +70,6 @@ export default async function ResumePage({
         </div>
       </Reveal>
 
-      {/* experience */}
       <Reveal delay={60}>
         <section className="mt-20">
           <SectionTitle>{t("resume.experience")}</SectionTitle>
@@ -105,7 +103,6 @@ export default async function ResumePage({
         </section>
       </Reveal>
 
-      {/* projects */}
       <Reveal delay={60}>
         <section className="mt-20">
           <SectionTitle>{t("resume.projects")}</SectionTitle>
@@ -138,7 +135,6 @@ export default async function ResumePage({
         </section>
       </Reveal>
 
-      {/* skills */}
       <Reveal delay={60}>
         <section className="mt-20">
           <SectionTitle>{t("resume.skills")}</SectionTitle>
@@ -155,7 +151,6 @@ export default async function ResumePage({
         </section>
       </Reveal>
 
-      {/* education */}
       <Reveal delay={60}>
         <section className="mt-20">
           <SectionTitle>{t("resume.education")}</SectionTitle>

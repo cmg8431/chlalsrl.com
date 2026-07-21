@@ -179,24 +179,3 @@ export async function addComment(
   });
 }
 
-/** 목록용 — 전체 댓글의 slug만 한 번에 받아 글별 개수로 집계한다 */
-export async function fetchCommentCounts(): Promise<Record<string, number>> {
-  if (DEV_PREVIEW) {
-    const counts: Record<string, number> = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (!key?.startsWith("dev-comments:")) continue;
-      const slug = key.slice("dev-comments:".length);
-      counts[slug] = (JSON.parse(localStorage.getItem(key) ?? "[]") as unknown[])
-        .length;
-    }
-    return counts;
-  }
-  const res = await rest(`/comments?select=slug`);
-  const rows = (await res.json()) as { slug: string }[];
-  const counts: Record<string, number> = {};
-  for (const row of rows) {
-    counts[row.slug] = (counts[row.slug] ?? 0) + 1;
-  }
-  return counts;
-}

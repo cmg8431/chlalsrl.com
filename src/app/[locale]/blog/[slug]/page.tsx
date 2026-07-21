@@ -145,6 +145,13 @@ export default async function PostPage({ params }: PostPageProps) {
   const newer = index > 0 ? all[index - 1] : undefined;
   const older = index >= 0 ? all[index + 1] : undefined;
 
+  const toNav = (item?: (typeof all)[number]) =>
+    item
+      ? { href: `/${locale}/blog/${item.slug}`, title: item.frontmatter.title }
+      : undefined;
+  const navOlder = toNav(older);
+  const navNewer = toNav(newer);
+
   const related = tags?.length
     ? all
         .filter(
@@ -316,42 +323,14 @@ export default async function PostPage({ params }: PostPageProps) {
         )}
 
         <PostNav
-          older={
-            older
-              ? {
-                  href: `/${locale}/blog/${older.slug}`,
-                  title: older.frontmatter.title,
-                }
-              : undefined
-          }
-          newer={
-            newer
-              ? {
-                  href: `/${locale}/blog/${newer.slug}`,
-                  title: newer.frontmatter.title,
-                }
-              : undefined
-          }
+          older={navOlder}
+          newer={navNewer}
           prevLabel={t("post.prev")}
           nextLabel={t("post.next")}
         />
         <PostSwipe
-          older={
-            older
-              ? {
-                  href: `/${locale}/blog/${older.slug}`,
-                  title: older.frontmatter.title,
-                }
-              : undefined
-          }
-          newer={
-            newer
-              ? {
-                  href: `/${locale}/blog/${newer.slug}`,
-                  title: newer.frontmatter.title,
-                }
-              : undefined
-          }
+          older={navOlder}
+          newer={navNewer}
           prevLabel={t("post.prev")}
           nextLabel={t("post.next")}
         />
