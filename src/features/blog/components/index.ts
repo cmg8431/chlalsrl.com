@@ -2,7 +2,7 @@ export * from "./post-list";
 export * from "./copy-link";
 export * from "./code-block";
 export * from "./comments";
-export * from "./reaction-bar";
+export * from "./like-button";
 export * from "./searchable-post-list";
 export * from "./zoom-image";
 export * from "./mdx-heading";

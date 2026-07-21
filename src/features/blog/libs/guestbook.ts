@@ -80,66 +80,6 @@ export async function toggleLike(slug: string): Promise<LikeState> {
   return rows[0] ?? { likes: 0, liked: false };
 }
 
-export const REACTION_EMOJIS = ["👏", "🤔", "💡", "❤️"] as const;
-
-export interface ReactionState {
-  emoji: string;
-  count: number;
-  reacted: boolean;
-}
-
-function emptyReactions(): ReactionState[] {
-  return REACTION_EMOJIS.map((emoji) => ({ emoji, count: 0, reacted: false }));
-}
-
-function devReactions(slug: string): ReactionState[] {
-  return REACTION_EMOJIS.map((emoji) => ({
-    emoji,
-    count: Number(localStorage.getItem(`dev-react:${slug}:${emoji}:n`) ?? 0),
-    reacted: localStorage.getItem(`dev-react:${slug}:${emoji}`) === "1",
-  }));
-}
-
-/** 4종 이모지를 항상 채워 반환 — 서버 결과에 없는 이모지는 0으로 */
-function fill(rows: ReactionState[]): ReactionState[] {
-  const byEmoji = new Map(rows.map((row) => [row.emoji, row]));
-  return REACTION_EMOJIS.map(
-    (emoji) => byEmoji.get(emoji) ?? { emoji, count: 0, reacted: false }
-  );
-}
-
-export async function fetchReactions(slug: string): Promise<ReactionState[]> {
-  if (DEV_PREVIEW) return devReactions(slug);
-  try {
-    const res = await rest(`/rpc/reaction_state`, {
-      method: "POST",
-      body: JSON.stringify({ post_slug: slug, sid: sessionId() }),
-    });
-    return fill((await res.json()) as ReactionState[]);
-  } catch {
-    return emptyReactions();
-  }
-}
-
-export async function toggleReaction(
-  slug: string,
-  emoji: string
-): Promise<ReactionState[]> {
-  if (DEV_PREVIEW) {
-    const key = `dev-react:${slug}:${emoji}`;
-    const on = localStorage.getItem(key) === "1";
-    const n = Number(localStorage.getItem(`${key}:n`) ?? 0);
-    localStorage.setItem(key, on ? "0" : "1");
-    localStorage.setItem(`${key}:n`, String(Math.max(0, n + (on ? -1 : 1))));
-    return devReactions(slug);
-  }
-  const res = await rest(`/rpc/toggle_reaction`, {
-    method: "POST",
-    body: JSON.stringify({ post_slug: slug, sid: sessionId(), e: emoji }),
-  });
-  return fill((await res.json()) as ReactionState[]);
-}
-
 export interface CommentRow {
   id: string;
   author: string;

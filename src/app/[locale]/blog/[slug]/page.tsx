@@ -8,7 +8,7 @@ import {
   CodeBlock,
   Comments,
   CopyLinkButton,
-  ReactionBar,
+  LikeButton,
   extractToc,
   findContentBySlug,
   getAllContentsForLocale,
@@ -302,7 +302,7 @@ export default async function PostPage({ params }: PostPageProps) {
           </div>
         </Reveal>
 
-        <ReactionBar slug={slug} />
+        <LikeButton slug={slug} />
         <ShareRow title={title} />
 
         {related.length > 0 && (
