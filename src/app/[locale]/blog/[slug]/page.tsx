@@ -22,6 +22,7 @@ import {
   PostFooterNav,
   PostKeyboardNav,
   PostList,
+  ReadingControls,
   RecentTracker,
   readingMinutes,
   ShareRow,
@@ -209,6 +210,8 @@ export default async function PostPage({ params }: PostPageProps) {
       <aside className="post-aside">
         <Toc items={toc} label={t("post.toc")} />
       </aside>
+
+      <ReadingControls />
 
       <div className="post-main">
         <Reveal>

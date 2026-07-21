@@ -378,6 +378,135 @@ body::before {
   }
 }
 
+/* ---------- reading settings ---------- */
+html[data-reading-size="sm"] .prose-blog {
+  font-size: 0.97rem;
+}
+html[data-reading-size="lg"] .prose-blog {
+  font-size: 1.14rem;
+}
+@media (min-width: 640px) {
+  html[data-reading-size="sm"] .prose-blog {
+    font-size: 1rem;
+  }
+  html[data-reading-size="lg"] .prose-blog {
+    font-size: 1.2rem;
+  }
+}
+
+/* 집중 모드: 뷰포트 중앙 블록만 밝게, 나머지는 흐리게 */
+html[data-reading-focus="on"] .prose-blog > * {
+  transition: opacity 0.4s ease;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-reading-focus="on"] .prose-blog > *:not(.focus-active) {
+    opacity: 0.28;
+  }
+}
+
+.reading-fab {
+  position: fixed;
+  right: max(1.1rem, env(safe-area-inset-right));
+  bottom: max(1.1rem, env(safe-area-inset-bottom));
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+}
+.reading-trigger {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  height: 2.6rem;
+  width: 2.6rem;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--island-border);
+  background: var(--island-bg);
+  box-shadow: var(--island-shadow);
+  color: var(--muted);
+  transition:
+    color 0.2s ease,
+    transform 0.2s var(--ease-spring);
+}
+.reading-trigger:hover {
+  color: var(--bright);
+  transform: scale(1.06);
+}
+.reading-pop {
+  width: 12rem;
+  padding: 0.9rem;
+  border-radius: 16px;
+  border: 1px solid var(--island-border);
+  background: var(--island-bg);
+  box-shadow: var(--island-shadow);
+  animation: cmd-pop 0.18s var(--ease-spring);
+}
+.reading-pop-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.reading-seg {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.3rem;
+}
+.reading-seg button {
+  flex: 1;
+  height: 2.1rem;
+  border-radius: 10px;
+  background: var(--background-soft);
+  color: var(--muted);
+  line-height: 1;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+.reading-seg button:hover {
+  color: var(--bright);
+}
+.reading-seg button.is-active {
+  background: var(--line);
+  color: var(--bright);
+}
+.reading-focus-toggle {
+  margin-top: 0.8rem;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--foreground);
+}
+.reading-switch {
+  position: relative;
+  width: 2.1rem;
+  height: 1.2rem;
+  border-radius: 999px;
+  background: var(--line);
+  transition: background-color 0.2s ease;
+}
+.reading-switch.is-on {
+  background: var(--accent);
+}
+.reading-switch span {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(1.2rem - 4px);
+  height: calc(1.2rem - 4px);
+  border-radius: 999px;
+  background: var(--island-bg);
+  transition: transform 0.2s var(--ease-spring);
+}
+.reading-switch.is-on span {
+  transform: translateX(0.9rem);
+}
+
 /* ---------- heading anchors ---------- */
 .heading-anchor {
   color: inherit;

@@ -102,5 +102,10 @@
     "title": "Changelog",
     "description": "How this site has evolved — generated from commits",
     "empty": "No entries."
+  },
+  "reading": {
+    "title": "Reading",
+    "size": "Text size",
+    "focus": "Focus mode"
   }
 }
