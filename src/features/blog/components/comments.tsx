@@ -88,7 +88,7 @@ function CommentForm({
         required
         className="w-full bg-transparent px-4 pt-3.5 pb-2.5 text-base font-medium text-bright outline-none placeholder:font-normal placeholder:text-faint sm:text-sm"
       />
-      <div className="comment-divider mx-4 h-px bg-line transition-colors" />
+      <div className="mx-4 h-px bg-line" />
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
