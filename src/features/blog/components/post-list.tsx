@@ -1,7 +1,6 @@
 import { Link } from "next-view-transitions";
 
 import { formatDateDot } from "../libs/format";
-import { readingMinutes } from "../libs/reading-time";
 
 import type { Content } from "../libs";
 import type { LocaleType } from "@/shared";
@@ -51,9 +50,6 @@ export function PostList({
               </span>
             </span>
             <span className="flex shrink-0 items-baseline gap-2.5 font-mono text-xs tabular-nums text-faint">
-              <span className="hidden sm:inline">
-                {readingMinutes(content.content)} min
-              </span>
               <time dateTime={content.frontmatter.date}>
                 {formatDateDot(content.frontmatter.date)}
               </time>

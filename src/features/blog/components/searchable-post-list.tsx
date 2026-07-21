@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 
 import { formatDateDot, formatYearMonth } from "../libs/format";
-import { fetchCommentCounts, guestbookEnabled } from "../libs/guestbook";
 
 export interface PostItem {
   id: string;
@@ -42,12 +41,10 @@ function Row({
   post,
   showCategory,
   draftLabel,
-  commentCount,
 }: {
   post: PostItem;
   showCategory: boolean;
   draftLabel: string;
-  commentCount?: number;
 }) {
   // 작성중 글은 제목만 예고편으로 노출 — 링크 없이 배지로 상태를 알린다
   if (post.draft) {
@@ -100,27 +97,6 @@ function Row({
         </span>
       </span>
       <span className="flex shrink-0 items-baseline gap-2.5 font-mono text-xs tabular-nums text-faint">
-        {commentCount !== undefined && commentCount > 0 && (
-          <span className="flex items-center gap-1">
-            <svg
-              width="11"
-              height="11"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            </svg>
-            {commentCount}
-          </span>
-        )}
-        {post.minutes !== undefined && (
-          <span className="hidden sm:inline">{post.minutes} min</span>
-        )}
         <time dateTime={post.date}>{formatDateDot(post.date)}</time>
       </span>
     </Link>
@@ -139,17 +115,6 @@ export function SearchablePostList({
 }: SearchablePostListProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
-  const [commentCounts, setCommentCounts] = useState<Record<string, number>>(
-    {}
-  );
-
-  // 댓글 수 — 한 번에 받아 slug별 집계 (실패하면 조용히 생략)
-  useEffect(() => {
-    if (!guestbookEnabled) return;
-    fetchCommentCounts()
-      .then(setCommentCounts)
-      .catch(() => {});
-  }, []);
 
   // URL(?c=&q=)과 동기화 — 필터 상태를 공유하거나 뒤로가기로 복원할 수 있게
   useEffect(() => {
@@ -291,9 +256,6 @@ export function SearchablePostList({
                       post={post}
                       showCategory={showFilter && !category}
                       draftLabel={draftLabel}
-                      commentCount={
-                        commentCounts[post.href.split("/").pop() ?? ""]
-                      }
                     />
                   </li>
                 ))}

@@ -224,7 +224,13 @@ export default async function PostPage({ params }: PostPageProps) {
           </Link>
 
           <header className="mt-10">
-            <h1 className="text-2xl font-semibold leading-snug tracking-tight text-bright sm:text-3xl">
+            <Link
+              href={`/${locale}/blog?c=${content.category}`}
+              className="series-label"
+            >
+              {t(`categories.${content.category}`)}
+            </Link>
+            <h1 className="mt-2.5 text-2xl font-semibold leading-snug tracking-tight text-bright sm:text-3xl">
               <span
                 className="inline-block"
                 style={
@@ -253,22 +259,13 @@ export default async function PostPage({ params }: PostPageProps) {
               <CopyLinkButton label={t("post.copy-link")} />
             </div>
             {tags && tags.length > 0 && (
-              <div className="mt-5 flex flex-wrap items-center gap-1.5 text-[12.5px]">
-                <Link
-                  href={`/${locale}/blog?c=${content.category}`}
-                  className="chip chip-category"
-                >
-                  {t(`categories.${content.category}`)}
-                </Link>
+              <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
                 {tags.map((tag) => (
                   <Link
                     key={tag}
                     href={`/${locale}/blog/tag/${encodeURIComponent(tag)}`}
-                    className="chip"
+                    className="post-tag"
                   >
-                    <span aria-hidden className="chip-hash">
-                      #
-                    </span>
                     {tag}
                   </Link>
                 ))}
