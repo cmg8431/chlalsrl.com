@@ -4,18 +4,17 @@ import { ViewTransitions } from "next-view-transitions";
 
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 
+import type { Metadata, Viewport } from "next";
 import { CommandMenu, getAllContentsForLocale } from "@/features/blog";
 import { getBuildInfo } from "@/features/changelog";
 import {
   ConsoleSignature,
   Konami,
-  LocaleType,
+  type LocaleType,
   MainLayout,
   SUPPORTED_LOCALES,
   translation,
 } from "@/shared";
-
-import type { Metadata, Viewport } from "next";
 
 import "@/app/globals.css";
 
@@ -54,7 +53,7 @@ export async function generateMetadata({
       ...BASE_METADATA.openGraph,
       locale: OG_LOCALE[locale] ?? "ko_KR",
       alternateLocale: Object.values(OG_LOCALE).filter(
-        (l) => l !== (OG_LOCALE[locale] ?? "ko_KR")
+        (l) => l !== (OG_LOCALE[locale] ?? "ko_KR"),
       ),
     },
   };
@@ -170,7 +169,11 @@ export default async function RootLayout({
 
   return (
     <ViewTransitions>
-      <html lang={locale} suppressHydrationWarning>
+      <html
+        lang={locale}
+        suppressHydrationWarning
+        data-scroll-behavior="smooth"
+      >
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >

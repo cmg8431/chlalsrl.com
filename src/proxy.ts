@@ -1,15 +1,15 @@
-import { NextResponse, NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 import {
   DEFAULT_LOCALE,
   SUPPORTED_LOCALES,
 } from "@/shared/libs/localization/helpers";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   const hasLocale = SUPPORTED_LOCALES.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
   if (hasLocale) {
@@ -17,12 +17,14 @@ export function middleware(request: NextRequest) {
   }
 
   const localeCookie = request.cookies.get("locale")?.value;
-  const preferredLocale = SUPPORTED_LOCALES.includes(localeCookie as any)
-    ? localeCookie
-    : DEFAULT_LOCALE;
+  const preferredLocale =
+    localeCookie &&
+    (SUPPORTED_LOCALES as readonly string[]).includes(localeCookie)
+      ? localeCookie
+      : DEFAULT_LOCALE;
 
   return NextResponse.redirect(
-    new URL(`/${preferredLocale}${pathname}`, request.url)
+    new URL(`/${preferredLocale}${pathname}`, request.url),
   );
 }
 
