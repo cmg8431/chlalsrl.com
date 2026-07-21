@@ -1,14 +1,12 @@
-import fs from "node:fs/promises";
-import path from "node:path";
 import { ImageResponse } from "next/og";
 
 export const contentType = "image/png";
 
 const VARIANTS = [
-  { id: "small", size: 64, fontSize: 34, radius: 14 },
-  { id: "medium", size: 192, fontSize: 102, radius: 42 },
-  // maskable — 세이프존 확보를 위해 글자를 작게, 모서리는 OS가 깎는다
-  { id: "large", size: 512, fontSize: 246, radius: 0 },
+  { id: "small", size: 64, radius: 14 },
+  { id: "medium", size: 192, radius: 42 },
+  // maskable — 모서리는 OS가 깎는다. 눈은 세이프존 안쪽에 있다
+  { id: "large", size: 512, radius: 0 },
 ];
 
 export function generateImageMetadata() {
@@ -19,15 +17,18 @@ export function generateImageMetadata() {
   }));
 }
 
-/** 브라우저 탭·매니페스트 아이콘 — OG와 같은 웜 다크 + 테라코타 모노그램 */
-export default async function Icon({ id }: { id: string }) {
-  const variant = VARIANTS.find((v) => v.id === id) ?? VARIANTS[0]!;
-  const font = await fs.readFile(
-    path.join(
-      process.cwd(),
-      "node_modules/pretendard/dist/public/static/Pretendard-Bold.otf",
-    ),
-  );
+/** 다크 잉크 배경에 은은히 빛나는 두 눈 — 원안 SVG(Frame 1)의 비율을 그대로 옮겼다 */
+export default async function Icon({ id }: { id: string | Promise<string> }) {
+  const resolvedId = await id;
+  const variant = VARIANTS.find((v) => v.id === resolvedId) ?? VARIANTS[0]!;
+  const s = variant.size;
+
+  // 원안 669px 캔버스 기준 비율
+  const eye = s * 0.242;
+  const pupil = eye * 0.477;
+  const eyeTop = s * 0.339;
+  const eyeLefts = [s * 0.227, s * 0.53];
+  const pupilOffset = eye * 0.403;
 
   return new ImageResponse(
     <div
@@ -35,22 +36,40 @@ export default async function Icon({ id }: { id: string }) {
         width: "100%",
         height: "100%",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "linear-gradient(160deg, #1A1613 0%, #0E0C0A 100%)",
+        position: "relative",
+        background: "linear-gradient(180deg, #000000 0%, #1B1919 100%)",
         borderRadius: variant.radius,
-        color: "#E38B63",
-        fontSize: variant.fontSize,
-        fontWeight: 700,
-        fontFamily: "Pretendard",
       }}
     >
-      민
+      {eyeLefts.map((left) => (
+        <div
+          key={left}
+          style={{
+            position: "absolute",
+            display: "flex",
+            left,
+            top: eyeTop,
+            width: eye,
+            height: eye,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(255,255,255,0.8) 55%, rgba(223,223,223,0.76) 100%)",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              left: pupilOffset,
+              top: pupilOffset,
+              width: pupil,
+              height: pupil,
+              borderRadius: "50%",
+              background: "linear-gradient(45deg, #000000 0%, #404040 100%)",
+            }}
+          />
+        </div>
+      ))}
     </div>,
-    {
-      width: variant.size,
-      height: variant.size,
-      fonts: [{ name: "Pretendard", data: font, weight: 700 }],
-    },
+    { width: s, height: s },
   );
 }

@@ -13,12 +13,6 @@ const nextConfig: NextConfig = {
   },
   // OG 이미지 라우트가 fs로 읽는 폰트를 서버 번들에 포함시킨다 (Vercel 트레이싱)
   outputFileTracingIncludes: {
-    "/icon": [
-      "./node_modules/pretendard/dist/public/static/Pretendard-Bold.otf",
-    ],
-    "/apple-icon": [
-      "./node_modules/pretendard/dist/public/static/Pretendard-Bold.otf",
-    ],
     "/[locale]/opengraph-image": [
       "./node_modules/pretendard/dist/public/static/Pretendard-Regular.otf",
       "./node_modules/pretendard/dist/public/static/Pretendard-SemiBold.otf",
