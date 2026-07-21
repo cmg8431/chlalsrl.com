@@ -394,11 +394,11 @@ html[data-reading-size="lg"] .prose-blog {
   }
 }
 
-/* 글자를 키우면 줄당 글자수가 줄어드니 본문 폭도 함께 넓힌다 */
+/* 글자를 키우면 줄당 글자수가 줄어드니 글 상세의 본문 폭도 함께 넓힌다 */
 #main {
   transition: max-width 0.35s var(--ease-out);
 }
-html[data-reading-size="lg"] #main {
+html[data-reading-size="lg"] #main:has(.post-layout) {
   max-width: 44rem;
 }
 
@@ -408,7 +408,8 @@ html[data-reading-focus="on"] .prose-blog > * {
   transition: opacity 0.15s ease;
 }
 @media (prefers-reduced-motion: no-preference) {
-  html[data-reading-focus="on"] .prose-blog > *:not(.focus-active) {
+  /* :has 가드 — 활성 블록 계산 전(하이드레이션 전)에 전체가 어두워지는 플래시 방지 */
+  html[data-reading-focus="on"] .prose-blog:has(.focus-active) > *:not(.focus-active) {
     opacity: 0.28;
   }
 }
@@ -425,34 +426,27 @@ html[data-reading-focus="on"] .prose-blog > * {
 }
 .reading-trigger {
   display: flex;
-  align-items: baseline;
-  gap: 1px;
-  height: 3rem;
-  width: 3rem;
+  align-items: center;
   justify-content: center;
+  height: 2.75rem;
+  width: 2.75rem;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--island-border));
+  border: 1px solid var(--island-border);
   background: var(--island-bg);
-  box-shadow:
-    var(--island-shadow),
-    0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent);
-  color: var(--accent);
-  font-weight: 600;
+  box-shadow: var(--island-shadow);
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
   transition:
     color 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
     transform 0.2s var(--ease-spring);
 }
 .reading-trigger:hover {
-  border-color: var(--accent);
-  box-shadow:
-    var(--island-shadow),
-    0 0 0 5px color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--bright);
   transform: scale(1.06);
 }
 .reading-trigger.is-open {
-  border-color: var(--accent);
   color: var(--bright);
 }
 .reading-pop {
@@ -562,15 +556,15 @@ html[data-reading-focus="on"] .prose-blog > * {
   color: var(--accent);
 }
 .chip-category {
-  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
-  background: color-mix(in srgb, var(--accent) 9%, transparent);
-  color: color-mix(in srgb, var(--accent) 72%, var(--foreground));
+  border-color: transparent;
+  background: var(--background-soft);
+  color: var(--foreground);
   font-weight: 500;
 }
 .chip-category:hover {
-  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
-  color: color-mix(in srgb, var(--accent) 55%, var(--bright));
+  border-color: transparent;
+  background: var(--line);
+  color: var(--bright);
 }
 
 /* ---------- heading anchors ---------- */
@@ -780,9 +774,9 @@ html[data-reading-focus="on"] .prose-blog > * {
 .hl-btn:hover {
   color: var(--bright);
 }
-/* 브라우저 네이티브 텍스트 프래그먼트 하이라이트 톤 */
+/* 브라우저 네이티브 텍스트 프래그먼트 하이라이트 톤 — 형광펜보다 옅은 워시 */
 ::target-text {
-  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
   color: var(--bright);
 }
 
@@ -1046,6 +1040,11 @@ html[data-reading-focus="on"] .prose-blog > * {
 }
 ::view-transition-group(wordmark) {
   animation-duration: 0.35s;
+  animation-timing-function: var(--ease-out);
+}
+/* 글 제목 모핑(목록↔상세, 필터 전환) 공통 타이밍 */
+::view-transition-group(.vt-morph) {
+  animation-duration: 0.32s;
   animation-timing-function: var(--ease-out);
 }
 
