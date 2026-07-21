@@ -519,41 +519,6 @@ body::before {
   transform: translateX(3px);
 }
 
-/* ---------- quiet input ---------- */
-/* 좋아요 파티클 — 버튼 중심에서 퍼지는 작은 하트 점 */
-.like-burst {
-  position: absolute;
-  inset: 0;
-  display: block;
-  pointer-events: none;
-}
-.like-burst span {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 5px;
-  height: 5px;
-  border-radius: 999px;
-  background: currentColor;
-  opacity: 0;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .like-burst span {
-    animation: like-pop 0.55s var(--ease-out) forwards;
-  }
-}
-@keyframes like-pop {
-  0% {
-    opacity: 0.9;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy)))
-      scale(0.3);
-  }
-}
-
 /* 본문 외부 링크 — 새 탭으로 나간다는 표시 */
 .prose-blog .external-link::after {
   content: "↗";

@@ -72,3 +72,51 @@ create policy "anyone can write comments" on comments for insert
     char_length(author) between 1 and 40
     and char_length(body) between 1 and 1000
   );
+
+-- 이모지 리액션: 좋아요를 멀티 이모지로 확장 (세션·이모지별 토글)
+create table if not exists post_reactions (
+  slug text not null,
+  session_id uuid not null,
+  emoji text not null,
+  created_at timestamptz not null default now(),
+  primary key (slug, session_id, emoji)
+);
+alter table post_reactions enable row level security;
+
+create or replace function reaction_state(post_slug text, sid uuid)
+returns table (emoji text, count bigint, reacted boolean)
+language sql
+security definer
+as $$
+  select emoji,
+         count(*)::bigint as count,
+         bool_or(session_id = sid) as reacted
+  from post_reactions
+  where slug = post_slug
+  group by emoji;
+$$;
+
+create or replace function toggle_reaction(post_slug text, sid uuid, e text)
+returns table (emoji text, count bigint, reacted boolean)
+language plpgsql
+security definer
+as $$
+begin
+  if exists (
+    select 1 from post_reactions r
+    where r.slug = post_slug and r.session_id = sid and r.emoji = e
+  ) then
+    delete from post_reactions r
+    where r.slug = post_slug and r.session_id = sid and r.emoji = e;
+  else
+    insert into post_reactions (slug, session_id, emoji)
+    values (post_slug, sid, e);
+  end if;
+
+  return query
+    select r.emoji, count(*)::bigint, bool_or(r.session_id = sid)
+    from post_reactions r
+    where r.slug = post_slug
+    group by r.emoji;
+end;
+$$;
