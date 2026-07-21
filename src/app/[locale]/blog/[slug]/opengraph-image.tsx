@@ -44,7 +44,7 @@ export default async function Image({ params }: ImageProps) {
     "Blog";
 
   return new ImageResponse(
-    <OgFrame accent={accent}>
+    <OgFrame>
       <OgBrand />
       <OgBlock
         accent={accent}

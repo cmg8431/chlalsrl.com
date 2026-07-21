@@ -2,34 +2,24 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 /**
- * OG 이미지 디자인 시스템 v5.
- * 상단 좌측 브랜드 로우, 하단 좌측에 아이브로우(카테고리) → 큰 제목 → 회색 설명.
- * 배지·메타 없이 플레인 텍스트만. 배경은 웜 블랙 + 아주 옅은 글로우.
+ * OG 이미지 디자인 시스템 v6.
+ * 상세: 상단 브랜드 로우, 하단에 아이브로우 → 큰 제목 → 회색 설명 2줄.
+ * 공용(홈·목록·태그): 브랜드 로우 + 문장 하나. 이름 대신 문장이 말한다.
  * satori 제약: 다자녀 요소는 display:flex 필수.
  */
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
-export const OG_COLORS = {
-  bright: "#FAF6EF",
-  muted: "#9C948A",
-  faint: "#7A7264",
-};
-
 export interface OgAccent {
   main: string;
-  glow: string;
 }
 
-export const OG_ACCENT_DEFAULT: OgAccent = {
-  main: "#DE9A72",
-  glow: "rgba(227, 139, 99, 0.14)",
-};
+export const OG_ACCENT_DEFAULT: OgAccent = { main: "#D9A075" };
 
 export const OG_ACCENTS: Record<string, OgAccent> = {
   dev: OG_ACCENT_DEFAULT,
-  life: { main: "#A4C2AC", glow: "rgba(155, 188, 164, 0.13)" },
-  stock: { main: "#DDBA75", glow: "rgba(217, 178, 102, 0.12)" },
+  life: { main: "#A8C2AF" },
+  stock: { main: "#D9BA7E" },
 };
 
 export function ogAccent(key: string): OgAccent {
@@ -55,19 +45,13 @@ export async function loadOgFonts() {
 
 /** 제목 길이에 따라 폰트 크기를 줄여 2줄 안에 안착시킨다 */
 export function titleSize(title: string): number {
-  if (title.length <= 14) return 92;
-  if (title.length <= 24) return 76;
-  if (title.length <= 38) return 62;
-  return 52;
+  if (title.length <= 14) return 96;
+  if (title.length <= 24) return 80;
+  if (title.length <= 38) return 64;
+  return 54;
 }
 
-export function OgFrame({
-  accent,
-  children,
-}: {
-  accent: OgAccent;
-  children: React.ReactNode;
-}) {
+export function OgFrame({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -75,48 +59,27 @@ export function OgFrame({
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        background: "linear-gradient(135deg, #16130F 0%, #0D0C0A 60%)",
+        background:
+          "linear-gradient(120deg, #1A1712 0%, #12100D 45%, #0C0B0A 100%)",
         fontFamily: "Pretendard",
         position: "relative",
         overflow: "hidden",
+        padding: "88px 110px 84px",
       }}
     >
-      {/* 우하단으로 아주 옅게 스미는 웜 글로우 */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: -320,
-          right: -240,
-          width: 900,
-          height: 900,
-          display: "flex",
-          borderRadius: 900,
-          background: `radial-gradient(circle, ${accent.glow} 0%, rgba(13, 12, 10, 0) 72%)`,
-        }}
-      />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-          padding: "64px 84px 68px",
-          position: "relative",
-        }}
-      >
-        {children}
-      </div>
+      {children}
     </div>
   );
 }
 
-/** 상단 브랜드 로우 — 두 눈 마크 + 이름 */
-export function OgBrand({ label = "최민기" }: { label?: string }) {
-  const eye = 30;
+/** 상단 브랜드 로우 — 두 눈 마크 + 도메인 */
+export function OgBrand() {
+  const eye = 34;
   const pupil = eye * 0.477;
   const pupilOffset = eye * 0.403;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-      <div style={{ display: "flex", gap: 6 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+      <div style={{ display: "flex", gap: 7 }}>
         {[0, 1].map((i) => (
           <div
             key={i}
@@ -126,7 +89,7 @@ export function OgBrand({ label = "최민기" }: { label?: string }) {
               display: "flex",
               position: "relative",
               borderRadius: eye,
-              background: "rgba(250, 246, 239, 0.92)",
+              background: "rgba(250, 246, 239, 0.94)",
             }}
           >
             <div
@@ -137,7 +100,7 @@ export function OgBrand({ label = "최민기" }: { label?: string }) {
                 width: pupil,
                 height: pupil,
                 borderRadius: pupil,
-                backgroundColor: "#171310",
+                backgroundColor: "#161310",
               }}
             />
           </div>
@@ -145,28 +108,28 @@ export function OgBrand({ label = "최민기" }: { label?: string }) {
       </div>
       <span
         style={{
-          fontSize: 30,
+          fontSize: 34,
           fontWeight: 600,
-          color: OG_COLORS.bright,
+          color: "#F5F1E9",
           letterSpacing: "-0.01em",
         }}
       >
-        {label}
+        chlalsrl.com
       </span>
     </div>
   );
 }
 
-/** 하단 블록 — 아이브로우 → 제목 → 설명 */
+/** 하단 블록 — 아이브로우(선택) → 제목 → 설명(선택) */
 export function OgBlock({
-  accent,
+  accent = OG_ACCENT_DEFAULT,
   eyebrow,
   title,
   size,
   description,
 }: {
-  accent: OgAccent;
-  eyebrow: string;
+  accent?: OgAccent;
+  eyebrow?: string;
   title: string;
   size: number;
   description?: string;
@@ -177,29 +140,31 @@ export function OgBlock({
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
-        gap: 22,
         marginTop: "auto",
       }}
     >
-      <span
-        style={{
-          fontSize: 28,
-          fontWeight: 600,
-          color: accent.main,
-        }}
-      >
-        {eyebrow}
-      </span>
+      {eyebrow && (
+        <span
+          style={{
+            fontSize: 31,
+            fontWeight: 400,
+            color: accent.main,
+            marginBottom: 18,
+          }}
+        >
+          {eyebrow}
+        </span>
+      )}
       <div
         style={{
           display: "flex",
           fontSize: size,
           fontWeight: 800,
-          lineHeight: 1.18,
-          letterSpacing: "-0.03em",
+          lineHeight: 1.14,
+          letterSpacing: "-0.025em",
           wordBreak: "keep-all",
-          maxWidth: 1000,
-          color: "#F5F2EC",
+          maxWidth: 980,
+          color: "#F7F4EE",
         }}
       >
         {title}
@@ -207,18 +172,30 @@ export function OgBlock({
       {description && (
         <span
           style={{
-            fontSize: 30,
-            lineHeight: 1.5,
-            color: OG_COLORS.muted,
-            maxWidth: 940,
+            fontSize: 32,
+            fontWeight: 400,
+            lineHeight: 1.62,
+            color: "#A39C90",
+            maxWidth: 900,
             wordBreak: "keep-all",
+            marginTop: 26,
           }}
         >
-          {description.length > 70
-            ? `${description.slice(0, 70)}…`
+          {description.length > 68
+            ? `${description.slice(0, 68)}…`
             : description}
         </span>
       )}
     </div>
+  );
+}
+
+/** 공용 카드 — 홈·목록·태그처럼 짧은 텍스트 페이지가 함께 쓴다 */
+export function OgSiteCard({ sentence }: { sentence: string }) {
+  return (
+    <OgFrame>
+      <OgBrand />
+      <OgBlock title={sentence} size={64} />
+    </OgFrame>
   );
 }

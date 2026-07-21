@@ -1,14 +1,6 @@
 import { ImageResponse } from "next/og";
 
-import {
-  loadOgFonts,
-  OG_ACCENT_DEFAULT,
-  OG_SIZE,
-  OgBlock,
-  OgBrand,
-  OgFrame,
-} from "@/app/_og/card";
-import { getAllContentsForLocale } from "@/features/blog";
+import { loadOgFonts, OG_SIZE, OgSiteCard } from "@/app/_og/card";
 
 import type { LocaleType } from "@/shared";
 
@@ -19,34 +11,19 @@ interface ImageProps {
   params: Promise<{ locale: LocaleType; tag: string }>;
 }
 
-const COUNT_LABEL: Record<string, (n: number) => string> = {
-  ko: (n) => `${n}개의 글`,
-  en: (n) => `${n} posts`,
-  ja: (n) => `${n}件の記事`,
+const SENTENCE_EN = "Notes on building and living.";
+const SENTENCE: Record<string, string> = {
+  ko: "만들고 살아가며 남기는 기록.",
+  en: SENTENCE_EN,
+  ja: "作ること、暮らすことの記録。",
 };
 
 export default async function Image({ params }: ImageProps) {
-  const { locale, tag: rawTag } = await params;
-  const tag = decodeURIComponent(rawTag);
+  const { locale } = await params;
   const fonts = await loadOgFonts();
 
-  const count = getAllContentsForLocale(locale).filter(
-    (content) =>
-      !content.frontmatter.draft && content.frontmatter.tags?.includes(tag),
-  ).length;
-  const countLabel = (COUNT_LABEL[locale] ?? COUNT_LABEL.en!)(count);
-
   return new ImageResponse(
-    <OgFrame accent={OG_ACCENT_DEFAULT}>
-      <OgBrand />
-      <OgBlock
-        accent={OG_ACCENT_DEFAULT}
-        eyebrow="TAG"
-        title={`#${tag}`}
-        size={88}
-        description={countLabel}
-      />
-    </OgFrame>,
+    <OgSiteCard sentence={SENTENCE[locale] ?? SENTENCE_EN} />,
     { ...size, fonts },
   );
 }
