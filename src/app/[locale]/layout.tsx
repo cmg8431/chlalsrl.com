@@ -100,6 +100,12 @@ const BASE_METADATA: Metadata = {
   alternates: {
     types: { "application/rss+xml": "/rss.xml" },
   },
+  verification: {
+    google: "lmVS8vd_iMh0UxVRQ7CYEwmi1p6n1ZNwXMC2s5MzgjU",
+    other: {
+      "naver-site-verification": "9bac99fe9cc064b811849588196f0b8854c10abc",
+    },
+  },
 };
 
 export function generateStaticParams() {
