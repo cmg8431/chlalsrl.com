@@ -14,7 +14,6 @@
       "description": "어떤 문제를, 왜, 어떻게 풀어왔는지",
       "badge": "작업 중"
     }
-
   },
   "blog": {
     "title": "글",
@@ -55,7 +54,8 @@
     "theme-dark": "다크 모드",
     "theme-light": "라이트 모드",
     "konami": "🎮 코나미 커맨드 발견! 당신은 진짜다",
-    "theme-system": "시스템 테마를 따라요"
+    "theme-system": "시스템 테마를 따라요",
+    "copied": "복사했어요"
   },
   "resume": {
     "print": "인쇄",

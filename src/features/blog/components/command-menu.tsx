@@ -3,8 +3,11 @@
 import { useTransitionRouter } from "next-view-transitions";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { islandStore, useT } from "@/shared";
+
 import { formatYearMonth } from "../libs/format";
 
+import { isCommandInput, runCommand, type CommandContext } from "./commands";
 import { RECENT_POSTS_KEY } from "./recent-tracker";
 
 export interface CommandItem {
@@ -49,19 +52,85 @@ export function CommandMenu({
   recentLabel,
 }: CommandMenuProps) {
   const router = useTransitionRouter();
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
   const [recent, setRecent] = useState<CommandItem[]>([]);
-  // 본문 검색 인덱스 — 첫 오픈 때 한 번만 받아온다
   const [bodyIndex, setBodyIndex] = useState<Record<string, string> | null>(
     null
   );
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const close = useCallback(() => {
+    setOpen(false);
+    setQuery("");
+    setCursor(0);
+  }, []);
+
+  const locale = useMemo(
+    () =>
+      typeof window !== "undefined"
+        ? window.location.pathname.split("/")[1] || "ko"
+        : "ko",
+    []
+  );
+
+  const commandCtx = useMemo<CommandContext>(
+    () => ({
+      locale,
+      posts: items
+        .filter((item) => item.href.includes("/blog/"))
+        .map((item) => ({ title: item.title, href: item.href })),
+      go: (href) => {
+        close();
+        router.push(href);
+      },
+      setTheme: (choice) => {
+        const root = document.documentElement;
+        try {
+          if (choice === "system") {
+            delete root.dataset.theme;
+            localStorage.removeItem("theme");
+          } else {
+            root.dataset.theme = choice;
+            localStorage.setItem("theme", choice);
+          }
+        } catch {
+          /* private mode */
+        }
+        const dark =
+          choice === "dark" ||
+          (choice === "system" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
+        islandStore.notify(t(`island.theme-${choice}`), {
+          icon: dark ? "moon" : "sun",
+          duration: 1000,
+        });
+      },
+      copy: async (text) => {
+        try {
+          await navigator.clipboard.writeText(text);
+          islandStore.notify(t("island.copied"), {
+            icon: "check",
+            duration: 1200,
+          });
+        } catch {
+          /* clipboard unavailable */
+        }
+      },
+    }),
+    [items, locale, router, close, t]
+  );
+
+  const isCommand = isCommandInput(query);
+  const command = useMemo(
+    () => (isCommand ? runCommand(query, commandCtx) : null),
+    [isCommand, query, commandCtx]
+  );
+
   useEffect(() => {
     if (!open || bodyIndex !== null) return;
-    const locale = window.location.pathname.split("/")[1] || "ko";
     fetch(`/${locale}/search-index.json`)
       .then((res) => res.json())
       .then((rows: { href: string; body: string }[]) => {
@@ -70,9 +139,8 @@ export function CommandMenu({
         );
       })
       .catch(() => setBodyIndex({}));
-  }, [open, bodyIndex]);
+  }, [open, bodyIndex, locale]);
 
-  // 열릴 때마다 최근 본 글을 읽어온다
   useEffect(() => {
     if (!open) return;
     try {
@@ -85,9 +153,9 @@ export function CommandMenu({
   }, [open]);
 
   const filtered = useMemo(() => {
+    if (isCommand) return [];
     const q = query.trim().toLowerCase();
     if (!q) {
-      // 빈 쿼리: 최근 본 글을 맨 위에, 나머지는 중복 제거 후 이어 붙인다
       const recentItems = recent.map((item) => ({
         ...item,
         meta: recentLabel,
@@ -104,7 +172,6 @@ export function CommandMenu({
         item.description?.toLowerCase().includes(q)
     );
 
-    // 제목·설명에 없으면 본문에서 찾고, 매칭 주변을 스니펫으로 보여준다
     if (!bodyIndex) return direct;
     const directHrefs = new Set(direct.map((item) => item.href));
     const bodyMatches: CommandItem[] = [];
@@ -124,13 +191,7 @@ export function CommandMenu({
       });
     }
     return [...direct, ...bodyMatches];
-  }, [items, query, recent, recentLabel, bodyIndex]);
-
-  const close = useCallback(() => {
-    setOpen(false);
-    setQuery("");
-    setCursor(0);
-  }, []);
+  }, [isCommand, items, query, recent, recentLabel, bodyIndex]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -167,7 +228,15 @@ export function CommandMenu({
   if (!open) return null;
 
   const onInputKey = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") close();
+    if (e.key === "Escape") return close();
+    if (isCommand) {
+      if (e.key === "Enter" && command?.run) {
+        e.preventDefault();
+        command.run();
+        if (command.navigates) close();
+      }
+      return;
+    }
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setCursor((c) => Math.min(c + 1, filtered.length - 1));
@@ -185,54 +254,77 @@ export function CommandMenu({
   return (
     <div className="cmd-overlay" onClick={close} role="dialog" aria-modal>
       <div className="cmd-panel" onClick={(e) => e.stopPropagation()}>
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={onInputKey}
-          placeholder={placeholder}
-          className="cmd-input"
-          aria-label={placeholder}
-        />
-        <ul className="cmd-list">
-          {filtered.length === 0 ? (
-            <li className="px-4 py-6 text-center text-sm text-faint">
-              {emptyMessage}
-            </li>
-          ) : (
-            filtered.map((item, i) => (
-              <li key={item.href}>
-                <button
-                  onClick={() => {
-                    close();
-                    router.push(item.href);
-                  }}
-                  onMouseEnter={() => setCursor(i)}
-                  className={`cmd-item ${i === cursor ? "is-active" : ""}`}
-                >
-                  <span className="flex min-w-0 flex-col items-start gap-0.5">
-                    <span className="max-w-full truncate">
-                      <Highlight text={item.title} query={query} />
-                    </span>
-                    {item.snippet && (
-                      <span className="max-w-full truncate text-xs text-faint">
-                        <Highlight text={item.snippet} query={query} />
-                      </span>
-                    )}
-                  </span>
-                  <span className="shrink-0 font-mono text-xs text-faint">
-                    {item.meta ?? (item.date ? formatYearMonth(item.date) : "")}
-                  </span>
-                </button>
-              </li>
-            ))
+        <div className="flex items-center">
+          {isCommand && (
+            <span aria-hidden className="cmd-prompt">
+              ›
+            </span>
           )}
-        </ul>
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={onInputKey}
+            placeholder={placeholder}
+            className={`cmd-input ${isCommand ? "font-mono" : ""}`}
+            aria-label={placeholder}
+          />
+        </div>
+
+        {isCommand ? (
+          <div className="cmd-terminal">
+            {command?.lines.map((line, i) => (
+              <div key={i} className="cmd-out">
+                {line}
+              </div>
+            ))}
+            {command?.runLabel && (
+              <div className="cmd-run">↵ {command.runLabel}</div>
+            )}
+          </div>
+        ) : (
+          <ul className="cmd-list">
+            {filtered.length === 0 ? (
+              <li className="px-4 py-6 text-center text-sm text-faint">
+                {emptyMessage}
+              </li>
+            ) : (
+              filtered.map((item, i) => (
+                <li key={item.href}>
+                  <button
+                    onClick={() => {
+                      close();
+                      router.push(item.href);
+                    }}
+                    onMouseEnter={() => setCursor(i)}
+                    className={`cmd-item ${i === cursor ? "is-active" : ""}`}
+                  >
+                    <span className="flex min-w-0 flex-col items-start gap-0.5">
+                      <span className="max-w-full truncate">
+                        <Highlight text={item.title} query={query} />
+                      </span>
+                      {item.snippet && (
+                        <span className="max-w-full truncate text-xs text-faint">
+                          <Highlight text={item.snippet} query={query} />
+                        </span>
+                      )}
+                    </span>
+                    <span className="shrink-0 font-mono text-xs text-faint">
+                      {item.meta ?? (item.date ? formatYearMonth(item.date) : "")}
+                    </span>
+                  </button>
+                </li>
+              ))
+            )}
+          </ul>
+        )}
+
         <div className="cmd-hint">
           <span>↑↓</span>
           <span>↵</span>
           <span>esc</span>
+          <span className="ml-auto font-mono text-faint">help</span>
         </div>
       </div>
     </div>

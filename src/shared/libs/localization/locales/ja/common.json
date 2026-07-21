@@ -14,7 +14,6 @@
       "description": "どんな問題を、なぜ、どう解いてきたか",
       "badge": "作業中"
     }
-
   },
   "categories": {
     "all": "すべて",
@@ -61,7 +60,8 @@
     "theme-dark": "ダークモード",
     "theme-light": "ライトモード",
     "konami": "🎮 コナミコマンド発見!あなたは本物だ",
-    "theme-system": "システムテーマに従います"
+    "theme-system": "システムテーマに従います",
+    "copied": "コピーしました"
   },
   "resume": {
     "print": "印刷",

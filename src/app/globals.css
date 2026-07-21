@@ -459,6 +459,32 @@ body::before {
   color: var(--faint);
 }
 
+/* ---------- command terminal ---------- */
+.cmd-prompt {
+  padding-left: 1.1rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  color: var(--accent);
+  user-select: none;
+}
+.cmd-terminal {
+  max-height: 40vh;
+  overflow-y: auto;
+  padding: 0.9rem 1.1rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+.cmd-out {
+  color: var(--muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.cmd-run {
+  margin-top: 0.6rem;
+  color: var(--faint);
+  font-size: 0.75rem;
+}
+
 /* ---------- quiet links ---------- */
 .link-quiet {
   text-decoration: underline;
