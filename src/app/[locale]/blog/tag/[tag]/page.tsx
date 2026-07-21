@@ -51,22 +51,33 @@ const TAG_DESCRIPTION: Record<LocaleType, (tag: string) => string> = {
 export async function generateMetadata({ params }: TagPageProps) {
   const { locale, tag: rawTag } = await params;
   const tag = decodeURIComponent(rawTag);
-  const url = `${SITE_URL}/${locale}/blog/tag/${encodeURIComponent(tag)}`;
+  const tagPath = `/blog/tag/${encodeURIComponent(tag)}`;
+  const url = `${SITE_URL}/${locale}${tagPath}`;
+
+  // 태그는 언어마다 달라서 hreflang은 그 태그로 글이 실제 존재하는 언어끼리만 묶는다
+  const localesWithTag = SUPPORTED_LOCALES.filter((loc) =>
+    getAllContentsForLocale(loc).some(
+      (content) =>
+        !content.frontmatter.draft && content.frontmatter.tags?.includes(tag),
+    ),
+  );
+
+  const languages =
+    localesWithTag.length > 1
+      ? {
+          ...Object.fromEntries(
+            localesWithTag.map((loc) => [loc, `${SITE_URL}/${loc}${tagPath}`]),
+          ),
+          "x-default": `${SITE_URL}/${
+            localesWithTag.includes("ko") ? "ko" : locale
+          }${tagPath}`,
+        }
+      : undefined;
+
   return {
     title: `#${tag}`,
     description: TAG_DESCRIPTION[locale](tag),
-    alternates: {
-      canonical: url,
-      languages: {
-        ...Object.fromEntries(
-          SUPPORTED_LOCALES.map((loc) => [
-            loc,
-            `${SITE_URL}/${loc}/blog/tag/${encodeURIComponent(tag)}`,
-          ]),
-        ),
-        "x-default": `${SITE_URL}/ko/blog/tag/${encodeURIComponent(tag)}`,
-      },
-    },
+    alternates: { canonical: url, ...(languages ? { languages } : {}) },
     openGraph: { url, title: `#${tag}` },
   };
 }
