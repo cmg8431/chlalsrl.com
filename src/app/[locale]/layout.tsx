@@ -107,7 +107,7 @@ export function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
 }
 
-const themeInit = `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}})()`;
+const themeInit = `(function(){try{var d=document.documentElement,t=localStorage.getItem("theme");if(t==="dark"||t==="light")d.dataset.theme=t;var s=localStorage.getItem("reading-size");if(s==="sm"||s==="lg")d.dataset.readingSize=s;if(localStorage.getItem("reading-focus")==="on")d.dataset.readingFocus="on"}catch(e){}})()`;
 
 export default async function RootLayout({
   children,

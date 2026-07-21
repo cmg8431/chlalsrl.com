@@ -2,6 +2,7 @@
 
 import { Link } from "next-view-transitions";
 import { useEffect, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 
 import { formatDateDot, formatYearMonth } from "../libs/format";
 import { fetchCommentCounts, guestbookEnabled } from "../libs/guestbook";
@@ -174,6 +175,18 @@ export function SearchablePostList({
 
   const showFilter = categories.length > 1;
 
+  // 필터 전환 시 남는 글 제목이 새 위치로 모핑되도록 View Transition으로 감싼다
+  const changeCategory = (next: string | null) => {
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => void) => void;
+    };
+    if (doc.startViewTransition) {
+      doc.startViewTransition(() => flushSync(() => setCategory(next)));
+    } else {
+      setCategory(next);
+    }
+  };
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return posts.filter((post) => {
@@ -214,7 +227,7 @@ export function SearchablePostList({
               return (
                 <button
                   key={key ?? "__all"}
-                  onClick={() => setCategory(key)}
+                  onClick={() => changeCategory(key)}
                   aria-pressed={active}
                   className={`flex h-8 items-center rounded-full px-3.5 text-[13px] transition-colors ${
                     active
@@ -260,7 +273,7 @@ export function SearchablePostList({
             <button
               onClick={() => {
                 setQuery("");
-                setCategory(null);
+                changeCategory(null);
               }}
               className="rounded-full border border-line px-3.5 py-1.5 text-xs text-muted transition-colors hover:border-faint hover:text-bright"
             >

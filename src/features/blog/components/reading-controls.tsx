@@ -30,21 +30,20 @@ export function ReadingControls() {
     setFocus(stored<string>("reading-focus", "off") === "on");
   }, []);
 
-  // 설정을 <html> 데이터 속성으로 적용 + 저장
+  // 전역 설정 — <html> 데이터 속성으로 적용하고 저장, 페이지를 떠나도 유지
+  // (첫 페인트 전 적용은 layout의 인라인 스크립트가 담당)
   useEffect(() => {
     const root = document.documentElement;
-    root.dataset.readingSize = size;
-    root.dataset.readingFocus = focus ? "on" : "off";
+    if (size === "md") delete root.dataset.readingSize;
+    else root.dataset.readingSize = size;
+    if (focus) root.dataset.readingFocus = "on";
+    else delete root.dataset.readingFocus;
     try {
       localStorage.setItem("reading-size", size);
       localStorage.setItem("reading-focus", focus ? "on" : "off");
     } catch {
       /* private mode */
     }
-    return () => {
-      delete root.dataset.readingSize;
-      delete root.dataset.readingFocus;
-    };
   }, [size, focus]);
 
   // 집중 모드: 뷰포트 중앙 밴드에 걸치는 본문 블록들을 밝힌다
@@ -135,8 +134,7 @@ export function ReadingControls() {
         aria-expanded={open}
         className={`reading-trigger ${open ? "is-open" : ""}`}
       >
-        <span style={{ fontSize: 13 }}>A</span>
-        <span style={{ fontSize: 19 }}>A</span>
+        Aa
       </button>
     </div>
   );
