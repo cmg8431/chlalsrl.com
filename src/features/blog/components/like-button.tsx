@@ -59,50 +59,46 @@ export function LikeButton({ slug }: { slug: string }) {
   };
 
   return (
-    <div className="mt-14 flex justify-center">
-      <button
-        onClick={toggle}
-        aria-pressed={liked}
-        aria-label="Like"
-        className={`relative flex items-center gap-2 rounded-full px-4 py-2 text-sm transition-all duration-300 hover:-translate-y-0.5 active:scale-95 ${
-          liked
-            ? "bg-line text-accent"
-            : "bg-soft text-muted hover:text-bright"
-        }`}
+    <button
+      onClick={toggle}
+      aria-pressed={liked}
+      aria-label="Like"
+      className={`relative flex items-center gap-2 rounded-full px-3 py-2 text-sm transition-all duration-300 active:scale-95 ${
+        liked ? "text-accent" : "text-faint hover:text-bright"
+      }`}
+    >
+      {burst > 0 && (
+        <span key={burst} aria-hidden className="like-burst">
+          {BURST_ANGLES.map((angle) => (
+            <span
+              key={angle}
+              style={
+                {
+                  "--dx": `${Math.cos((angle * Math.PI) / 180) * 34}px`,
+                  "--dy": `${Math.sin((angle * Math.PI) / 180) * 34}px`,
+                } as React.CSSProperties
+              }
+            />
+          ))}
+        </span>
+      )}
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill={liked ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth={1.6}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+        className={`transition-transform duration-300 ${liked ? "scale-110" : ""}`}
       >
-        {burst > 0 && (
-          <span key={burst} aria-hidden className="like-burst">
-            {BURST_ANGLES.map((angle) => (
-              <span
-                key={angle}
-                style={
-                  {
-                    "--dx": `${Math.cos((angle * Math.PI) / 180) * 34}px`,
-                    "--dy": `${Math.sin((angle * Math.PI) / 180) * 34}px`,
-                  } as React.CSSProperties
-                }
-              />
-            ))}
-          </span>
-        )}
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill={liked ? "currentColor" : "none"}
-          stroke="currentColor"
-          strokeWidth={1.6}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden
-          className={`transition-transform duration-300 ${liked ? "scale-110" : ""}`}
-        >
-          <path d="M12 20.5s-7.5-4.7-9.5-9A5.3 5.3 0 0 1 12 6.6a5.3 5.3 0 0 1 9.5 4.9c-2 4.3-9.5 9-9.5 9Z" />
-        </svg>
-        {state !== null && (
-          <span className="font-mono text-xs tabular-nums">{state.likes}</span>
-        )}
-      </button>
-    </div>
+        <path d="M12 20.5s-7.5-4.7-9.5-9A5.3 5.3 0 0 1 12 6.6a5.3 5.3 0 0 1 9.5 4.9c-2 4.3-9.5 9-9.5 9Z" />
+      </svg>
+      {state !== null && (
+        <span className="font-mono text-xs tabular-nums">{state.likes}</span>
+      )}
+    </button>
   );
 }

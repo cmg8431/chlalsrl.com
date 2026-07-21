@@ -303,8 +303,12 @@ export default async function PostPage({ params }: PostPageProps) {
         </Reveal>
 
         <HighlightShare slug={slug} />
-        <LikeButton slug={slug} />
-        <ShareRow title={title} />
+
+        <div className="mt-16 flex flex-wrap items-center justify-center gap-1 border-t border-line pt-8">
+          <LikeButton slug={slug} />
+          <ShareRow title={title} />
+        </div>
+
         <TopHighlight slug={slug} />
 
         {related.length > 0 && (

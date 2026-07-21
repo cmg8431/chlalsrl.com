@@ -31,7 +31,7 @@ export function ShareRow({ title }: { title: string }) {
   };
 
   return (
-    <div className="mt-4 flex justify-center gap-2">
+    <>
       <button onClick={shareX} className={BUTTON_CLASS}>
         <svg
           width="13"
@@ -61,6 +61,6 @@ export function ShareRow({ title }: { title: string }) {
         </svg>
         {t("post.copy-link")}
       </button>
-    </div>
+    </>
   );
 }
