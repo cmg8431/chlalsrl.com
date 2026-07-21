@@ -253,25 +253,23 @@ export default async function PostPage({ params }: PostPageProps) {
               <CopyLinkButton label={t("post.copy-link")} />
             </div>
             {tags && tags.length > 0 && (
-              <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px]">
+              <div className="mt-5 flex flex-wrap items-center gap-1.5 text-[12.5px]">
                 <Link
                   href={`/${locale}/blog?c=${content.category}`}
-                  className="flex items-center gap-1.5 text-muted transition-colors hover:text-bright"
+                  className="chip chip-category"
                 >
-                  <span
-                    aria-hidden
-                    className="h-1.5 w-1.5 rounded-full"
-                    style={{ backgroundColor: "var(--faint)" }}
-                  />
                   {t(`categories.${content.category}`)}
                 </Link>
                 {tags.map((tag) => (
                   <Link
                     key={tag}
                     href={`/${locale}/blog/tag/${encodeURIComponent(tag)}`}
-                    className="text-faint transition-colors hover:text-bright"
+                    className="chip"
                   >
-                    #{tag}
+                    <span aria-hidden className="chip-hash">
+                      #
+                    </span>
+                    {tag}
                   </Link>
                 ))}
               </div>

@@ -528,6 +528,51 @@ html[data-reading-focus="on"] .prose-blog > * {
   transform: translateX(0.9rem);
 }
 
+/* ---------- meta chips: 카테고리·태그 배지 ---------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  padding: 0.24rem 0.72rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--background-soft) 55%, transparent);
+  color: var(--muted);
+  line-height: 1.4;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s var(--ease-spring);
+}
+.chip:hover {
+  border-color: var(--faint);
+  background: var(--background-soft);
+  color: var(--bright);
+  transform: translateY(-1px);
+}
+.chip:active {
+  transform: translateY(0);
+}
+.chip-hash {
+  color: var(--faint);
+  transition: color 0.2s ease;
+}
+.chip:hover .chip-hash {
+  color: var(--accent);
+}
+.chip-category {
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  color: color-mix(in srgb, var(--accent) 72%, var(--foreground));
+  font-weight: 500;
+}
+.chip-category:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: color-mix(in srgb, var(--accent) 55%, var(--bright));
+}
+
 /* ---------- heading anchors ---------- */
 .heading-anchor {
   color: inherit;
