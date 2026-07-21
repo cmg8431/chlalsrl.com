@@ -554,6 +554,43 @@ body::before {
   }
 }
 
+/* ---------- 문장 하이라이트 공유 바 ---------- */
+.hl-bar {
+  position: fixed;
+  z-index: 40;
+  transform: translate(-50%, -100%) translateY(-8px);
+  animation: hl-in 0.18s var(--ease-out);
+}
+@keyframes hl-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -100%) translateY(-2px);
+  }
+}
+.hl-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: var(--island-bg);
+  border: 1px solid var(--island-border);
+  box-shadow: var(--island-shadow);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--foreground);
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+.hl-btn:hover {
+  color: var(--bright);
+}
+/* 브라우저 네이티브 텍스트 프래그먼트 하이라이트 톤 */
+::target-text {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  color: var(--bright);
+}
+
 /* 본문 외부 링크 — 새 탭으로 나간다는 표시 */
 .prose-blog .external-link::after {
   content: "↗";

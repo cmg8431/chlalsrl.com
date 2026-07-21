@@ -8,7 +8,9 @@ import {
   CodeBlock,
   Comments,
   CopyLinkButton,
+  HighlightShare,
   LikeButton,
+  TopHighlight,
   extractToc,
   findContentBySlug,
   getAllContentsForLocale,
@@ -302,8 +304,10 @@ export default async function PostPage({ params }: PostPageProps) {
           </div>
         </Reveal>
 
+        <HighlightShare slug={slug} />
         <LikeButton slug={slug} />
         <ShareRow title={title} />
+        <TopHighlight slug={slug} />
 
         {related.length > 0 && (
           <section className="mt-20">

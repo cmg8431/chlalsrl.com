@@ -72,3 +72,20 @@ create policy "anyone can write comments" on comments for insert
     char_length(author) between 1 and 40
     and char_length(body) between 1 and 1000
   );
+
+-- 문장 하이라이트: 독자가 공유한 문장을 모아 인기 문장을 집계
+create table if not exists highlights (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null,
+  text text not null,
+  created_at timestamptz not null default now()
+);
+create index if not exists highlights_slug_idx on highlights (slug);
+alter table highlights enable row level security;
+
+drop policy if exists "anyone can read highlights" on highlights;
+create policy "anyone can read highlights" on highlights for select using (true);
+
+drop policy if exists "anyone can write highlights" on highlights;
+create policy "anyone can write highlights" on highlights for insert
+  with check (char_length(text) between 8 and 300);

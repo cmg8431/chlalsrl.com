@@ -10,6 +10,8 @@ export * from "./toc";
 export * from "./command-menu";
 export * from "./commands";
 export * from "./share-row";
+export * from "./highlight-share";
+export * from "./top-highlight";
 export * from "./mobile-toc";
 export * from "./mdx-link";
 export * from "./post-footer-nav";

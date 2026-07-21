@@ -35,7 +35,11 @@
     "share-x": "X에 공유",
     "top": "맨 위로",
     "minutes": "{{minutes}}분 읽기",
-    "untranslated": "이 글은 아직 한국어 번역이 없어 원문으로 보여드려요."
+    "untranslated": "이 글은 아직 한국어 번역이 없어 원문으로 보여드려요.",
+    "highlight-share": "공유",
+    "highlight-copied": "문장 링크를 복사했어요",
+    "top-highlight": "독자들이 밑줄 그은 문장",
+    "highlight-count": "{{count}}명이 공유했어요"
   },
   "search": {
     "placeholder": "글 검색…",

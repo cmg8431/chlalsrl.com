@@ -80,6 +80,60 @@ export async function toggleLike(slug: string): Promise<LikeState> {
   return rows[0] ?? { likes: 0, liked: false };
 }
 
+export async function addHighlight(slug: string, text: string): Promise<void> {
+  const clean = text.trim().replace(/\s+/g, " ");
+  if (clean.length < 8 || clean.length > 300) return;
+  if (DEV_PREVIEW) {
+    const key = `dev-hl:${slug}`;
+    const rows = JSON.parse(localStorage.getItem(key) ?? "[]") as string[];
+    rows.push(clean);
+    localStorage.setItem(key, JSON.stringify(rows));
+    return;
+  }
+  try {
+    await rest(`/highlights`, {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({ slug, text: clean }),
+    });
+  } catch {
+    /* 테이블 미생성 등 — 조용히 무시 */
+  }
+}
+
+export interface HighlightSummary {
+  text: string;
+  count: number;
+}
+
+/** 가장 많이 공유된 문장 (2회 이상만) */
+export async function fetchTopHighlight(
+  slug: string
+): Promise<HighlightSummary | null> {
+  let texts: string[] = [];
+  if (DEV_PREVIEW) {
+    texts = JSON.parse(
+      localStorage.getItem(`dev-hl:${slug}`) ?? "[]"
+    ) as string[];
+  } else {
+    try {
+      const res = await rest(
+        `/highlights?slug=eq.${encodeURIComponent(slug)}&select=text`
+      );
+      texts = ((await res.json()) as { text: string }[]).map((r) => r.text);
+    } catch {
+      return null;
+    }
+  }
+  const counts = new Map<string, number>();
+  for (const text of texts) counts.set(text, (counts.get(text) ?? 0) + 1);
+  let top: HighlightSummary | null = null;
+  for (const [text, count] of counts) {
+    if (count >= 2 && (!top || count > top.count)) top = { text, count };
+  }
+  return top;
+}
+
 export interface CommentRow {
   id: string;
   author: string;

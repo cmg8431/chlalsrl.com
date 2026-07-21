@@ -36,7 +36,11 @@
     "share-x": "Share on X",
     "top": "Back to top",
     "minutes": "{{minutes}} min read",
-    "untranslated": "This post hasn't been translated yet — showing the original."
+    "untranslated": "This post hasn't been translated yet — showing the original.",
+    "highlight-share": "Share",
+    "highlight-copied": "Sentence link copied",
+    "top-highlight": "Most highlighted",
+    "highlight-count": "Shared by {{count}}"
   },
   "search": {
     "placeholder": "Search posts…",

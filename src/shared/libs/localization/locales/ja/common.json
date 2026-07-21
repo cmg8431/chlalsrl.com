@@ -41,7 +41,11 @@
     "share-x": "Xでシェア",
     "top": "トップへ",
     "minutes": "{{minutes}}分で読める",
-    "untranslated": "この記事はまだ翻訳されていないため、原文を表示しています。"
+    "untranslated": "この記事はまだ翻訳されていないため、原文を表示しています。",
+    "highlight-share": "共有",
+    "highlight-copied": "文のリンクをコピーしました",
+    "top-highlight": "読者が線を引いた一文",
+    "highlight-count": "{{count}}人が共有"
   },
   "search": {
     "placeholder": "記事を検索…",
