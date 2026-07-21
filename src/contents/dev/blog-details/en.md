@@ -203,21 +203,29 @@ If you ask which of those is product work, I'd say the deleting.
 
 ## Everything else that went in
 
-The short version, since spelling it all out would run long.
+Even after all this, there's more left over.
 
-- **Comment name roll** — An empty name field makes people deliberate and close the tab, so the form opens pre-filled with a random nickname. Press the button and it rolls like a slot machine; avatars are drawn from a hash of the name, so the same name always gets the same face
-- **Focus mode** — Keeps only the paragraphs near the center of the screen bright and dims the rest. Built for me, whose eyes wander in long articles
-- **Two-eyes icon** — From favicon to home screen icon, drawn in code with no image files. The original SVG's proportions live as constants, so every size from 64px to 512px comes from the same code
-- **Dark mode selection** — Dragging text on a dark screen flashes white with the default inverted selection. Softened with a surface that mixes in just 26% of the accent color
-- **Three languages** — Korean, English, Japanese. Posts without a translation fall back to English, then Korean, showing the original
+The comment form never opens with an empty name field.
+A random nickname is filled in from the start, and pressing the button next to it rolls new ones like a slot machine.
+Avatars are drawn from a hash of the name, so the same name always gets the same face.
+My hypothesis is that an empty name field makes people deliberate and close the tab; whether that's right, I'll only know once comments pile up.
 
 ![Pressing the name roll button spins nicknames like a slot machine](/posts/blog-details/nickname-roll.gif)
 
+The reading side got attention too.
+Turn on focus mode and only the paragraphs near the center of the screen stay bright; its first user is me, whose eyes wander to other lines in long articles.
+Dragging text in dark mode flashed white with the default inverted selection, so I pressed it down with a surface that mixes in a hint of the accent color.
+
+The two eyes in the favicon are drawn in code, with no image files.
+The original SVG's proportions live as constants, so everything from the 64px favicon to the 512px home screen icon comes from the same code.
+The site supports Korean, English, and Japanese, and posts without a translation fall back to the original.
+This post has all three.
+
 ## Three days is enough
 
-If you're putting something off, it's worth re-estimating with today's tools.
-I held onto a wrong estimate for three years without knowing it.
+Thinking now about why I put it off for three years, the estimate in my head had stopped in 2023.
+I'd filed the blog rebuild as a months-long job, so I couldn't face it, and because I couldn't face it, I never even opened it.
+The tools had changed and I was still holding the old estimate.
+When I finally opened it, it was three days.
 
-The blog is done, so now it's time to write.
-Conveniently, the comments have a name roll, and selecting a sentence brings up a share button.
-The comment section I built with such care is still empty.
+Everything is built, so now it's time to write.
