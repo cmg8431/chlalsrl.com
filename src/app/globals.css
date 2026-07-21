@@ -848,6 +848,22 @@ html[data-reading-focus="on"] .prose-blog > * {
   border-color: var(--faint);
 }
 
+/* 닉네임 입력 — 박스형 포커스 링 대신 호버·포커스에 밑선만 */
+.nick-input {
+  border: 0;
+  border-bottom: 1px solid transparent;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.nick-input:hover {
+  border-bottom-color: var(--line);
+}
+.nick-input:focus,
+.nick-input:focus-visible {
+  border-bottom-color: var(--faint);
+  outline: none;
+}
+
 .input-quiet {
   width: 100%;
   background: transparent;

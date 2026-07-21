@@ -217,7 +217,7 @@ function CommentForm({
           maxLength={40}
           required
           readOnly={rolling}
-          className="min-w-0 flex-1 appearance-none border-0 bg-transparent text-base font-medium text-bright outline-none placeholder:font-normal placeholder:text-faint sm:text-sm"
+          className="nick-input min-w-0 flex-1 appearance-none bg-transparent text-base font-medium text-bright placeholder:font-normal placeholder:text-faint sm:text-sm"
         />
         <button
           type="button"
