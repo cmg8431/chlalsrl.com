@@ -839,6 +839,37 @@ html[data-reading-focus="on"] .prose-blog > * {
   transform: translateY(0);
 }
 
+/* ---------- skeleton ---------- */
+/* 모서리는 마크업의 rounded-* 유틸리티가 정한다 — 레이어 밖 규칙이 유틸리티를 이기므로 여기선 미지정 */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--line) 70%, transparent);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--background-soft) 80%, var(--bright) 6%),
+    transparent
+  );
+  animation: skeleton-sweep 1.4s ease-in-out infinite;
+}
+@keyframes skeleton-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
+}
+
 /* 댓글 입력 카드 — 내부 구분선 없이 여백으로 구획하고,
    포커스 시 테두리만 은은하게 또렷해진다(중립 톤) */
 .comment-card {

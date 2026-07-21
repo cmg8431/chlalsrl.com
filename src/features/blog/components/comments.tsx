@@ -442,6 +442,25 @@ export function Comments({ slug }: { slug: string }) {
       />
 
       <div className="mt-8">
+        {comments === null && (
+          <div className="space-y-8" aria-hidden>
+            {[0, 1].map((i) => (
+              <div key={i} className="flex gap-3">
+                <span className="skeleton h-8 w-8 shrink-0 rounded-full" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2.5">
+                    <span className="skeleton h-3.5 w-20 rounded-md" />
+                    <span className="skeleton h-3 w-12 rounded-md" />
+                  </div>
+                  <div className="mt-2.5 flex flex-col gap-2">
+                    <span className="skeleton h-3.5 w-full max-w-[26rem] rounded-md" />
+                    <span className="skeleton h-3.5 w-2/3 max-w-[17rem] rounded-md" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         {comments && comments.length === 0 && (
           <p className="text-sm text-faint">{t("comments.empty")}</p>
         )}

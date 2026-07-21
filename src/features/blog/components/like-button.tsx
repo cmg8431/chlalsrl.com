@@ -96,8 +96,10 @@ export function LikeButton({ slug }: { slug: string }) {
       >
         <path d="M12 20.5s-7.5-4.7-9.5-9A5.3 5.3 0 0 1 12 6.6a5.3 5.3 0 0 1 9.5 4.9c-2 4.3-9.5 9-9.5 9Z" />
       </svg>
-      {state !== null && (
+      {state !== null ? (
         <span className="font-mono text-xs tabular-nums">{state.likes}</span>
+      ) : (
+        <span className="skeleton h-3 w-5 rounded" aria-hidden />
       )}
     </button>
   );
