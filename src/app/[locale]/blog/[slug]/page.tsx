@@ -8,31 +8,31 @@ import {
   CodeBlock,
   Comments,
   CopyLinkButton,
-  HighlightShare,
-  LikeButton,
-  TopHighlight,
   extractToc,
   findContentBySlug,
   getAllContentsForLocale,
   getAllSlugs,
+  HighlightShare,
+  LikeButton,
   MdxH2,
   MdxH3,
   MdxLink,
   MobileToc,
   PostFooterNav,
+  PostList,
   PostNav,
   PostSwipe,
-  PostList,
   ReadingControls,
   RecentTracker,
   readingMinutes,
   ShareRow,
   Toc,
+  TopHighlight,
   ZoomImage,
 } from "@/features/blog";
 import {
   IslandSignal,
-  LocaleType,
+  type LocaleType,
   Reveal,
   SUPPORTED_LOCALES,
   translation,
@@ -91,7 +91,7 @@ export async function generateMetadata({ params }: PostPageProps) {
       canonical: url,
       languages: {
         ...Object.fromEntries(
-          SUPPORTED_LOCALES.map((loc) => [loc, `${SITE_URL}/${loc}${path}`])
+          SUPPORTED_LOCALES.map((loc) => [loc, `${SITE_URL}/${loc}${path}`]),
         ),
         "x-default": `${SITE_URL}/ko${path}`,
       },
@@ -139,7 +139,7 @@ export default async function PostPage({ params }: PostPageProps) {
   const { title, description, date, updated, tags } = content.frontmatter;
 
   const all = getAllContentsForLocale(locale).filter(
-    (item) => !item.frontmatter.draft
+    (item) => !item.frontmatter.draft,
   );
   const index = all.findIndex((item) => item.slug === slug);
   const newer = index > 0 ? all[index - 1] : undefined;
@@ -157,7 +157,7 @@ export default async function PostPage({ params }: PostPageProps) {
         .filter(
           (item) =>
             item.slug !== slug &&
-            item.frontmatter.tags?.some((tag) => tags.includes(tag))
+            item.frontmatter.tags?.some((tag) => tags.includes(tag)),
         )
         .slice(0, 3)
     : [];

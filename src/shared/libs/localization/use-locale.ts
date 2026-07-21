@@ -2,13 +2,13 @@
 
 import { usePathname } from "next/navigation";
 
-import { SUPPORTED_LOCALES, DEFAULT_LOCALE, LocaleType } from "./helpers";
+import { DEFAULT_LOCALE, type LocaleType, SUPPORTED_LOCALES } from "./helpers";
 
 export function useLocale(): LocaleType {
   const pathname = usePathname();
 
   const locale = SUPPORTED_LOCALES.find(
-    (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`
+    (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`,
   );
 
   return locale || DEFAULT_LOCALE;

@@ -130,7 +130,7 @@ export function isCommandInput(input: string): boolean {
 
 export function runCommand(
   input: string,
-  ctx: CommandContext
+  ctx: CommandContext,
 ): CommandResult | null {
   const stripped = input.replace(/^>\s*/, "").trim();
   if (!stripped) return null;
@@ -151,7 +151,9 @@ export function runCommand(
 
     case "ls":
       return {
-        lines: ctx.posts.map((post, i) => `${String(i + 1).padStart(2, "0")}  ${post.title}`),
+        lines: ctx.posts.map(
+          (post, i) => `${String(i + 1).padStart(2, "0")}  ${post.title}`,
+        ),
       };
 
     case "theme": {
@@ -187,8 +189,7 @@ export function runCommand(
 
     case "random": {
       if (ctx.posts.length === 0) return { lines: ["no posts"] };
-      const pick =
-        ctx.posts[Math.floor(Math.random() * ctx.posts.length)]!;
+      const pick = ctx.posts[Math.floor(Math.random() * ctx.posts.length)]!;
       return {
         lines: [`🎲 ${pick.title}`],
         run: () => ctx.go(pick.href),
@@ -203,8 +204,7 @@ export function runCommand(
       return {
         lines: [
           <span key="q" className="font-mono">
-            {arg}{" "}
-            <span className="text-faint">→</span>{" "}
+            {arg} <span className="text-faint">→</span>{" "}
             <span className="text-accent">{result}</span>
           </span>,
         ],

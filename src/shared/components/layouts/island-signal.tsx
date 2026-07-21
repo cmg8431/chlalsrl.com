@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { islandStore, type IslandIcon } from "./island-store";
+import { type IslandIcon, islandStore } from "./island-store";
 
 interface IslandSignalProps {
   message?: string;

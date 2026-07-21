@@ -1,8 +1,7 @@
 {
   "recommendations": [
     // Linting / Formatting
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
+    "biomejs.biome",
     "usernamehw.errorlens",
     "YoavBls.pretty-ts-errors",
 

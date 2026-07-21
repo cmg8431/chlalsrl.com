@@ -1,9 +1,8 @@
 import { Link } from "next-view-transitions";
-
-import { formatDateDot } from "../libs/format";
+import type { LocaleType } from "@/shared";
 
 import type { Content } from "../libs";
-import type { LocaleType } from "@/shared";
+import { formatDateDot } from "../libs/format";
 
 interface PostListProps {
   contents: Content[];

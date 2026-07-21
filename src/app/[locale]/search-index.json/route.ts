@@ -1,7 +1,6 @@
 import { getAllContentsForLocale } from "@/features/blog";
-import { SUPPORTED_LOCALES } from "@/shared";
-
 import type { LocaleType } from "@/shared";
+import { SUPPORTED_LOCALES } from "@/shared";
 
 export const dynamic = "force-static";
 
@@ -22,7 +21,7 @@ function toPlainText(markdown: string): string {
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ locale: LocaleType }> }
+  { params }: { params: Promise<{ locale: LocaleType }> },
 ) {
   const { locale } = await params;
 

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { changeLanguage, useLocale, useT, SUPPORTED_LOCALES } from "../libs";
+import { changeLanguage, SUPPORTED_LOCALES, useLocale, useT } from "../libs";
 
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
   const locale = useLocale();
@@ -61,10 +61,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
 
       {open &&
         createPortal(
-          <div
-            className="fixed inset-0 z-[70]"
-            onClick={() => setOpen(false)}
-          >
+          <div className="fixed inset-0 z-[70]" onClick={() => setOpen(false)}>
             <div
               role="menu"
               className="lang-menu"
@@ -96,7 +93,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
               })}
             </div>
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

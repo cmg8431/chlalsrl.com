@@ -24,11 +24,11 @@ export function ZoomImage({ alt = "", ...props }: ZoomImageProps) {
 
   const sizeBig = useCallback(() => {
     const big = bigRef.current;
-    if (!big || !big.naturalWidth || !big.naturalHeight) return false;
+    if (!big?.naturalWidth || !big.naturalHeight) return false;
     const scale = Math.min(
       (window.innerWidth * 0.94) / big.naturalWidth,
       (window.innerHeight * 0.9) / big.naturalHeight,
-      MAX_UPSCALE
+      MAX_UPSCALE,
     );
     big.style.width = `${big.naturalWidth * scale}px`;
     big.style.height = "auto";
@@ -127,7 +127,7 @@ export function ZoomImage({ alt = "", ...props }: ZoomImageProps) {
             {/* eslint-disable-next-line next/no-img-element */}
             <img ref={bigRef} src={props.src as string} alt={alt} />
           </span>,
-          document.body
+          document.body,
         )}
     </>
   );

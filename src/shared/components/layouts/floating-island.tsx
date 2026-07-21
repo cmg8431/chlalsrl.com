@@ -29,7 +29,7 @@ export function FloatingIsland() {
   const { context, message } = useSyncExternalStore(
     islandStore.subscribe,
     islandStore.get,
-    islandStore.get
+    islandStore.get,
   );
   const reading = context.readingMinutes !== undefined;
 

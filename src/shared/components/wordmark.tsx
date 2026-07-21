@@ -4,9 +4,14 @@ interface WordmarkProps {
   className?: string;
 }
 
-export function Wordmark({ primary, secondary, className = "" }: WordmarkProps) {
+export function Wordmark({
+  primary,
+  secondary,
+  className = "",
+}: WordmarkProps) {
   return (
-    <span className={`wordmark ${className}`} aria-label={primary}>
+    <span className={`wordmark ${className}`}>
+      <span className="sr-only">{primary}</span>
       <span className="wm-a" aria-hidden>
         {Array.from(primary).map((ch, i) => (
           <span key={i} style={{ "--d": `${i * 18}ms` } as React.CSSProperties}>

@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 
 import { useT } from "@/shared";
 
-import { fetchTopHighlight, type HighlightSummary as Top } from "../libs/guestbook";
+import {
+  fetchTopHighlight,
+  type HighlightSummary as Top,
+} from "../libs/guestbook";
 
 export function TopHighlight({ slug }: { slug: string }) {
   const t = useT();

@@ -173,7 +173,7 @@ export function SearchablePostList({
       groups.get(year)!.push(post);
     }
     return Array.from(groups.entries()).sort(
-      ([a], [b]) => Number(b) - Number(a)
+      ([a], [b]) => Number(b) - Number(a),
     );
   }, [filtered]);
 
@@ -202,7 +202,7 @@ export function SearchablePostList({
                   {label}
                 </button>
               );
-            }
+            },
           )}
         </div>
       )}

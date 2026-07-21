@@ -12,7 +12,7 @@ export function ConsoleSignature({ commit }: { commit?: string | null }) {
         (commit ? `\n지금 보고 있는 배포: ${commit}` : ""),
       "font-size:16px;font-weight:700;color:#C46B47;",
       "font-size:12px;color:#9B958B;",
-      "font-size:12px;color:#6E6A62;line-height:1.8;"
+      "font-size:12px;color:#6E6A62;line-height:1.8;",
     );
   }, [commit]);
 

@@ -1,5 +1,5 @@
-import fs from "fs/promises";
-import path from "path";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 /**
  * OG 이미지 디자인 시스템 v2 — "웜 다크 오로라".
@@ -198,9 +198,7 @@ export function OgTopRow() {
         >
           최민기
         </span>
-        <span style={{ fontSize: 21, color: OG_COLORS.faint }}>
-          Mingi Choe
-        </span>
+        <span style={{ fontSize: 21, color: OG_COLORS.faint }}>Mingi Choe</span>
       </div>
       <span style={{ fontSize: 22, color: OG_COLORS.faint }}>chlalsrl.com</span>
     </div>
@@ -208,13 +206,7 @@ export function OgTopRow() {
 }
 
 /** 아웃라인 카테고리 필 */
-export function OgPill({
-  accent,
-  label,
-}: {
-  accent: OgAccent;
-  label: string;
-}) {
+export function OgPill({ accent, label }: { accent: OgAccent; label: string }) {
   return (
     <div
       style={{

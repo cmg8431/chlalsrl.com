@@ -25,8 +25,7 @@ export function Konami({ message }: { message: string }) {
       const target = event.target as HTMLElement | null;
       if (target && /^(INPUT|TEXTAREA)$/.test(target.tagName)) return;
 
-      const key =
-        event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
       if (key === SEQUENCE[progress]) {
         progress += 1;
       } else {

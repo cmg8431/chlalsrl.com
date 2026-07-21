@@ -67,7 +67,7 @@ export function ReadingControls() {
         }
         b.classList.toggle(
           "focus-active",
-          r.bottom > mid - half && r.top < mid + half
+          r.bottom > mid - half && r.top < mid + half,
         );
       }
       // 큰 블록이 밴드를 다 덮는 경계 상황 대비 — 가장 가까운 블록은 항상 밝힌다
@@ -122,7 +122,10 @@ export function ReadingControls() {
             className="reading-focus-toggle"
           >
             <span>{t("reading.focus")}</span>
-            <span className={`reading-switch ${focus ? "is-on" : ""}`} aria-hidden>
+            <span
+              className={`reading-switch ${focus ? "is-on" : ""}`}
+              aria-hidden
+            >
               <span />
             </span>
           </button>

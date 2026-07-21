@@ -27,10 +27,12 @@ export function Toc({ items, label }: TocProps) {
           }
         }
       },
-      { rootMargin: "-96px 0px -66% 0px", threshold: 0 }
+      { rootMargin: "-96px 0px -66% 0px", threshold: 0 },
     );
 
-    headings.forEach((el) => observer.observe(el));
+    headings.forEach((el) => {
+      observer.observe(el);
+    });
     return () => observer.disconnect();
   }, [items]);
 

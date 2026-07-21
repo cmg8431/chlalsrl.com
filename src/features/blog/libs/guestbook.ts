@@ -108,17 +108,17 @@ export interface HighlightSummary {
 
 /** 가장 많이 공유된 문장 (2회 이상만) */
 export async function fetchTopHighlight(
-  slug: string
+  slug: string,
 ): Promise<HighlightSummary | null> {
   let texts: string[] = [];
   if (DEV_PREVIEW) {
     texts = JSON.parse(
-      localStorage.getItem(`dev-hl:${slug}`) ?? "[]"
+      localStorage.getItem(`dev-hl:${slug}`) ?? "[]",
     ) as string[];
   } else {
     try {
       const res = await rest(
-        `/highlights?slug=eq.${encodeURIComponent(slug)}&select=text`
+        `/highlights?slug=eq.${encodeURIComponent(slug)}&select=text`,
       );
       texts = ((await res.json()) as { text: string }[]).map((r) => r.text);
     } catch {
@@ -145,11 +145,11 @@ export interface CommentRow {
 export async function fetchComments(slug: string): Promise<CommentRow[]> {
   if (DEV_PREVIEW) {
     return JSON.parse(
-      localStorage.getItem(`dev-comments:${slug}`) ?? "[]"
+      localStorage.getItem(`dev-comments:${slug}`) ?? "[]",
     ) as CommentRow[];
   }
   const res = await rest(
-    `/comments?slug=eq.${encodeURIComponent(slug)}&select=id,author,body,created_at,parent_id&order=created_at.asc`
+    `/comments?slug=eq.${encodeURIComponent(slug)}&select=id,author,body,created_at,parent_id&order=created_at.asc`,
   );
   return (await res.json()) as CommentRow[];
 }
@@ -158,7 +158,7 @@ export async function addComment(
   slug: string,
   author: string,
   body: string,
-  parentId: string | null = null
+  parentId: string | null = null,
 ): Promise<void> {
   if (DEV_PREVIEW) {
     const rows = await fetchComments(slug);
@@ -178,4 +178,3 @@ export async function addComment(
     body: JSON.stringify({ slug, author, body, parent_id: parentId }),
   });
 }
-

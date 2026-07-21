@@ -1,4 +1,4 @@
-import { translate, type TFunction } from "./translate";
+import { type TFunction, translate } from "./translate";
 
 export const SUPPORTED_LOCALES = ["en", "ko", "ja"] as const;
 export const DEFAULT_LOCALE = "ko" as const;
@@ -6,7 +6,7 @@ export const DEFAULT_LOCALE = "ko" as const;
 export type LocaleType = (typeof SUPPORTED_LOCALES)[number];
 
 export async function translation(
-  locale: LocaleType
+  locale: LocaleType,
 ): Promise<{ t: TFunction }> {
   return { t: (key, params) => translate(locale, key, params) };
 }
@@ -19,7 +19,7 @@ export function changeLanguage(newLocale: LocaleType) {
   const hash = window.location.hash;
 
   const currentLocale = SUPPORTED_LOCALES.find(
-    (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`
+    (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`,
   );
 
   if (newLocale === currentLocale) return;

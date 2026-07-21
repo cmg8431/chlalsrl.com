@@ -18,7 +18,11 @@ export function formatRelativeOrDate(iso: string, locale: string): string {
   const minutes = Math.floor(diffMs / 60_000);
 
   if (minutes < 1) {
-    return locale === "ko" ? "방금 전" : locale === "ja" ? "たった今" : "just now";
+    return locale === "ko"
+      ? "방금 전"
+      : locale === "ja"
+        ? "たった今"
+        : "just now";
   }
 
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "always" });

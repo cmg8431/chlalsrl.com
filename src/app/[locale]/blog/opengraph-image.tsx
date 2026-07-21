@@ -38,50 +38,48 @@ export default async function Image({ params }: ImageProps) {
   const accent = OG_ACCENT_DEFAULT;
   const label = LABEL[locale] ?? LABEL_EN;
   const count = getAllContentsForLocale(locale).filter(
-    (content) => !content.frontmatter.draft
+    (content) => !content.frontmatter.draft,
   ).length;
 
   return new ImageResponse(
-    (
-      <OgFrame accent={accent}>
-        <OgTopRow />
+    <OgFrame accent={accent}>
+      <OgTopRow />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "flex-start",
+          gap: 24,
+        }}
+      >
+        <OgTitle size={104}>{label.title}</OgTitle>
+        <span style={{ fontSize: 32, color: OG_COLORS.muted }}>
+          {label.count(count)}
+        </span>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <span style={{ fontSize: 22, color: OG_COLORS.faint }}>
+          chlalsrl.com/blog
+        </span>
         <div
           style={{
+            width: 56,
+            height: 5,
             display: "flex",
-            flexDirection: "column",
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "flex-start",
-            gap: 24,
+            borderRadius: 5,
+            background: `linear-gradient(90deg, ${accent.main} 0%, ${accent.main}55 100%)`,
           }}
-        >
-          <OgTitle size={104}>{label.title}</OgTitle>
-          <span style={{ fontSize: 32, color: OG_COLORS.muted }}>
-            {label.count(count)}
-          </span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <span style={{ fontSize: 22, color: OG_COLORS.faint }}>
-            chlalsrl.com/blog
-          </span>
-          <div
-            style={{
-              width: 56,
-              height: 5,
-              display: "flex",
-              borderRadius: 5,
-              background: `linear-gradient(90deg, ${accent.main} 0%, ${accent.main}55 100%)`,
-            }}
-          />
-        </div>
-      </OgFrame>
-    ),
-    { ...size, fonts }
+        />
+      </div>
+    </OgFrame>,
+    { ...size, fonts },
   );
 }

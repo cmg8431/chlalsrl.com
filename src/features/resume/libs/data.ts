@@ -1,5 +1,5 @@
-import type { Resume } from "./types";
 import type { LocaleType } from "@/shared";
+import type { Resume } from "./types";
 
 /**
  * 이력서 데이터. 아래 플레이스홀더를 실제 내용으로 교체하면 된다.

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { getResume, PrintButton } from "@/features/resume";
-import { LocaleType, Reveal, translation } from "@/shared";
+import { type LocaleType, Reveal, translation } from "@/shared";
 
 /** 이력서 작업 중 — 완성되면 이 플래그만 끄면 된다 */
 const WIP = true;

@@ -1,9 +1,7 @@
 import { Link } from "next-view-transitions";
-
-import { getChangelog } from "@/features/changelog";
-import { LocaleType, Reveal, translation } from "@/shared";
-
 import type { ChangelogEntry } from "@/features/changelog";
+import { getChangelog } from "@/features/changelog";
+import { type LocaleType, Reveal, translation } from "@/shared";
 
 const SITE_URL = "https://chlalsrl.com";
 const REPO_URL = "https://github.com/cmg8431/chlalsrl.com";
@@ -33,7 +31,7 @@ export async function generateMetadata({
       canonical: url,
       languages: {
         ...Object.fromEntries(
-          SUPPORTED.map((loc) => [loc, `${SITE_URL}/${loc}/changelog`])
+          SUPPORTED.map((loc) => [loc, `${SITE_URL}/${loc}/changelog`]),
         ),
         "x-default": `${SITE_URL}/ko/changelog`,
       },
@@ -43,7 +41,7 @@ export async function generateMetadata({
 }
 
 function groupByMonth(
-  entries: ChangelogEntry[]
+  entries: ChangelogEntry[],
 ): Array<[string, ChangelogEntry[]]> {
   const groups = new Map<string, ChangelogEntry[]>();
   for (const entry of entries) {

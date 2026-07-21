@@ -1,6 +1,5 @@
-import fs from "fs/promises";
-import path from "path";
-
+import fs from "node:fs/promises";
+import path from "node:path";
 import { ImageResponse } from "next/og";
 
 export const contentType = "image/png";
@@ -26,34 +25,32 @@ export default async function Icon({ id }: { id: string }) {
   const font = await fs.readFile(
     path.join(
       process.cwd(),
-      "node_modules/pretendard/dist/public/static/Pretendard-Bold.otf"
-    )
+      "node_modules/pretendard/dist/public/static/Pretendard-Bold.otf",
+    ),
   );
 
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "linear-gradient(160deg, #1A1613 0%, #0E0C0A 100%)",
-          borderRadius: variant.radius,
-          color: "#E38B63",
-          fontSize: variant.fontSize,
-          fontWeight: 700,
-          fontFamily: "Pretendard",
-        }}
-      >
-        민
-      </div>
-    ),
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(160deg, #1A1613 0%, #0E0C0A 100%)",
+        borderRadius: variant.radius,
+        color: "#E38B63",
+        fontSize: variant.fontSize,
+        fontWeight: 700,
+        fontFamily: "Pretendard",
+      }}
+    >
+      민
+    </div>,
     {
       width: variant.size,
       height: variant.size,
       fonts: [{ name: "Pretendard", data: font, weight: 700 }],
-    }
+    },
   );
 }

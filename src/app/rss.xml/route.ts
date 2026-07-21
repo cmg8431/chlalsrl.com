@@ -15,7 +15,7 @@ function escapeXml(value: string): string {
 
 export function GET() {
   const contents = getAllContentsForLocale(DEFAULT_LOCALE).filter(
-    (content) => !content.frontmatter.draft
+    (content) => !content.frontmatter.draft,
   );
 
   const items = contents

@@ -1,11 +1,10 @@
+import type { MetadataRoute } from "next";
 import {
   CONTENT_CATEGORIES,
   getContentBySlug,
   getContentSlugs,
 } from "@/features/blog";
 import { SUPPORTED_LOCALES } from "@/shared";
-
-import type { MetadataRoute } from "next";
 
 const SITE_URL = "https://chlalsrl.com";
 
@@ -28,11 +27,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       for (const slug of getContentSlugs(category)) {
         const content = getContentBySlug(slug, locale, category);
         if (!content || content.frontmatter.draft) continue;
-        content.frontmatter.tags?.forEach((tag) => tags.add(tag));
+        content.frontmatter.tags?.forEach((tag) => {
+          tags.add(tag);
+        });
         entries.push({
           url: `${SITE_URL}/${locale}/blog/${slug}`,
           lastModified: new Date(
-            content.frontmatter.updated ?? content.frontmatter.date
+            content.frontmatter.updated ?? content.frontmatter.date,
           ),
           changeFrequency: "monthly",
           priority: 0.7,

@@ -131,7 +131,7 @@ export function PostSwipe({
           return;
         }
         const wantNewer = dx < 0;
-        target = wantNewer ? newer ?? null : older ?? null;
+        target = wantNewer ? (newer ?? null) : (older ?? null);
         if (!target) {
           rejected = true;
           return;
@@ -200,6 +200,6 @@ export function PostSwipe({
         <h2 ref={titleRef} className="swipe-overlay-title" />
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

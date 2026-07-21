@@ -12,7 +12,7 @@ export type SlideDir = "forward" | "back";
 export function slideNavigate(
   router: TransitionRouter,
   href: string,
-  dir: SlideDir
+  dir: SlideDir,
 ) {
   const root = document.documentElement;
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -41,14 +41,14 @@ export function slideNavigate(
           { transform: "translateX(0)", opacity: 1 },
           { transform: `translateX(${out}%)`, opacity: 0 },
         ],
-        { ...timing, pseudoElement: "::view-transition-old(root)" }
+        { ...timing, pseudoElement: "::view-transition-old(root)" },
       );
       root.animate(
         [
           { transform: `translateX(${enter}%)`, opacity: 0 },
           { transform: "translateX(0)", opacity: 1 },
         ],
-        { ...timing, pseudoElement: "::view-transition-new(root)" }
+        { ...timing, pseudoElement: "::view-transition-new(root)" },
       );
     },
   });

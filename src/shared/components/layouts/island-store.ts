@@ -30,7 +30,9 @@ const listeners = new Set<() => void>();
 
 function emit(next: IslandState): void {
   state = next;
-  listeners.forEach((listener) => listener());
+  listeners.forEach((listener) => {
+    listener();
+  });
 }
 
 export const islandStore = {
@@ -49,15 +51,12 @@ export const islandStore = {
     emit({ ...state, context: {} });
   },
 
-  notify(
-    text: string,
-    opts?: { icon?: IslandIcon; duration?: number }
-  ): void {
+  notify(text: string, opts?: { icon?: IslandIcon; duration?: number }): void {
     if (timer) clearTimeout(timer);
     emit({ ...state, message: { text, icon: opts?.icon } });
     timer = setTimeout(
       () => emit({ ...state, message: null }),
-      opts?.duration ?? 1500
+      opts?.duration ?? 1500,
     );
   },
 

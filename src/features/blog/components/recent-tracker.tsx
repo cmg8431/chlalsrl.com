@@ -15,7 +15,7 @@ export function RecentTracker({ href, title, date }: RecentPost) {
   useEffect(() => {
     try {
       const list = JSON.parse(
-        localStorage.getItem(RECENT_POSTS_KEY) ?? "[]"
+        localStorage.getItem(RECENT_POSTS_KEY) ?? "[]",
       ) as RecentPost[];
       const next = [
         { href, title, date },

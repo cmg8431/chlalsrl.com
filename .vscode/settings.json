@@ -1,15 +1,21 @@
 {
-  // Formatting using Prettier by default for all languages
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-
-  // Formatting using Prettier for JavaScript, overrides VSCode default.
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  // Biome이 포맷터 + 린터를 담당한다
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
   },
+  "[javascript]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[javascriptreact]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[typescript]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[typescriptreact]": { "editor.defaultFormatter": "biomejs.biome" },
+  "[json]": { "editor.defaultFormatter": "biomejs.biome" },
 
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-
-  "todo-tree.filtering.excludeGlobs": ["**/node_modules", "**/dist", "**/compiled"],
+  "todo-tree.filtering.excludeGlobs": [
+    "**/node_modules",
+    "**/dist",
+    "**/compiled"
+  ],
   "todo-tree.general.tags": ["BUG", "FIXME", "TODO", "[ ]", "[x]"],
 
   "cSpell.words": ["celery", "pretendard"],

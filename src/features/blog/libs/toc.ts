@@ -25,7 +25,7 @@ export function extractToc(markdown: string): TocItem[] {
     if (inFence) continue;
 
     const match = line.match(/^(#{2,3})\s+(.+?)\s*$/);
-    if (!match || !match[1] || !match[2]) continue;
+    if (!match?.[1] || !match[2]) continue;
 
     const text = match[2].replace(/`/g, "");
     items.push({

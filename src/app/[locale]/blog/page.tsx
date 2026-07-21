@@ -1,5 +1,5 @@
 import { getAllContentsForLocale, SearchablePostList } from "@/features/blog";
-import { IslandSignal, LocaleType, Reveal, translation } from "@/shared";
+import { IslandSignal, type LocaleType, Reveal, translation } from "@/shared";
 
 const SITE_URL = "https://chlalsrl.com";
 const SUPPORTED = ["ko", "en", "ja"] as const;
@@ -19,7 +19,7 @@ export async function generateMetadata({
       canonical: url,
       languages: {
         ...Object.fromEntries(
-          SUPPORTED.map((loc) => [loc, `${SITE_URL}/${loc}/blog`])
+          SUPPORTED.map((loc) => [loc, `${SITE_URL}/${loc}/blog`]),
         ),
         "x-default": `${SITE_URL}/ko/blog`,
       },
@@ -50,7 +50,7 @@ export default async function BlogPage({
   }));
 
   const categories = Array.from(
-    new Set(contents.map((content) => content.category))
+    new Set(contents.map((content) => content.category)),
   ).map((category) => ({
     key: category,
     label: t(`categories.${category}`),

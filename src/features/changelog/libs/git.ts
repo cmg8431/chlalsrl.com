@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync } from "node:child_process";
 
 export interface ChangelogEntry {
   hash: string;
@@ -20,7 +20,7 @@ export function getChangelog(limit = 6): ChangelogEntry[] {
   try {
     const out = execSync(
       "git log --no-merges --date=short --pretty=format:%h%x09%ad%x09%s -n 80",
-      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }
+      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
     );
 
     const entries: ChangelogEntry[] = [];
@@ -50,7 +50,7 @@ export function getBuildInfo(): { hash: string; date: string } | null {
   try {
     const out = execSync(
       "git log -1 --date=format:%Y.%m.%d --pretty=format:%h%x09%ad",
-      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }
+      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
     );
     const [hash, date] = out.trim().split("\t");
     if (!hash || !date) return null;

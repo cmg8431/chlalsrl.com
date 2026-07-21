@@ -7,7 +7,7 @@ import { islandStore, useT } from "@/shared";
 
 import { formatYearMonth } from "../libs/format";
 
-import { isCommandInput, runCommand, type CommandContext } from "./commands";
+import { type CommandContext, isCommandInput, runCommand } from "./commands";
 import { RECENT_POSTS_KEY } from "./recent-tracker";
 
 export interface CommandItem {
@@ -58,7 +58,7 @@ export function CommandMenu({
   const [cursor, setCursor] = useState(0);
   const [recent, setRecent] = useState<CommandItem[]>([]);
   const [bodyIndex, setBodyIndex] = useState<Record<string, string> | null>(
-    null
+    null,
   );
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -73,7 +73,7 @@ export function CommandMenu({
       typeof window !== "undefined"
         ? window.location.pathname.split("/")[1] || "ko"
         : "ko",
-    []
+    [],
   );
 
   const commandCtx = useMemo<CommandContext>(
@@ -120,13 +120,13 @@ export function CommandMenu({
         }
       },
     }),
-    [items, locale, router, close, t]
+    [items, locale, router, close, t],
   );
 
   const isCommand = isCommandInput(query);
   const command = useMemo(
     () => (isCommand ? runCommand(query, commandCtx) : null),
-    [isCommand, query, commandCtx]
+    [isCommand, query, commandCtx],
   );
 
   useEffect(() => {
@@ -135,7 +135,7 @@ export function CommandMenu({
       .then((res) => res.json())
       .then((rows: { href: string; body: string }[]) => {
         setBodyIndex(
-          Object.fromEntries(rows.map((row) => [row.href, row.body]))
+          Object.fromEntries(rows.map((row) => [row.href, row.body])),
         );
       })
       .catch(() => setBodyIndex({}));
@@ -145,7 +145,9 @@ export function CommandMenu({
     if (!open) return;
     try {
       setRecent(
-        JSON.parse(localStorage.getItem(RECENT_POSTS_KEY) ?? "[]") as CommandItem[]
+        JSON.parse(
+          localStorage.getItem(RECENT_POSTS_KEY) ?? "[]",
+        ) as CommandItem[],
       );
     } catch {
       setRecent([]);
@@ -169,7 +171,7 @@ export function CommandMenu({
     const direct = items.filter(
       (item) =>
         item.title.toLowerCase().includes(q) ||
-        item.description?.toLowerCase().includes(q)
+        item.description?.toLowerCase().includes(q),
     );
 
     if (!bodyIndex) return direct;
@@ -311,7 +313,8 @@ export function CommandMenu({
                       )}
                     </span>
                     <span className="shrink-0 font-mono text-xs text-faint">
-                      {item.meta ?? (item.date ? formatYearMonth(item.date) : "")}
+                      {item.meta ??
+                        (item.date ? formatYearMonth(item.date) : "")}
                     </span>
                   </button>
                 </li>

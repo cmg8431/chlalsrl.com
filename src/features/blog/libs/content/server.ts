@@ -1,12 +1,10 @@
-import fs from "fs";
-import path from "path";
-
+import fs from "node:fs";
+import path from "node:path";
 import matter from "gray-matter";
-
-import { CONTENT_CATEGORIES } from "./types";
+import type { LocaleType } from "@/shared";
 
 import type { Content, ContentCategory } from "./types";
-import type { LocaleType } from "@/shared";
+import { CONTENT_CATEGORIES } from "./types";
 
 const CONTENT_DIR = path.join(process.cwd(), "src/contents");
 const FILE_EXTENSIONS = [".mdx", ".md"] as const;
@@ -30,7 +28,7 @@ const isDirectory = (categoryDir: string, entry: string): boolean => {
 const findContentPath = (
   category: ContentCategory,
   slug: string,
-  locale: LocaleType
+  locale: LocaleType,
 ): { filePath: string; fileLocale: string } | null => {
   const slugDir = getSlugDir(category, slug);
   if (!fs.existsSync(slugDir)) return null;
@@ -71,7 +69,7 @@ export function getContentSlugs(category: ContentCategory): string[] {
 export function getContentBySlug(
   slug: string,
   locale: LocaleType,
-  category: ContentCategory
+  category: ContentCategory,
 ): Content | null {
   const found = findContentPath(category, slug, locale);
   if (!found) return null;
@@ -94,7 +92,7 @@ export function getContentBySlug(
 
 export function getAllContents(
   locale: LocaleType,
-  category: ContentCategory
+  category: ContentCategory,
 ): Content[] {
   const slugs = getContentSlugs(category);
 
@@ -117,7 +115,7 @@ export function getAllContentsForLocale(locale: LocaleType): Content[] {
 // URL에 카테고리를 노출하지 않으므로 slug는 카테고리 전체에서 유일해야 한다
 export function findContentBySlug(
   slug: string,
-  locale: LocaleType
+  locale: LocaleType,
 ): Content | null {
   for (const category of CONTENT_CATEGORIES) {
     const content = getContentBySlug(slug, locale, category);
@@ -135,4 +133,3 @@ export function getAllSlugs(): string[] {
   }
   return Array.from(slugs);
 }
-

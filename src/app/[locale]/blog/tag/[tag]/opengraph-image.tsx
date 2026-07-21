@@ -34,51 +34,49 @@ export default async function Image({ params }: ImageProps) {
 
   const count = getAllContentsForLocale(locale).filter(
     (content) =>
-      !content.frontmatter.draft && content.frontmatter.tags?.includes(tag)
+      !content.frontmatter.draft && content.frontmatter.tags?.includes(tag),
   ).length;
   const countLabel = (COUNT_LABEL[locale] ?? COUNT_LABEL.en!)(count);
 
   return new ImageResponse(
-    (
-      <OgFrame accent={accent}>
-        <OgTopRow />
+    <OgFrame accent={accent}>
+      <OgTopRow />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "flex-start",
+          gap: 22,
+        }}
+      >
+        <OgTitle size={88}>{`#${tag}`}</OgTitle>
+        <span style={{ fontSize: 32, color: OG_COLORS.muted }}>
+          {countLabel}
+        </span>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <span style={{ fontSize: 22, color: OG_COLORS.faint }}>
+          chlalsrl.com/blog
+        </span>
         <div
           style={{
+            width: 56,
+            height: 5,
             display: "flex",
-            flexDirection: "column",
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "flex-start",
-            gap: 22,
+            borderRadius: 5,
+            background: `linear-gradient(90deg, ${accent.main} 0%, ${accent.main}55 100%)`,
           }}
-        >
-          <OgTitle size={88}>{`#${tag}`}</OgTitle>
-          <span style={{ fontSize: 32, color: OG_COLORS.muted }}>
-            {countLabel}
-          </span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <span style={{ fontSize: 22, color: OG_COLORS.faint }}>
-            chlalsrl.com/blog
-          </span>
-          <div
-            style={{
-              width: 56,
-              height: 5,
-              display: "flex",
-              borderRadius: 5,
-              background: `linear-gradient(90deg, ${accent.main} 0%, ${accent.main}55 100%)`,
-            }}
-          />
-        </div>
-      </OgFrame>
-    ),
-    { ...size, fonts }
+        />
+      </div>
+    </OgFrame>,
+    { ...size, fonts },
   );
 }

@@ -4,26 +4,24 @@ import { Link } from "next-view-transitions";
 
 import { useLocale } from "@/shared";
 
-const COPY: Record<
-  string,
-  { message: string; home: string; search: string }
-> = {
-  ko: {
-    message: "이런 페이지는 없어요.",
-    home: "홈으로 돌아가기",
-    search: "글 검색하기",
-  },
-  en: {
-    message: "This page doesn't exist.",
-    home: "Back home",
-    search: "Search posts",
-  },
-  ja: {
-    message: "このページは存在しません。",
-    home: "ホームに戻る",
-    search: "記事を検索",
-  },
-};
+const COPY: Record<string, { message: string; home: string; search: string }> =
+  {
+    ko: {
+      message: "이런 페이지는 없어요.",
+      home: "홈으로 돌아가기",
+      search: "글 검색하기",
+    },
+    en: {
+      message: "This page doesn't exist.",
+      home: "Back home",
+      search: "Search posts",
+    },
+    ja: {
+      message: "このページは存在しません。",
+      home: "ホームに戻る",
+      search: "記事を検索",
+    },
+  };
 
 export default function NotFound() {
   const locale = useLocale();

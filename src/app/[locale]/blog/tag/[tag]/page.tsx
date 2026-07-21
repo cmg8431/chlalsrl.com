@@ -7,7 +7,12 @@ import {
   getAllContentsForLocale,
   PostList,
 } from "@/features/blog";
-import { LocaleType, Reveal, SUPPORTED_LOCALES, translation } from "@/shared";
+import {
+  type LocaleType,
+  Reveal,
+  SUPPORTED_LOCALES,
+  translation,
+} from "@/shared";
 
 interface TagPageProps {
   params: Promise<{ locale: LocaleType; tag: string }>;
@@ -20,7 +25,9 @@ export function generateStaticParams() {
     const tags = new Set<string>();
     for (const category of CONTENT_CATEGORIES) {
       for (const content of getAllContents(locale, category)) {
-        content.frontmatter.tags?.forEach((tag) => tags.add(tag));
+        content.frontmatter.tags?.forEach((tag) => {
+          tags.add(tag);
+        });
       }
     }
     // 인코딩은 Next가 담당한다 — 미리 인코딩하면 이중 인코딩된 경로로
@@ -49,7 +56,7 @@ export async function generateMetadata({ params }: TagPageProps) {
           SUPPORTED_LOCALES.map((loc) => [
             loc,
             `${SITE_URL}/${loc}/blog/tag/${encodeURIComponent(tag)}`,
-          ])
+          ]),
         ),
         "x-default": `${SITE_URL}/ko/blog/tag/${encodeURIComponent(tag)}`,
       },
@@ -64,10 +71,10 @@ export default async function TagPage({ params }: TagPageProps) {
   const tag = decodeURIComponent(rawTag);
 
   const published = getAllContentsForLocale(locale).filter(
-    (content) => !content.frontmatter.draft
+    (content) => !content.frontmatter.draft,
   );
   const contents = published.filter((content) =>
-    content.frontmatter.tags?.includes(tag)
+    content.frontmatter.tags?.includes(tag),
   );
 
   if (contents.length === 0) {

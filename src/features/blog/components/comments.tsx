@@ -4,18 +4,18 @@ import { useEffect, useRef, useState } from "react";
 
 import {
   islandStore,
-  useLocale,
-  useT,
   type LocaleType,
   type TFunction,
+  useLocale,
+  useT,
 } from "@/shared";
 
 import { formatRelativeOrDate } from "../libs/format";
 import {
   addComment,
+  type CommentRow,
   fetchComments,
   guestbookEnabled,
-  type CommentRow,
 } from "../libs/guestbook";
 
 interface CommentFormProps {
@@ -33,32 +33,92 @@ const BODY_MAX = 1000;
 const NICK_PARTS: Record<LocaleType, { adj: string[]; noun: string[] }> = {
   ko: {
     adj: [
-      "다정한", "씩씩한", "명랑한", "조용한", "수줍은", "용감한",
-      "느긋한", "엉뚱한", "포근한", "새침한", "반짝이는", "궁금한",
+      "다정한",
+      "씩씩한",
+      "명랑한",
+      "조용한",
+      "수줍은",
+      "용감한",
+      "느긋한",
+      "엉뚱한",
+      "포근한",
+      "새침한",
+      "반짝이는",
+      "궁금한",
     ],
     noun: [
-      "강아지", "고양이", "여우", "판다", "토끼", "수달",
-      "펭귄", "고슴도치", "다람쥐", "부엉이", "돌고래", "곰",
+      "강아지",
+      "고양이",
+      "여우",
+      "판다",
+      "토끼",
+      "수달",
+      "펭귄",
+      "고슴도치",
+      "다람쥐",
+      "부엉이",
+      "돌고래",
+      "곰",
     ],
   },
   en: {
     adj: [
-      "Cozy", "Brave", "Merry", "Quiet", "Shy", "Mellow",
-      "Quirky", "Sunny", "Gentle", "Curious", "Sparkly", "Sleepy",
+      "Cozy",
+      "Brave",
+      "Merry",
+      "Quiet",
+      "Shy",
+      "Mellow",
+      "Quirky",
+      "Sunny",
+      "Gentle",
+      "Curious",
+      "Sparkly",
+      "Sleepy",
     ],
     noun: [
-      "Puppy", "Cat", "Fox", "Panda", "Rabbit", "Otter",
-      "Penguin", "Hedgehog", "Squirrel", "Owl", "Dolphin", "Bear",
+      "Puppy",
+      "Cat",
+      "Fox",
+      "Panda",
+      "Rabbit",
+      "Otter",
+      "Penguin",
+      "Hedgehog",
+      "Squirrel",
+      "Owl",
+      "Dolphin",
+      "Bear",
     ],
   },
   ja: {
     adj: [
-      "やさしい", "げんきな", "しずかな", "ゆかいな", "はにかむ", "ゆったり",
-      "ふしぎな", "ふわふわ", "きらきら", "ねむたい", "まじめな", "こっそり",
+      "やさしい",
+      "げんきな",
+      "しずかな",
+      "ゆかいな",
+      "はにかむ",
+      "ゆったり",
+      "ふしぎな",
+      "ふわふわ",
+      "きらきら",
+      "ねむたい",
+      "まじめな",
+      "こっそり",
     ],
     noun: [
-      "いぬ", "ねこ", "きつね", "ぱんだ", "うさぎ", "かわうそ",
-      "ぺんぎん", "はりねずみ", "りす", "ふくろう", "いるか", "くま",
+      "いぬ",
+      "ねこ",
+      "きつね",
+      "ぱんだ",
+      "うさぎ",
+      "かわうそ",
+      "ぺんぎん",
+      "はりねずみ",
+      "りす",
+      "ふくろう",
+      "いるか",
+      "くま",
     ],
   },
 };
@@ -233,8 +293,22 @@ function CommentForm({
 
 // 이름 해시로 이모지·배경을 고정 — 같은 작성자는 항상 같은 아바타를 받는다
 const AVATAR_EMOJI = [
-  "🦊", "🐻", "🐼", "🐰", "🦁", "🐯", "🐨", "🐸",
-  "🐙", "🦉", "🐳", "🦄", "🐹", "🐥", "🐢", "🦋",
+  "🦊",
+  "🐻",
+  "🐼",
+  "🐰",
+  "🦁",
+  "🐯",
+  "🐨",
+  "🐸",
+  "🐙",
+  "🦉",
+  "🐳",
+  "🦄",
+  "🐹",
+  "🐥",
+  "🐢",
+  "🦋",
 ];
 const AVATAR_BG = [
   "hsla(14, 85%, 60%, 0.16)",
@@ -318,7 +392,7 @@ export function Comments({ slug }: { slug: string }) {
   const post = async (
     author: string,
     body: string,
-    parentId: string | null
+    parentId: string | null,
   ): Promise<boolean> => {
     setBusy(true);
     try {
@@ -334,7 +408,10 @@ export function Comments({ slug }: { slug: string }) {
         },
       ]);
       setReplyTo(null);
-      islandStore.notify(t("comments.posted"), { icon: "check", duration: 1400 });
+      islandStore.notify(t("comments.posted"), {
+        icon: "check",
+        duration: 1400,
+      });
       return true;
     } catch {
       return false;
@@ -384,8 +461,7 @@ export function Comments({ slug }: { slug: string }) {
                 {t("comments.reply")}
               </button>
 
-              {(repliesOf(comment.id).length > 0 ||
-                replyTo === comment.id) && (
+              {(repliesOf(comment.id).length > 0 || replyTo === comment.id) && (
                 <div className="mt-3 ml-4 space-y-4 border-l-2 border-line pl-4">
                   {repliesOf(comment.id).map((reply) => (
                     <div key={reply.id}>

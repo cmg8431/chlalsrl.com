@@ -28,11 +28,7 @@ export function HeadingAnchor({
   const copy = useCopyLink();
 
   return (
-    <a
-      href={`#${id}`}
-      className="heading-anchor"
-      onClick={() => copy(id)}
-    >
+    <a href={`#${id}`} className="heading-anchor" onClick={() => copy(id)}>
       {children}
     </a>
   );

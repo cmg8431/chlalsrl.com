@@ -11,8 +11,9 @@ export function readingMinutes(raw: string): number {
     .replace(/[#>*_~\-|]/g, " ");
 
   const cjkCount = (text.match(/[ㄱ-힝一-鿿]/g) ?? []).length;
-  const wordCount = (text.replace(/[ㄱ-힝一-鿿]/g, " ").match(/[A-Za-z0-9]+/g) ?? [])
-    .length;
+  const wordCount = (
+    text.replace(/[ㄱ-힝一-鿿]/g, " ").match(/[A-Za-z0-9]+/g) ?? []
+  ).length;
 
   return Math.max(1, Math.round(cjkCount / 500 + wordCount / 200));
 }

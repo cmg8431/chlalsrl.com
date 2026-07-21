@@ -1,8 +1,7 @@
+import type { LocaleType } from "./helpers";
 import en from "./locales/en/common.json";
 import ja from "./locales/ja/common.json";
 import ko from "./locales/ko/common.json";
-
-import type { LocaleType } from "./helpers";
 
 const DICTIONARIES: Record<LocaleType, unknown> = { ko, en, ja };
 
@@ -16,7 +15,10 @@ type Paths<T> = T extends string
 /** ko 사전 기준 자동완성 — 복수형 접미사(_one/_other) 키는 베이스 키로 호출 */
 export type TranslationKey = Paths<Dict> | (string & {});
 export type TranslateParams = Record<string, string | number>;
-export type TFunction = (key: TranslationKey, params?: TranslateParams) => string;
+export type TFunction = (
+  key: TranslationKey,
+  params?: TranslateParams,
+) => string;
 
 function lookup(dict: unknown, path: string): string | undefined {
   let cur: unknown = dict;
@@ -29,14 +31,14 @@ function lookup(dict: unknown, path: string): string | undefined {
 
 function interpolate(template: string, params?: TranslateParams): string {
   return template.replace(/\{\{(\w+)\}\}/g, (_, name: string) =>
-    String(params?.[name] ?? "")
+    String(params?.[name] ?? ""),
   );
 }
 
 export function translate(
   locale: LocaleType,
   key: string,
-  params?: TranslateParams
+  params?: TranslateParams,
 ): string {
   const chain = [DICTIONARIES[locale], DICTIONARIES.en, DICTIONARIES.ko];
   const count = params?.count;

@@ -5,8 +5,8 @@ import {
   CopyEmailButton,
   GithubIcon,
   LinkedinIcon,
+  type LocaleType,
   localizedNames,
-  LocaleType,
   Reveal,
   RssIcon,
   translation,
@@ -49,7 +49,7 @@ export async function generateMetadata({
       canonical: url,
       languages: {
         ...Object.fromEntries(
-          SUPPORTED.map((loc) => [loc, `${SITE_URL}/${loc}`])
+          SUPPORTED.map((loc) => [loc, `${SITE_URL}/${loc}`]),
         ),
         "x-default": `${SITE_URL}/ko`,
       },
@@ -66,7 +66,7 @@ export default async function Home({
   const { locale } = await params;
   const { t } = await translation(locale);
   const contents = getAllContentsForLocale(locale).filter(
-    (content) => !content.frontmatter.draft
+    (content) => !content.frontmatter.draft,
   );
 
   return (
@@ -178,7 +178,7 @@ export default async function Home({
                 contents.map((content) => [
                   content.category,
                   t(`categories.${content.category}`),
-                ])
+                ]),
               )}
             />
             {contents.length > 3 && (

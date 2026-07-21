@@ -7,8 +7,8 @@ import { islandStore, useT } from "@/shared";
 import {
   fetchLikeState,
   guestbookEnabled,
-  toggleLike,
   type LikeState,
+  toggleLike,
 } from "../libs/guestbook";
 
 const BURST_ANGLES = [-70, -30, 10, 190, 230, 150];
