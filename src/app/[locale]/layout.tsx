@@ -1,3 +1,4 @@
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ViewTransitions } from "next-view-transitions";
@@ -198,6 +199,7 @@ export default async function RootLayout({
           <ConsoleSignature commit={getBuildInfo()?.hash} />
           <Konami message={t("island.konami")} />
           <Analytics />
+          <GoogleAnalytics gaId="G-XWZ35DZJKR" />
         </body>
       </html>
     </ViewTransitions>
