@@ -85,7 +85,8 @@
     "empty": "No comments yet. Be the first.",
     "reply": "Reply",
     "reply-body": "Write a reply",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "roll": "Roll a name"
   },
   "languages": {
     "ko": "한국어",

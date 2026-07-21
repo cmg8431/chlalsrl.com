@@ -83,7 +83,8 @@
     "empty": "아직 댓글이 없어요. 첫 번째로 남겨보세요.",
     "reply": "답글",
     "reply-body": "답글을 남겨주세요",
-    "cancel": "취소"
+    "cancel": "취소",
+    "roll": "이름 뽑기"
   },
   "languages": {
     "ko": "한국어",

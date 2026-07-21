@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { islandStore, useLocale, useT, type TFunction } from "@/shared";
+import {
+  islandStore,
+  useLocale,
+  useT,
+  type LocaleType,
+  type TFunction,
+} from "@/shared";
 
 import { formatRelativeOrDate } from "../libs/format";
 import {
@@ -24,6 +30,47 @@ interface CommentFormProps {
 const AUTHOR_KEY = "comment-author";
 const BODY_MAX = 1000;
 
+const NICK_PARTS: Record<LocaleType, { adj: string[]; noun: string[] }> = {
+  ko: {
+    adj: [
+      "다정한", "씩씩한", "명랑한", "조용한", "수줍은", "용감한",
+      "느긋한", "엉뚱한", "포근한", "새침한", "반짝이는", "궁금한",
+    ],
+    noun: [
+      "강아지", "고양이", "여우", "판다", "토끼", "수달",
+      "펭귄", "고슴도치", "다람쥐", "부엉이", "돌고래", "곰",
+    ],
+  },
+  en: {
+    adj: [
+      "Cozy", "Brave", "Merry", "Quiet", "Shy", "Mellow",
+      "Quirky", "Sunny", "Gentle", "Curious", "Sparkly", "Sleepy",
+    ],
+    noun: [
+      "Puppy", "Cat", "Fox", "Panda", "Rabbit", "Otter",
+      "Penguin", "Hedgehog", "Squirrel", "Owl", "Dolphin", "Bear",
+    ],
+  },
+  ja: {
+    adj: [
+      "やさしい", "げんきな", "しずかな", "ゆかいな", "はにかむ", "ゆったり",
+      "ふしぎな", "ふわふわ", "きらきら", "ねむたい", "まじめな", "こっそり",
+    ],
+    noun: [
+      "いぬ", "ねこ", "きつね", "ぱんだ", "うさぎ", "かわうそ",
+      "ぺんぎん", "はりねずみ", "りす", "ふくろう", "いるか", "くま",
+    ],
+  },
+};
+
+function randomNickname(locale: LocaleType): string {
+  const parts = NICK_PARTS[locale] ?? NICK_PARTS.ko;
+  const pick = (list: string[]) =>
+    list[Math.floor(Math.random() * list.length)] ?? "";
+  const joiner = locale === "en" ? " " : "";
+  return pick(parts.adj) + joiner + pick(parts.noun);
+}
+
 function CommentForm({
   t,
   bodyPlaceholder,
@@ -32,19 +79,40 @@ function CommentForm({
   onSubmit,
   onCancel,
 }: CommentFormProps) {
+  const locale = useLocale();
   const [author, setAuthor] = useState("");
   const [body, setBody] = useState("");
   const [trap, setTrap] = useState(""); // honeypot
+  const [rolling, setRolling] = useState(false);
+  const rollTimer = useRef(0);
 
-  // 이름은 한 번 쓰면 기억해둔다
+  // 저장된 이름이 있으면 쓰고, 없으면 랜덤 닉네임으로 시작한다
   useEffect(() => {
+    let saved: string | null = null;
     try {
-      const saved = localStorage.getItem(AUTHOR_KEY);
-      if (saved) setAuthor(saved);
+      saved = localStorage.getItem(AUTHOR_KEY);
     } catch {
       /* private mode */
     }
-  }, []);
+    setAuthor(saved || randomNickname(locale));
+  }, [locale]);
+
+  useEffect(() => () => window.clearInterval(rollTimer.current), []);
+
+  // 슬롯처럼 몇 번 굴리다가 멈춘다 — 아바타는 이름 해시라 함께 바뀐다
+  const roll = () => {
+    if (rolling) return;
+    setRolling(true);
+    let ticks = 0;
+    rollTimer.current = window.setInterval(() => {
+      setAuthor(randomNickname(locale));
+      ticks += 1;
+      if (ticks >= 8) {
+        window.clearInterval(rollTimer.current);
+        setRolling(false);
+      }
+    }, 70);
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,16 +146,44 @@ function CommentForm({
         aria-hidden
         className="absolute -left-[9999px] h-0 w-0 opacity-0"
       />
-      <input
-        type="text"
-        value={author}
-        onChange={(e) => setAuthor(e.target.value)}
-        placeholder={t("comments.name")}
-        aria-label={t("comments.name")}
-        maxLength={40}
-        required
-        className="w-full appearance-none border-0 bg-transparent px-4 pt-3.5 pb-2.5 text-base font-medium text-bright outline-none placeholder:font-normal placeholder:text-faint sm:text-sm"
-      />
+      <div className="flex items-center gap-2.5 px-4 pt-3 pb-2.5">
+        <Avatar name={author} small />
+        <input
+          type="text"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+          placeholder={t("comments.name")}
+          aria-label={t("comments.name")}
+          maxLength={40}
+          required
+          readOnly={rolling}
+          className="min-w-0 flex-1 appearance-none border-0 bg-transparent text-base font-medium text-bright outline-none placeholder:font-normal placeholder:text-faint sm:text-sm"
+        />
+        <button
+          type="button"
+          onClick={roll}
+          disabled={rolling}
+          aria-label={t("comments.roll")}
+          title={t("comments.roll")}
+          className="shrink-0 rounded-full p-1.5 text-faint transition-colors hover:text-bright disabled:pointer-events-none"
+        >
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.8}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+            className={rolling ? "animate-spin" : ""}
+          >
+            <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+            <path d="M21 3v6h-6" />
+          </svg>
+        </button>
+      </div>
       <div className="h-px bg-line" />
       <textarea
         value={body}
