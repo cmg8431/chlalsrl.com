@@ -81,7 +81,7 @@ export function OgFrame({
         overflow: "hidden",
       }}
     >
-      {/* 마스코트 뒤 글로우 — 유일한 장식 */}
+      {/* 우하단 글로우 — 유일한 장식 */}
       <div
         style={{
           position: "absolute",
@@ -94,13 +94,12 @@ export function OgFrame({
           background: `radial-gradient(circle, ${accent.glow} 0%, rgba(14, 12, 10, 0) 62%)`,
         }}
       />
-      <OgEyes />
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           flex: 1,
-          padding: "72px 84px",
+          padding: "64px 84px 52px",
           position: "relative",
         }}
       >
@@ -110,54 +109,7 @@ export function OgFrame({
   );
 }
 
-/** 우하단 두 눈 마스코트 — 서비스 아이콘과 같은 비율 */
-export function OgEyes() {
-  const eye = 150;
-  const pupil = eye * 0.477;
-  const pupilOffset = eye * 0.403;
-  return (
-    <div
-      style={{
-        position: "absolute",
-        right: 84,
-        bottom: 76,
-        width: eye * 2 + 26,
-        height: eye,
-        display: "flex",
-        gap: 26,
-      }}
-    >
-      {[0, 1].map((i) => (
-        <div
-          key={i}
-          style={{
-            width: eye,
-            height: eye,
-            display: "flex",
-            position: "relative",
-            borderRadius: eye,
-            background:
-              "radial-gradient(circle, rgba(255,255,255,0.82) 55%, rgba(223,223,223,0.76) 100%)",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              left: pupilOffset,
-              top: pupilOffset,
-              width: pupil,
-              height: pupil,
-              borderRadius: pupil,
-              background: "linear-gradient(45deg, #000000 0%, #404040 100%)",
-            }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/** 좌상단 배지 — 액센트 틴트 필 */
+/** 좌상단 배지 — 액센트 틴트 + 헤어라인 보더 필 */
 export function OgBadge({
   label,
   accent = OG_ACCENT_DEFAULT,
@@ -170,22 +122,25 @@ export function OgBadge({
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 10,
-        backgroundColor: `${accent.main}24`,
+        gap: 11,
+        backgroundColor: `${accent.main}1A`,
+        border: `1.5px solid ${accent.main}40`,
         color: accent.main,
         borderRadius: 999,
-        padding: "10px 24px",
-        fontSize: 25,
+        padding: "9px 22px",
+        fontSize: 22,
         fontWeight: 600,
+        letterSpacing: "0.05em",
       }}
     >
       <div
         style={{
-          width: 9,
-          height: 9,
+          width: 8,
+          height: 8,
           display: "flex",
-          borderRadius: 9,
+          borderRadius: 8,
           backgroundColor: accent.main,
+          boxShadow: `0 0 12px ${accent.main}AA`,
         }}
       />
       {label}
