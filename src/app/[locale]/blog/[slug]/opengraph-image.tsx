@@ -3,14 +3,13 @@ import { ImageResponse } from "next/og";
 import {
   loadOgFonts,
   OG_SIZE,
-  OgBadge,
+  OgBlock,
+  OgBrand,
   OgFrame,
-  OgMeta,
-  OgTitle,
   ogAccent,
   titleSize,
 } from "@/app/_og/card";
-import { findContentBySlug, readingMinutes } from "@/features/blog";
+import { findContentBySlug } from "@/features/blog";
 
 import type { LocaleType } from "@/shared";
 
@@ -27,21 +26,16 @@ const CATEGORY_LABEL: Record<string, Record<string, string>> = {
   ja: { dev: "開発", life: "日常", stock: "投資" },
 };
 
-function formatDate(date: string, locale: string): string {
-  return new Date(date).toLocaleDateString(
-    locale === "ko" ? "ko-KR" : locale === "ja" ? "ja-JP" : "en-US",
-    { year: "numeric", month: "long", day: "numeric" },
-  );
-}
-
 export default async function Image({ params }: ImageProps) {
   const { locale, slug } = await params;
   const content = findContentBySlug(slug, locale);
   const fonts = await loadOgFonts();
 
   const title = content?.frontmatter.title ?? "chlalsrl.com";
-  const date = content?.frontmatter.date;
-  const minutes = content ? readingMinutes(content.content) : null;
+  const description =
+    content && !content.frontmatter.draft
+      ? content.frontmatter.description
+      : "";
   const category = content?.category ?? "dev";
   const accent = ogAccent(category);
   const categoryLabel =
@@ -49,30 +43,16 @@ export default async function Image({ params }: ImageProps) {
     CATEGORY_LABEL.en?.[category] ??
     "Blog";
 
-  const meta: string[] = [];
-  if (date) meta.push(formatDate(date, locale));
-  if (minutes) {
-    meta.push(
-      locale === "ko"
-        ? `${minutes}분 읽기`
-        : locale === "ja"
-          ? `${minutes}分で読める`
-          : `${minutes} min read`,
-    );
-  }
-
   return new ImageResponse(
     <OgFrame accent={accent}>
-      <div style={{ display: "flex" }}>
-        <OgBadge accent={accent} label={categoryLabel} />
-      </div>
-      <div style={{ display: "flex", marginTop: 40 }}>
-        <OgTitle size={titleSize(title)} maxWidth={950}>
-          {title}
-        </OgTitle>
-      </div>
-      <div style={{ display: "flex", flex: 1 }} />
-      <OgMeta items={meta} />
+      <OgBrand />
+      <OgBlock
+        accent={accent}
+        eyebrow={categoryLabel}
+        title={title}
+        size={titleSize(title)}
+        description={description}
+      />
     </OgFrame>,
     { ...size, fonts },
   );

@@ -4,10 +4,9 @@ import {
   loadOgFonts,
   OG_ACCENT_DEFAULT,
   OG_SIZE,
-  OgBadge,
+  OgBlock,
+  OgBrand,
   OgFrame,
-  OgMeta,
-  OgTitle,
 } from "@/app/_og/card";
 
 import type { LocaleType } from "@/shared";
@@ -29,21 +28,18 @@ const TAGLINE: Record<string, string> = {
 export default async function Image({ params }: ImageProps) {
   const { locale } = await params;
   const fonts = await loadOgFonts();
-  const accent = OG_ACCENT_DEFAULT;
   const primary = locale === "ko" ? "최민기" : "Mingi Choe";
 
   return new ImageResponse(
-    <OgFrame accent={accent}>
-      <div style={{ display: "flex" }}>
-        <OgBadge label="PRODUCT ENGINEER" />
-      </div>
-      <div style={{ display: "flex", marginTop: 40 }}>
-        <OgTitle size={96} maxWidth={950}>
-          {primary}
-        </OgTitle>
-      </div>
-      <div style={{ display: "flex", flex: 1 }} />
-      <OgMeta items={[TAGLINE[locale] ?? TAGLINE_EN, "chlalsrl.com"]} />
+    <OgFrame accent={OG_ACCENT_DEFAULT}>
+      <OgBrand label="chlalsrl.com" />
+      <OgBlock
+        accent={OG_ACCENT_DEFAULT}
+        eyebrow="PRODUCT ENGINEER"
+        title={primary}
+        size={92}
+        description={TAGLINE[locale] ?? TAGLINE_EN}
+      />
     </OgFrame>,
     { ...size, fonts },
   );

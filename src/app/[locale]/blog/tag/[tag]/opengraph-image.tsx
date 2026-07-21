@@ -4,10 +4,9 @@ import {
   loadOgFonts,
   OG_ACCENT_DEFAULT,
   OG_SIZE,
-  OgBadge,
+  OgBlock,
+  OgBrand,
   OgFrame,
-  OgMeta,
-  OgTitle,
 } from "@/app/_og/card";
 import { getAllContentsForLocale } from "@/features/blog";
 
@@ -30,7 +29,6 @@ export default async function Image({ params }: ImageProps) {
   const { locale, tag: rawTag } = await params;
   const tag = decodeURIComponent(rawTag);
   const fonts = await loadOgFonts();
-  const accent = OG_ACCENT_DEFAULT;
 
   const count = getAllContentsForLocale(locale).filter(
     (content) =>
@@ -39,15 +37,15 @@ export default async function Image({ params }: ImageProps) {
   const countLabel = (COUNT_LABEL[locale] ?? COUNT_LABEL.en!)(count);
 
   return new ImageResponse(
-    <OgFrame accent={accent}>
-      <div style={{ display: "flex" }}>
-        <OgBadge label="TAG" />
-      </div>
-      <div style={{ display: "flex", marginTop: 40 }}>
-        <OgTitle size={88}>{`#${tag}`}</OgTitle>
-      </div>
-      <div style={{ display: "flex", flex: 1 }} />
-      <OgMeta items={[countLabel, "chlalsrl.com/blog"]} />
+    <OgFrame accent={OG_ACCENT_DEFAULT}>
+      <OgBrand />
+      <OgBlock
+        accent={OG_ACCENT_DEFAULT}
+        eyebrow="TAG"
+        title={`#${tag}`}
+        size={88}
+        description={countLabel}
+      />
     </OgFrame>,
     { ...size, fonts },
   );
