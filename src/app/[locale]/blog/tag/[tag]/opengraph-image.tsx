@@ -3,11 +3,11 @@ import { ImageResponse } from "next/og";
 import {
   loadOgFonts,
   OG_ACCENT_DEFAULT,
-  OG_COLORS,
   OG_SIZE,
+  OgBadge,
   OgFrame,
+  OgMeta,
   OgTitle,
-  OgTopRow,
 } from "@/app/_og/card";
 import { getAllContentsForLocale } from "@/features/blog";
 
@@ -40,42 +40,14 @@ export default async function Image({ params }: ImageProps) {
 
   return new ImageResponse(
     <OgFrame accent={accent}>
-      <OgTopRow />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "flex-start",
-          gap: 22,
-        }}
-      >
+      <div style={{ display: "flex" }}>
+        <OgBadge label="TAG" />
+      </div>
+      <div style={{ display: "flex", marginTop: 40 }}>
         <OgTitle size={88}>{`#${tag}`}</OgTitle>
-        <span style={{ fontSize: 32, color: OG_COLORS.muted }}>
-          {countLabel}
-        </span>
       </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <span style={{ fontSize: 22, color: OG_COLORS.faint }}>
-          chlalsrl.com/blog
-        </span>
-        <div
-          style={{
-            width: 56,
-            height: 5,
-            display: "flex",
-            borderRadius: 5,
-            background: `linear-gradient(90deg, ${accent.main} 0%, ${accent.main}55 100%)`,
-          }}
-        />
-      </div>
+      <div style={{ display: "flex", flex: 1 }} />
+      <OgMeta items={[countLabel, "chlalsrl.com/blog"]} />
     </OgFrame>,
     { ...size, fonts },
   );

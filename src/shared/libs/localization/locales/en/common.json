@@ -7,11 +7,11 @@
   "sections": {
     "blog": {
       "title": "Writing",
-      "description": "Notes on building and living"
+      "description": "Writing about development, products, and everyday life"
     },
     "resume": {
       "title": "Resume",
-      "description": "What I've solved, why, and how",
+      "description": "A summary of my work and projects",
       "badge": "In progress"
     }
   },
@@ -101,7 +101,7 @@
   },
   "changelog": {
     "title": "Changelog",
-    "description": "How this site has evolved — generated from commits",
+    "description": "Site changes, generated automatically from commit history",
     "empty": "No entries."
   },
   "reading": {

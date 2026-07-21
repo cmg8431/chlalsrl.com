@@ -42,10 +42,10 @@ ${tags}
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>최민기 — Mingi Choe</title>
+    <title>최민기 Mingi Choe</title>
     <link>${SITE_URL}</link>
     <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml"/>
-    <description>프로덕트 엔지니어 최민기의 글</description>
+    <description>프로덕트 엔지니어 최민기의 블로그. 개발과 제품 만들기, 그 과정에서 배운 것들을 기록해요.</description>
     <language>${DEFAULT_LOCALE}</language>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
 ${items}

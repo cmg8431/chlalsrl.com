@@ -7,11 +7,11 @@
   "sections": {
     "blog": {
       "title": "記事",
-      "description": "作ること、暮らすことの記録"
+      "description": "開発やプロダクト、日常について書いています"
     },
     "resume": {
       "title": "履歴書",
-      "description": "どんな問題を、なぜ、どう解いてきたか",
+      "description": "これまでの仕事とプロジェクトのまとめです",
       "badge": "作業中"
     }
   },
@@ -99,7 +99,7 @@
   },
   "changelog": {
     "title": "チェンジログ",
-    "description": "このサイトの変遷 — コミットから自動生成",
+    "description": "コミット履歴から自動生成されるサイトの変更記録です",
     "empty": "記録がありません。"
   },
   "reading": {

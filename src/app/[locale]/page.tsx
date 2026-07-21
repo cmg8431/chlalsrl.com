@@ -69,8 +69,21 @@ export default async function Home({
     (content) => !content.frontmatter.draft,
   );
 
+  // 홈은 인물 프로필 문서 — 레이아웃 그래프의 #person을 주체로 연결한다
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${SITE_URL}/${locale}#profile`,
+    mainEntity: { "@id": `${SITE_URL}/#person` },
+    inLanguage: locale,
+  };
+
   return (
     <div className="space-y-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Reveal>
         <section className="pt-6">
           <h1 className="text-2xl font-semibold tracking-tight text-bright">

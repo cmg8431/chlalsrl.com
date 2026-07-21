@@ -191,11 +191,16 @@ export default async function PostPage({ params }: PostPageProps) {
     dateModified: updated ?? date,
     inLanguage: locale,
     keywords: tags?.join(", "),
+    articleSection: content.category,
+    image: `${SITE_URL}/${locale}/blog/${slug}/opengraph-image`,
+    timeRequired: `PT${minutes}M`,
     author: {
       "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
       name: "Mingi Choe",
       url: SITE_URL,
     },
+    url: `${SITE_URL}/${locale}/blog/${slug}`,
     mainEntityOfPage: `${SITE_URL}/${locale}/blog/${slug}`,
   };
 

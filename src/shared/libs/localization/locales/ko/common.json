@@ -7,11 +7,11 @@
   "sections": {
     "blog": {
       "title": "글",
-      "description": "만들고 살아가며 남기는 기록"
+      "description": "개발과 제품, 일상에 대한 글을 써요"
     },
     "resume": {
       "title": "이력서",
-      "description": "어떤 문제를, 왜, 어떻게 풀어왔는지",
+      "description": "지금까지 해온 일과 프로젝트를 정리했어요",
       "badge": "작업 중"
     }
   },
@@ -99,7 +99,7 @@
   },
   "changelog": {
     "title": "체인지로그",
-    "description": "이 사이트가 바뀌어 온 기록 — 커밋에서 자동 생성",
+    "description": "커밋 기록으로 자동 생성되는 이 사이트의 변경 이력이에요",
     "empty": "기록이 없습니다."
   },
   "reading": {

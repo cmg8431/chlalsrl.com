@@ -2,10 +2,10 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 /**
- * OG 이미지 디자인 시스템 v2 — "웜 다크 오로라".
- * 웜 블랙 캔버스 + 카테고리 액센트 글로우 + 1px 인너 프레임 + 그라디언트 타이포.
- * satori 제약: 다자녀 요소는 display:flex 필수, 배경은 그라디언트만 사용(외부 리소스 금지),
- * 멀티 배경 미지원이라 텍스처는 레이어(div)로 쌓는다.
+ * OG 이미지 디자인 시스템 v3 — "다크 컴팩트".
+ * 웜 블랙 캔버스에 좌상단 배지 → 굵은 제목 → 좌하단 메타 한 줄,
+ * 우하단 두 눈 마스코트 + 그 뒤 글로우 하나. 그 외 장식 없음.
+ * satori 제약: 다자녀 요소는 display:flex 필수.
  */
 
 export const OG_SIZE = { width: 1200, height: 630 };
@@ -14,37 +14,22 @@ export const OG_COLORS = {
   bright: "#FAF6EF",
   muted: "#B7AE9F",
   faint: "#7A7264",
-  frame: "rgba(250, 246, 239, 0.12)",
 };
-
-/** 밝은 상아색 → 웜 그레이로 떨어지는 제목용 그라디언트 */
-export const OG_TITLE_GRADIENT =
-  "linear-gradient(180deg, #FBF8F2 10%, #AEA491 115%)";
 
 export interface OgAccent {
   main: string;
   glow: string;
-  glowSub: string;
 }
 
 export const OG_ACCENT_DEFAULT: OgAccent = {
   main: "#E38B63",
-  glow: "rgba(227, 139, 99, 0.38)",
-  glowSub: "rgba(224, 163, 116, 0.20)",
+  glow: "rgba(227, 139, 99, 0.30)",
 };
 
 export const OG_ACCENTS: Record<string, OgAccent> = {
   dev: OG_ACCENT_DEFAULT,
-  life: {
-    main: "#9BBCA4",
-    glow: "rgba(155, 188, 164, 0.34)",
-    glowSub: "rgba(190, 211, 187, 0.18)",
-  },
-  stock: {
-    main: "#D9B266",
-    glow: "rgba(217, 178, 102, 0.32)",
-    glowSub: "rgba(226, 197, 141, 0.18)",
-  },
+  life: { main: "#9BBCA4", glow: "rgba(155, 188, 164, 0.28)" },
+  stock: { main: "#D9B266", glow: "rgba(217, 178, 102, 0.26)" },
 };
 
 export function ogAccent(key: string): OgAccent {
@@ -68,15 +53,13 @@ export async function loadOgFonts() {
   ];
 }
 
-/** 제목 길이에 따라 폰트 크기를 줄여 2~3줄 안에 안착시킨다 */
+/** 제목 길이에 따라 폰트 크기를 줄여 2줄 안에 안착시킨다 */
 export function titleSize(title: string): number {
-  if (title.length <= 14) return 88;
-  if (title.length <= 24) return 74;
-  if (title.length <= 38) return 62;
-  return 52;
+  if (title.length <= 14) return 84;
+  if (title.length <= 24) return 72;
+  if (title.length <= 38) return 60;
+  return 50;
 }
-
-const GRID = "rgba(250, 246, 239, 0.05)";
 
 export function OgFrame({
   accent,
@@ -92,87 +75,32 @@ export function OgFrame({
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        background: "linear-gradient(160deg, #1A1613 0%, #0E0C0A 100%)",
+        background: "linear-gradient(180deg, #131110 0%, #0E0C0A 100%)",
         fontFamily: "Pretendard",
         position: "relative",
         overflow: "hidden",
       }}
     >
-      {/* 그리드 텍스처 — 세로/가로 헤어라인 레이어 */}
+      {/* 마스코트 뒤 글로우 — 유일한 장식 */}
       <div
         style={{
           position: "absolute",
-          inset: 0,
+          bottom: -260,
+          right: -180,
+          width: 700,
+          height: 700,
           display: "flex",
-          backgroundImage: `repeating-linear-gradient(90deg, ${GRID} 0px, ${GRID} 1px, transparent 1px, transparent 84px)`,
+          borderRadius: 700,
+          background: `radial-gradient(circle, ${accent.glow} 0%, rgba(14, 12, 10, 0) 62%)`,
         }}
       />
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          backgroundImage: `repeating-linear-gradient(0deg, ${GRID} 0px, ${GRID} 1px, transparent 1px, transparent 84px)`,
-        }}
-      />
-      {/* 오로라 글로우 — 좌하단 액센트 */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: -300,
-          left: -200,
-          width: 880,
-          height: 880,
-          display: "flex",
-          borderRadius: 880,
-          background: `radial-gradient(circle, ${accent.glow} 0%, rgba(14, 12, 10, 0) 60%)`,
-        }}
-      />
-      {/* 오로라 글로우 — 우상단 보조 */}
-      <div
-        style={{
-          position: "absolute",
-          top: -320,
-          right: -220,
-          width: 820,
-          height: 820,
-          display: "flex",
-          borderRadius: 820,
-          background: `radial-gradient(circle, ${accent.glowSub} 0%, rgba(14, 12, 10, 0) 58%)`,
-        }}
-      />
-      {/* 하단 엣지 라이트 — 액센트가 프레임 아래에서 배어 나오는 느낌 */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: -140,
-          left: 200,
-          right: 200,
-          height: 240,
-          display: "flex",
-          borderRadius: 240,
-          background: `radial-gradient(circle, ${accent.glowSub} 0%, rgba(14, 12, 10, 0) 70%)`,
-        }}
-      />
-      {/* 1px 인너 프레임 */}
-      <div
-        style={{
-          position: "absolute",
-          top: 30,
-          left: 30,
-          right: 30,
-          bottom: 30,
-          display: "flex",
-          border: `1px solid ${OG_COLORS.frame}`,
-          borderRadius: 26,
-        }}
-      />
+      <OgEyes />
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           flex: 1,
-          padding: "84px 96px",
+          padding: "72px 84px",
           position: "relative",
         }}
       >
@@ -182,42 +110,72 @@ export function OgFrame({
   );
 }
 
-/** 상단 아이덴티티 로우 — 이름(좌) + 도메인(우) */
-export function OgTopRow() {
+/** 우하단 두 눈 마스코트 — 서비스 아이콘과 같은 비율 */
+export function OgEyes() {
+  const eye = 150;
+  const pupil = eye * 0.477;
+  const pupilOffset = eye * 0.403;
   return (
     <div
       style={{
+        position: "absolute",
+        right: 84,
+        bottom: 76,
+        width: eye * 2 + 26,
+        height: eye,
         display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
+        gap: 26,
       }}
     >
-      <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
-        <span
-          style={{ fontSize: 27, fontWeight: 600, color: OG_COLORS.bright }}
+      {[0, 1].map((i) => (
+        <div
+          key={i}
+          style={{
+            width: eye,
+            height: eye,
+            display: "flex",
+            position: "relative",
+            borderRadius: eye,
+            background:
+              "radial-gradient(circle, rgba(255,255,255,0.82) 55%, rgba(223,223,223,0.76) 100%)",
+          }}
         >
-          최민기
-        </span>
-        <span style={{ fontSize: 21, color: OG_COLORS.faint }}>Mingi Choe</span>
-      </div>
-      <span style={{ fontSize: 22, color: OG_COLORS.faint }}>chlalsrl.com</span>
+          <div
+            style={{
+              position: "absolute",
+              left: pupilOffset,
+              top: pupilOffset,
+              width: pupil,
+              height: pupil,
+              borderRadius: pupil,
+              background: "linear-gradient(45deg, #000000 0%, #404040 100%)",
+            }}
+          />
+        </div>
+      ))}
     </div>
   );
 }
 
-/** 아웃라인 카테고리 필 */
-export function OgPill({ accent, label }: { accent: OgAccent; label: string }) {
+/** 좌상단 배지 — 액센트 틴트 필 */
+export function OgBadge({
+  label,
+  accent = OG_ACCENT_DEFAULT,
+}: {
+  label: string;
+  accent?: OgAccent;
+}) {
   return (
     <div
       style={{
         display: "flex",
         alignItems: "center",
         gap: 10,
-        border: `1.5px solid ${accent.main}66`,
+        backgroundColor: `${accent.main}24`,
         color: accent.main,
         borderRadius: 999,
-        padding: "8px 22px",
-        fontSize: 24,
+        padding: "10px 24px",
+        fontSize: 25,
         fontWeight: 600,
       }}
     >
@@ -235,11 +193,11 @@ export function OgPill({ accent, label }: { accent: OgAccent; label: string }) {
   );
 }
 
-/** 그라디언트 타이포 제목 */
+/** 제목 — 밝은 단색, 2줄 이내 */
 export function OgTitle({
   children,
   size,
-  maxWidth = 940,
+  maxWidth = 950,
 }: {
   children: string;
   size: number;
@@ -251,13 +209,11 @@ export function OgTitle({
         display: "flex",
         fontSize: size,
         fontWeight: 800,
-        lineHeight: 1.18,
-        letterSpacing: "-0.035em",
+        lineHeight: 1.26,
+        letterSpacing: "-0.03em",
         wordBreak: "keep-all",
         maxWidth,
-        backgroundImage: OG_TITLE_GRADIENT,
-        backgroundClip: "text",
-        color: "transparent",
+        color: OG_COLORS.bright,
       }}
     >
       {children}
@@ -265,17 +221,37 @@ export function OgTitle({
   );
 }
 
-/** 액센트 시그니처 바 */
-export function OgAccentBar({ accent }: { accent: OgAccent }) {
+/** 좌하단 메타 한 줄 — "2026.7.22 | 5분 읽기" 꼴 */
+export function OgMeta({ items }: { items: string[] }) {
   return (
     <div
       style={{
-        width: 56,
-        height: 5,
         display: "flex",
-        borderRadius: 5,
-        background: `linear-gradient(90deg, ${accent.main} 0%, ${accent.main}55 100%)`,
+        alignItems: "center",
+        gap: 16,
+        fontSize: 24,
+        fontWeight: 600,
+        color: OG_COLORS.muted,
       }}
-    />
+    >
+      {items.map((item, i) => (
+        <div
+          key={item}
+          style={{ display: "flex", alignItems: "center", gap: 16 }}
+        >
+          {i > 0 && (
+            <div
+              style={{
+                width: 2,
+                height: 22,
+                display: "flex",
+                backgroundColor: OG_COLORS.faint,
+              }}
+            />
+          )}
+          {item}
+        </div>
+      ))}
+    </div>
   );
 }

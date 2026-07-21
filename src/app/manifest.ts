@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "최민기 — Mingi Choe",
+    name: "최민기 Mingi Choe",
     short_name: "최민기",
-    description: "프로덕트 엔지니어 최민기의 글",
+    description: "프로덕트 엔지니어 최민기의 블로그",
     start_url: "/",
     display: "standalone",
     background_color: "#111110",

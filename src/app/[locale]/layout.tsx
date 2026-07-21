@@ -42,16 +42,45 @@ const OG_LOCALE: Record<string, string> = {
   ja: "ja_JP",
 };
 
+// 검색 결과에 그대로 노출되는 문구 — 제목은 60자, 설명은 120~160자 안쪽으로 유지
+const SEO_COPY: Record<
+  LocaleType,
+  { title: string; template: string; description: string }
+> = {
+  ko: {
+    title: "최민기 Mingi Choe | 프로덕트 엔지니어",
+    template: "%s | 최민기",
+    description:
+      "프로덕트 엔지니어 최민기의 블로그. 개발과 제품 만들기, 그 과정에서 배운 것들을 기록해요.",
+  },
+  en: {
+    title: "Mingi Choe | Product Engineer",
+    template: "%s | Mingi Choe",
+    description:
+      "Blog by Mingi Choe, a product engineer. Writing about engineering, building products, and what I learn along the way.",
+  },
+  ja: {
+    title: "Mingi Choe | プロダクトエンジニア",
+    template: "%s | Mingi Choe",
+    description:
+      "プロダクトエンジニア Mingi Choe のブログ。開発とプロダクトづくりで学んだことを記録しています。",
+  },
+};
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: LocaleType }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const seo = SEO_COPY[locale];
   return {
     ...BASE_METADATA,
+    title: { default: seo.title, template: seo.template },
+    description: seo.description,
     openGraph: {
       ...BASE_METADATA.openGraph,
+      description: seo.description,
       locale: OG_LOCALE[locale] ?? "ko_KR",
       alternateLocale: Object.values(OG_LOCALE).filter(
         (l) => l !== (OG_LOCALE[locale] ?? "ko_KR"),
@@ -62,19 +91,17 @@ export async function generateMetadata({
 
 const BASE_METADATA: Metadata = {
   metadataBase: new URL("https://chlalsrl.com"),
-  title: {
-    default: "최민기 — Mingi Choe",
-    template: "%s · 최민기",
-  },
-  description:
-    "프로덕트 엔지니어 최민기. 프론트엔드, 프로덕트, 그리고 만들고 살아가며 남기는 기록.",
   keywords: [
     "최민기",
     "Mingi Choe",
-    "프론트엔드",
     "프로덕트 엔지니어",
+    "프론트엔드",
+    "프론트엔드 개발자",
+    "개발자",
     "개발 블로그",
+    "product engineer",
     "frontend engineer",
+    "software engineer",
   ],
   authors: [{ name: "Mingi Choe", url: "https://chlalsrl.com" }],
   creator: "Mingi Choe",
@@ -96,6 +123,7 @@ const BASE_METADATA: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: "@cmg8431",
     creator: "@cmg8431",
   },
   alternates: {
@@ -157,6 +185,12 @@ export default async function RootLayout({
         alternateName: "최민기",
         url: "https://chlalsrl.com",
         jobTitle: "Product Engineer",
+        knowsAbout: [
+          "Product Engineering",
+          "Frontend Development",
+          "Software Development",
+          "Web",
+        ],
         sameAs: [
           "https://github.com/cmg8431",
           "https://twitter.com/cmg8431",
@@ -167,7 +201,8 @@ export default async function RootLayout({
         "@type": "WebSite",
         "@id": "https://chlalsrl.com/#website",
         url: "https://chlalsrl.com",
-        name: "최민기 — Mingi Choe",
+        name: "최민기 Mingi Choe",
+        description: SEO_COPY[locale].description,
         inLanguage: locale,
         author: { "@id": "https://chlalsrl.com/#person" },
       },

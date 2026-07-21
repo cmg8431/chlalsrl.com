@@ -42,13 +42,19 @@ export function generateStaticParams() {
 
 const SITE_URL = "https://chlalsrl.com";
 
+const TAG_DESCRIPTION: Record<LocaleType, (tag: string) => string> = {
+  ko: (tag) => `${tag} 태그가 달린 글 목록이에요`,
+  en: (tag) => `Posts tagged ${tag}`,
+  ja: (tag) => `${tag} タグの記事一覧です`,
+};
+
 export async function generateMetadata({ params }: TagPageProps) {
   const { locale, tag: rawTag } = await params;
   const tag = decodeURIComponent(rawTag);
   const url = `${SITE_URL}/${locale}/blog/tag/${encodeURIComponent(tag)}`;
   return {
     title: `#${tag}`,
-    description: `#${tag}`,
+    description: TAG_DESCRIPTION[locale](tag),
     alternates: {
       canonical: url,
       languages: {

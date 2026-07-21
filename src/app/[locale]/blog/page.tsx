@@ -56,8 +56,31 @@ export default async function BlogPage({
     label: t(`categories.${category}`),
   }));
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "@id": `${SITE_URL}/${locale}/blog#blog`,
+    url: `${SITE_URL}/${locale}/blog`,
+    name: t("blog.title"),
+    description: t("sections.blog.description"),
+    inLanguage: locale,
+    author: { "@id": `${SITE_URL}/#person` },
+    blogPost: contents
+      .filter((content) => !content.frontmatter.draft)
+      .map((content) => ({
+        "@type": "BlogPosting",
+        headline: content.frontmatter.title,
+        url: `${SITE_URL}/${locale}/blog/${content.slug}`,
+        datePublished: content.frontmatter.date,
+      })),
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <IslandSignal
         message={t("island.posts", { count: contents.length })}
         icon="pen"

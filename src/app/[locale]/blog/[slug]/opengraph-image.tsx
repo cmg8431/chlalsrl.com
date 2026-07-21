@@ -2,12 +2,11 @@ import { ImageResponse } from "next/og";
 
 import {
   loadOgFonts,
-  OG_COLORS,
   OG_SIZE,
+  OgBadge,
   OgFrame,
-  OgPill,
+  OgMeta,
   OgTitle,
-  OgTopRow,
   ogAccent,
   titleSize,
 } from "@/app/_og/card";
@@ -41,10 +40,6 @@ export default async function Image({ params }: ImageProps) {
   const fonts = await loadOgFonts();
 
   const title = content?.frontmatter.title ?? "chlalsrl.com";
-  const description =
-    content && !content.frontmatter.draft
-      ? content.frontmatter.description
-      : "";
   const date = content?.frontmatter.date;
   const minutes = content ? readingMinutes(content.content) : null;
   const category = content?.category ?? "dev";
@@ -54,70 +49,30 @@ export default async function Image({ params }: ImageProps) {
     CATEGORY_LABEL.en?.[category] ??
     "Blog";
 
+  const meta: string[] = [];
+  if (date) meta.push(formatDate(date, locale));
+  if (minutes) {
+    meta.push(
+      locale === "ko"
+        ? `${minutes}분 읽기`
+        : locale === "ja"
+          ? `${minutes}分で読める`
+          : `${minutes} min read`,
+    );
+  }
+
   return new ImageResponse(
     <OgFrame accent={accent}>
-      <OgTopRow />
-
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "flex-start",
-          gap: 28,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <OgPill accent={accent} label={categoryLabel} />
-          {minutes && (
-            <span style={{ fontSize: 23, color: OG_COLORS.faint }}>
-              {locale === "ko"
-                ? `${minutes}분 읽기`
-                : locale === "ja"
-                  ? `${minutes}分で読める`
-                  : `${minutes} min read`}
-            </span>
-          )}
-        </div>
-        <OgTitle size={titleSize(title)}>{title}</OgTitle>
-        {description && (
-          <span
-            style={{
-              fontSize: 28,
-              lineHeight: 1.55,
-              color: OG_COLORS.muted,
-              maxWidth: 880,
-              wordBreak: "keep-all",
-            }}
-          >
-            {description.length > 64
-              ? `${description.slice(0, 64)}…`
-              : description}
-          </span>
-        )}
+      <div style={{ display: "flex" }}>
+        <OgBadge accent={accent} label={categoryLabel} />
       </div>
-
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <span style={{ fontSize: 22, color: OG_COLORS.faint }}>
-          {date ? formatDate(date, locale) : ""}
-        </span>
-        <div
-          style={{
-            width: 56,
-            height: 5,
-            display: "flex",
-            borderRadius: 5,
-            background: `linear-gradient(90deg, ${accent.main} 0%, ${accent.main}55 100%)`,
-          }}
-        />
+      <div style={{ display: "flex", marginTop: 40 }}>
+        <OgTitle size={titleSize(title)} maxWidth={950}>
+          {title}
+        </OgTitle>
       </div>
+      <div style={{ display: "flex", flex: 1 }} />
+      <OgMeta items={meta} />
     </OgFrame>,
     { ...size, fonts },
   );
