@@ -206,7 +206,7 @@ function CommentForm({
         aria-hidden
         className="absolute -left-[9999px] h-0 w-0 opacity-0"
       />
-      <div className="flex items-center gap-2.5 px-4 pt-3 pb-2.5">
+      <div className="flex items-center gap-2.5 px-4 pt-3 pb-1">
         <Avatar name={author} small />
         <input
           type="text"
@@ -244,7 +244,6 @@ function CommentForm({
           </svg>
         </button>
       </div>
-      <div className="h-px bg-line" />
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
@@ -257,7 +256,7 @@ function CommentForm({
         maxLength={1000}
         rows={compact ? 2 : 3}
         required
-        className="w-full appearance-none resize-none border-0 bg-transparent px-4 py-3 text-base leading-relaxed text-foreground outline-none placeholder:text-faint sm:text-sm"
+        className="w-full appearance-none resize-none border-0 bg-transparent px-4 pt-2 pb-3 text-base leading-relaxed text-foreground outline-none placeholder:text-faint sm:text-sm"
       />
       <div className="flex items-center justify-end gap-3 px-3 pb-3">
         {/* 제한에 가까워질 때만 카운터 노출 */}
@@ -282,7 +281,7 @@ function CommentForm({
         <button
           type="submit"
           disabled={busy || !author.trim() || !body.trim()}
-          className="rounded-full bg-line px-4 py-1.5 text-sm text-bright transition-all hover:opacity-80 active:scale-95 disabled:cursor-default disabled:opacity-40 disabled:hover:opacity-40"
+          className="rounded-full bg-bright px-4 py-1.5 text-sm font-medium text-background transition-all hover:opacity-85 active:scale-95 disabled:cursor-default disabled:bg-line disabled:text-faint disabled:hover:opacity-100"
         >
           {t("comments.submit")}
         </button>
