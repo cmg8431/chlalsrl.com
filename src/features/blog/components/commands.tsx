@@ -1,3 +1,5 @@
+"use client";
+
 import { hangulToQwerty } from "@/shared";
 
 export interface CommandContext {

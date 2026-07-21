@@ -8,7 +8,6 @@ export * from "./zoom-image";
 export * from "./mdx-heading";
 export * from "./toc";
 export * from "./command-menu";
-export * from "./commands";
 export * from "./share-row";
 export * from "./highlight-share";
 export * from "./top-highlight";
