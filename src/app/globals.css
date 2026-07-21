@@ -237,80 +237,76 @@ body::before {
   view-transition-name: none !important;
 }
 
-/* ---------- 모바일 스와이프 카드(당겨서 다음 글) ---------- */
-.swipe-card {
+/* ---------- 모바일 스와이프 오버레이(당겨서 다음 글) ----------
+   가장자리에서 배경색 그라데이션이 스며 나오고 제목이 떠오른다. 뉴트럴 톤만 사용 */
+.swipe-overlay {
   position: fixed;
-  top: 50%;
+  top: 0;
+  bottom: 0;
+  right: 0;
   z-index: 44;
-  width: min(16rem, 74vw);
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.8rem 0.9rem;
-  border: 1px solid var(--island-border);
-  border-radius: 18px;
-  background: var(--island-bg);
-  box-shadow: var(--island-shadow);
+  width: min(78vw, 22rem);
+  background: linear-gradient(
+    to left,
+    var(--background) 42%,
+    color-mix(in srgb, var(--background) 70%, transparent) 72%,
+    transparent 100%
+  );
   opacity: 0;
-  transform: translateY(-50%) translateX(120%);
   pointer-events: none;
-  will-change: transform, opacity;
-  transition: border-color 0.2s ease;
+  will-change: opacity;
 }
-.swipe-card.is-armed {
-  border-color: color-mix(in srgb, var(--accent) 50%, var(--island-border));
+.swipe-overlay--left {
+  right: auto;
+  left: 0;
+  background: linear-gradient(
+    to right,
+    var(--background) 42%,
+    color-mix(in srgb, var(--background) 70%, transparent) 72%,
+    transparent 100%
+  );
 }
-.swipe-card-arrow {
-  --ar: 0deg;
-  flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--background-soft);
-  font-size: 0.85rem;
-  color: var(--muted);
-  transform: rotate(var(--ar));
-  transition:
-    transform 0.25s var(--ease-spring),
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
+.swipe-overlay-inner {
+  position: absolute;
+  top: 50%;
+  right: 1.5rem;
+  max-width: 70%;
+  text-align: right;
+  transform: translateY(-50%);
+  will-change: transform;
 }
-.swipe-card--back .swipe-card-arrow {
-  --ar: 180deg;
+.swipe-overlay--left .swipe-overlay-inner {
+  right: auto;
+  left: 1.5rem;
+  text-align: left;
 }
-.swipe-card.is-armed .swipe-card-arrow {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--island-bg);
-  transform: rotate(var(--ar)) scale(1.08);
-}
-.swipe-card-label {
+.swipe-overlay-label {
   display: block;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.62rem;
+  font-size: 0.66rem;
   text-transform: uppercase;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.12em;
   color: var(--faint);
-  transition: color 0.2s ease;
+  transition: color 0.25s ease;
 }
-.swipe-card.is-armed .swipe-card-label {
-  color: var(--accent);
-}
-.swipe-card-title {
-  display: block;
-  margin-top: 0.22rem;
-  font-size: 0.92rem;
+.swipe-overlay-title {
+  margin-top: 0.45rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
-  color: var(--bright);
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+.swipe-overlay.is-armed .swipe-overlay-label {
+  color: var(--muted);
+}
+.swipe-overlay.is-armed .swipe-overlay-title {
+  color: var(--bright);
 }
 
 /* ---------- dynamic island ---------- */

@@ -16,11 +16,10 @@ const SPRING = "cubic-bezier(0.34, 1.3, 0.5, 1)";
 const THRESHOLD = 88; // 이만큼 당기면 arm(놓으면 이동)
 
 /**
- * 모바일 스와이프 — 당기면 가장자리에서 다음/이전 글 카드가 고무줄처럼 딸려 나온다.
- * 임계점 이상 당겨서 놓으면 이동(슬라이드 전환), 아니면 제자리로 스냅백.
- * (pull-to-refresh 같은 감성)
+ * 모바일 스와이프 — 당기면 가장자리에서 그라데이션 오버레이가 스며 나오며
+ * 다음/이전 글 제목이 떠오른다. 임계점 이상 당겨서 놓으면 이동, 아니면 스냅백.
  *
- * older = 오른쪽으로 당김(이전 글, 왼쪽 카드), newer = 왼쪽으로 당김(다음 글, 오른쪽 카드)
+ * older = 오른쪽으로 당김(이전 글, 왼쪽 가장자리), newer = 왼쪽으로 당김(다음 글, 오른쪽 가장자리)
  */
 export function PostSwipe({
   older,
@@ -35,7 +34,8 @@ export function PostSwipe({
 }) {
   const tRouter = useTransitionRouter();
   const router = useRouter();
-  const cardRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const [mounted, setMounted] = useState(false);
@@ -48,8 +48,9 @@ export function PostSwipe({
     if (newer) router.prefetch(newer.href);
 
     const main = document.querySelector("main");
-    const card = cardRef.current;
-    if (!main || !card) return;
+    const overlay = overlayRef.current;
+    const inner = innerRef.current;
+    if (!main || !overlay || !inner) return;
 
     let startX = 0;
     let startY = 0;
@@ -63,40 +64,38 @@ export function PostSwipe({
       0.32 * Math.min(p, THRESHOLD) + 0.14 * Math.max(0, p - THRESHOLD);
 
     const paint = (pull: number) => {
-      // 본문은 살짝 고무줄처럼 밀린다
+      // 본문은 고무줄처럼 살짝 밀린다
       main.style.transform = `translateX(${dirSign * damp(pull)}px)`;
-      // 카드는 화면 밖에서 임계점까지 서서히 들어온다
-      const w = card.offsetWidth + 20;
-      const hidden = dirSign < 0 ? w : -w;
-      const reveal = Math.min(1, pull / (THRESHOLD * 1.05));
-      card.style.transform = `translateY(-50%) translateX(${hidden * (1 - reveal)}px)`;
-      card.style.opacity = String(Math.min(1, pull / (THRESHOLD * 0.5)));
+      // 오버레이는 서서히 짙어지고, 텍스트는 가장자리에서 안쪽으로 떠오른다
+      const reveal = Math.min(1, pull / THRESHOLD);
+      overlay.style.opacity = String(reveal);
+      inner.style.transform = `translateY(-50%) translateX(${dirSign * 28 * (1 - reveal)}px)`;
 
       const nextArmed = pull >= THRESHOLD;
       if (nextArmed !== armed) {
         armed = nextArmed;
-        card.classList.toggle("is-armed", armed);
+        overlay.classList.toggle("is-armed", armed);
       }
     };
 
     const resetStyles = () => {
       main.style.transition = "";
       main.style.transform = "";
-      card.style.transition = "";
-      card.style.transform = "";
-      card.style.opacity = "0";
-      card.classList.remove("is-armed");
+      overlay.style.transition = "";
+      overlay.style.opacity = "0";
+      inner.style.transition = "";
+      inner.style.transform = "";
+      overlay.classList.remove("is-armed");
     };
 
     const springBack = () => {
       main.style.transition = `transform 0.42s ${SPRING}`;
-      card.style.transition = `transform 0.42s ${SPRING}, opacity 0.3s ease`;
+      overlay.style.transition = "opacity 0.3s ease";
+      inner.style.transition = `transform 0.42s ${SPRING}`;
       main.style.transform = "translateX(0px)";
-      const w = card.offsetWidth + 20;
-      const hidden = dirSign < 0 ? w : -w;
-      card.style.transform = `translateY(-50%) translateX(${hidden}px)`;
-      card.style.opacity = "0";
-      card.classList.remove("is-armed");
+      overlay.style.opacity = "0";
+      inner.style.transform = `translateY(-50%) translateX(${dirSign * 28}px)`;
+      overlay.classList.remove("is-armed");
       window.setTimeout(resetStyles, 440);
     };
 
@@ -141,12 +140,11 @@ export function PostSwipe({
         if (labelRef.current)
           labelRef.current.textContent = wantNewer ? nextLabel : prevLabel;
         if (titleRef.current) titleRef.current.textContent = target.title;
-        card.style.left = wantNewer ? "auto" : "12px";
-        card.style.right = wantNewer ? "12px" : "auto";
-        card.classList.toggle("swipe-card--back", !wantNewer);
+        overlay.classList.toggle("swipe-overlay--left", !wantNewer);
         engaged = true;
         main.style.transition = "none";
-        card.style.transition = "none";
+        overlay.style.transition = "none";
+        inner.style.transition = "none";
       }
 
       if (engaged) {
@@ -167,9 +165,9 @@ export function PostSwipe({
       engaged = false;
 
       if (armed) {
-        // 카드는 부드럽게 걷히고, 페이지 전체 슬라이드 전환이 이어받는다
-        card.style.transition = "opacity 0.2s ease";
-        card.style.opacity = "0";
+        // 오버레이는 걷히고, 페이지 전체 슬라이드 전환이 이어받는다
+        overlay.style.transition = "opacity 0.2s ease";
+        overlay.style.opacity = "0";
         main.style.transition = "none";
         main.style.transform = "";
         window.setTimeout(resetStyles, 220);
@@ -196,12 +194,11 @@ export function PostSwipe({
   if (!mounted || (!older && !newer)) return null;
 
   return createPortal(
-    <div ref={cardRef} className="swipe-card" aria-hidden>
-      <span className="swipe-card-arrow">→</span>
-      <span className="min-w-0">
-        <span ref={labelRef} className="swipe-card-label" />
-        <span ref={titleRef} className="swipe-card-title" />
-      </span>
+    <div ref={overlayRef} className="swipe-overlay" aria-hidden>
+      <div ref={innerRef} className="swipe-overlay-inner">
+        <span ref={labelRef} className="swipe-overlay-label" />
+        <h2 ref={titleRef} className="swipe-overlay-title" />
+      </div>
     </div>,
     document.body
   );
