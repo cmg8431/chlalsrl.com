@@ -17,21 +17,25 @@ const nextConfig: NextConfig = {
       "./node_modules/pretendard/dist/public/static/Pretendard-Regular.otf",
       "./node_modules/pretendard/dist/public/static/Pretendard-SemiBold.otf",
       "./node_modules/pretendard/dist/public/static/Pretendard-ExtraBold.otf",
+      "./src/app/_og/fonts/InstrumentSerif-Regular.ttf",
     ],
     "/[locale]/blog/opengraph-image": [
       "./node_modules/pretendard/dist/public/static/Pretendard-Regular.otf",
       "./node_modules/pretendard/dist/public/static/Pretendard-SemiBold.otf",
       "./node_modules/pretendard/dist/public/static/Pretendard-ExtraBold.otf",
+      "./src/app/_og/fonts/InstrumentSerif-Regular.ttf",
     ],
     "/[locale]/blog/tag/[tag]/opengraph-image": [
       "./node_modules/pretendard/dist/public/static/Pretendard-Regular.otf",
       "./node_modules/pretendard/dist/public/static/Pretendard-SemiBold.otf",
       "./node_modules/pretendard/dist/public/static/Pretendard-ExtraBold.otf",
+      "./src/app/_og/fonts/InstrumentSerif-Regular.ttf",
     ],
     "/[locale]/blog/[slug]/opengraph-image": [
       "./node_modules/pretendard/dist/public/static/Pretendard-Regular.otf",
       "./node_modules/pretendard/dist/public/static/Pretendard-SemiBold.otf",
       "./node_modules/pretendard/dist/public/static/Pretendard-ExtraBold.otf",
+      "./src/app/_og/fonts/InstrumentSerif-Regular.ttf",
     ],
   },
   async headers() {

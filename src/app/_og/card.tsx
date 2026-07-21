@@ -31,15 +31,19 @@ const FONT_DIR = "node_modules/pretendard/dist/public/static";
 export async function loadOgFonts() {
   const load = (file: string) =>
     fs.readFile(path.join(process.cwd(), FONT_DIR, file));
-  const [regular, semibold, extrabold] = await Promise.all([
+  const [regular, semibold, extrabold, serif] = await Promise.all([
     load("Pretendard-Regular.otf"),
     load("Pretendard-SemiBold.otf"),
     load("Pretendard-ExtraBold.otf"),
+    fs.readFile(
+      path.join(process.cwd(), "src/app/_og/fonts/InstrumentSerif-Regular.ttf"),
+    ),
   ]);
   return [
     { name: "Pretendard", data: regular, weight: 400 as const },
     { name: "Pretendard", data: semibold, weight: 600 as const },
     { name: "Pretendard", data: extrabold, weight: 800 as const },
+    { name: "InstrumentSerif", data: serif, weight: 400 as const },
   ];
 }
 
@@ -72,46 +76,39 @@ export function OgFrame({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** 상단 브랜드 로우 — 두 눈 마크 + 도메인 */
+/** 상단 브랜드 로우 — 액센트 성표 마크 + 세리프 워드마크 */
 export function OgBrand() {
-  const eye = 34;
-  const pupil = eye * 0.477;
-  const pupilOffset = eye * 0.403;
+  const rays = Array.from({ length: 8 }, (_, i) => (i * 180) / 4);
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-      <div style={{ display: "flex", gap: 7 }}>
-        {[0, 1].map((i) => (
-          <div
-            key={i}
-            style={{
-              width: eye,
-              height: eye,
-              display: "flex",
-              position: "relative",
-              borderRadius: eye,
-              background: "rgba(250, 246, 239, 0.94)",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                left: pupilOffset,
-                top: pupilOffset,
-                width: pupil,
-                height: pupil,
-                borderRadius: pupil,
-                backgroundColor: "#161310",
-              }}
-            />
-          </div>
+    <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+      <svg
+        width="46"
+        height="46"
+        viewBox="0 0 46 46"
+        fill="none"
+        role="img"
+        aria-label="mark"
+      >
+        {rays.map((deg) => (
+          <line
+            key={deg}
+            x1="23"
+            y1="8"
+            x2="23"
+            y2="17.5"
+            stroke={OG_ACCENT_DEFAULT.main}
+            strokeWidth="5.5"
+            strokeLinecap="round"
+            transform={`rotate(${deg} 23 23)`}
+          />
         ))}
-      </div>
+      </svg>
       <span
         style={{
-          fontSize: 34,
-          fontWeight: 600,
+          fontSize: 44,
+          fontFamily: "InstrumentSerif",
           color: "#F5F1E9",
-          letterSpacing: "-0.01em",
+          letterSpacing: "0.01em",
         }}
       >
         chlalsrl.com
