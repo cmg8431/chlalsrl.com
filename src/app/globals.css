@@ -237,35 +237,80 @@ body::before {
   view-transition-name: none !important;
 }
 
-/* ---------- 모바일 스와이프 프리뷰 ---------- */
-.swipe-preview {
+/* ---------- 모바일 스와이프 카드(당겨서 다음 글) ---------- */
+.swipe-card {
   position: fixed;
-  inset: 0;
-  z-index: 40;
-  background: var(--background);
-  transform: translateX(100%);
+  top: 50%;
+  z-index: 44;
+  width: min(16rem, 74vw);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--island-border);
+  border-radius: 18px;
+  background: var(--island-bg);
+  box-shadow: var(--island-shadow);
   opacity: 0;
+  transform: translateY(-50%) translateX(120%);
   pointer-events: none;
   will-change: transform, opacity;
-  box-shadow: 0 0 48px -8px rgb(0 0 0 / 0.25);
+  transition: border-color 0.2s ease;
 }
-.swipe-preview-inner {
-  max-width: 36rem;
-  margin: 0 auto;
-  padding: max(4.5rem, env(safe-area-inset-top)) 1.5rem 0;
+.swipe-card.is-armed {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--island-border));
 }
-.swipe-preview-label {
+.swipe-card-arrow {
+  --ar: 0deg;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--background-soft);
+  font-size: 0.85rem;
+  color: var(--muted);
+  transform: rotate(var(--ar));
+  transition:
+    transform 0.25s var(--ease-spring),
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.swipe-card--back .swipe-card-arrow {
+  --ar: 180deg;
+}
+.swipe-card.is-armed .swipe-card-arrow {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--island-bg);
+  transform: rotate(var(--ar)) scale(1.08);
+}
+.swipe-card-label {
   display: block;
-  font-size: 0.75rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
   color: var(--faint);
+  transition: color 0.2s ease;
 }
-.swipe-preview-title {
-  margin-top: 0.5rem;
-  font-size: 1.5rem;
+.swipe-card.is-armed .swipe-card-label {
+  color: var(--accent);
+}
+.swipe-card-title {
+  display: block;
+  margin-top: 0.22rem;
+  font-size: 0.92rem;
   font-weight: 600;
   line-height: 1.3;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   color: var(--bright);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ---------- dynamic island ---------- */

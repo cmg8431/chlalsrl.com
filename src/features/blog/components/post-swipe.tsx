@@ -1,22 +1,26 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTransitionRouter } from "next-view-transitions";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+
+import { slideNavigate } from "../libs/slide-nav";
 
 interface NavPost {
   href: string;
   title: string;
 }
 
-const SPRING = "transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)";
+const SPRING = "cubic-bezier(0.34, 1.3, 0.5, 1)";
+const THRESHOLD = 88; // 이만큼 당기면 arm(놓으면 이동)
 
 /**
- * 모바일 인터랙티브 스와이프 — 손가락을 따라 현재 글이 밀리고
- * 목표 글의 프리뷰가 반대편에서 함께 따라 들어온다.
- * 화면 폭의 일정 비율 이상 당기면 이동, 아니면 제자리로 스냅백.
+ * 모바일 스와이프 — 당기면 가장자리에서 다음/이전 글 카드가 고무줄처럼 딸려 나온다.
+ * 임계점 이상 당겨서 놓으면 이동(슬라이드 전환), 아니면 제자리로 스냅백.
+ * (pull-to-refresh 같은 감성)
  *
- * older = 오른쪽으로 당김(이전 글), newer = 왼쪽으로 당김(다음 글)
+ * older = 오른쪽으로 당김(이전 글, 왼쪽 카드), newer = 왼쪽으로 당김(다음 글, 오른쪽 카드)
  */
 export function PostSwipe({
   older,
@@ -29,8 +33,9 @@ export function PostSwipe({
   prevLabel: string;
   nextLabel: string;
 }) {
+  const tRouter = useTransitionRouter();
   const router = useRouter();
-  const previewRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const [mounted, setMounted] = useState(false);
@@ -39,55 +44,72 @@ export function PostSwipe({
 
   useEffect(() => {
     if (!older && !newer) return;
-
-    // 다음 이동을 빠르게 — 대상 글 미리 프리페치
     if (older) router.prefetch(older.href);
     if (newer) router.prefetch(newer.href);
 
     const main = document.querySelector("main");
-    const preview = previewRef.current;
-    if (!main || !preview) return;
+    const card = cardRef.current;
+    if (!main || !card) return;
 
     let startX = 0;
     let startY = 0;
-    let vw = window.innerWidth;
     let engaged = false;
     let rejected = false;
+    let armed = false;
     let target: NavPost | null = null;
-    let dirSign = 0; // newer(왼쪽으로 밀기) = -1, older = +1
+    let dirSign = 0; // newer = -1, older = +1
 
-    const setTransition = (on: boolean) => {
-      const t = on ? SPRING : "none";
-      main.style.transition = t;
-      preview.style.transition = on ? `${SPRING}, opacity 0.42s ease` : "none";
+    const damp = (p: number) =>
+      0.32 * Math.min(p, THRESHOLD) + 0.14 * Math.max(0, p - THRESHOLD);
+
+    const paint = (pull: number) => {
+      // 본문은 살짝 고무줄처럼 밀린다
+      main.style.transform = `translateX(${dirSign * damp(pull)}px)`;
+      // 카드는 화면 밖에서 임계점까지 서서히 들어온다
+      const w = card.offsetWidth + 20;
+      const hidden = dirSign < 0 ? w : -w;
+      const reveal = Math.min(1, pull / (THRESHOLD * 1.05));
+      card.style.transform = `translateY(-50%) translateX(${hidden * (1 - reveal)}px)`;
+      card.style.opacity = String(Math.min(1, pull / (THRESHOLD * 0.5)));
+
+      const nextArmed = pull >= THRESHOLD;
+      if (nextArmed !== armed) {
+        armed = nextArmed;
+        card.classList.toggle("is-armed", armed);
+      }
     };
 
-    const paint = (dx: number) => {
-      main.style.transform = `translateX(${dx}px)`;
-      // 프리뷰는 밀어낸 방향 반대편 화면 밖에서 대기하다 함께 들어온다
-      const base = dirSign < 0 ? vw : -vw;
-      preview.style.transform = `translateX(${base + dx}px)`;
-      preview.style.opacity = String(Math.min(1, Math.abs(dx) / (vw * 0.5)));
-    };
-
-    const reset = () => {
+    const resetStyles = () => {
       main.style.transition = "";
       main.style.transform = "";
-      preview.style.transition = "";
-      preview.style.transform = "";
-      preview.style.opacity = "0";
+      card.style.transition = "";
+      card.style.transform = "";
+      card.style.opacity = "0";
+      card.classList.remove("is-armed");
+    };
+
+    const springBack = () => {
+      main.style.transition = `transform 0.42s ${SPRING}`;
+      card.style.transition = `transform 0.42s ${SPRING}, opacity 0.3s ease`;
+      main.style.transform = "translateX(0px)";
+      const w = card.offsetWidth + 20;
+      const hidden = dirSign < 0 ? w : -w;
+      card.style.transform = `translateY(-50%) translateX(${hidden}px)`;
+      card.style.opacity = "0";
+      card.classList.remove("is-armed");
+      window.setTimeout(resetStyles, 440);
     };
 
     const onStart = (e: TouchEvent) => {
       const touch = e.touches[0];
       engaged = false;
       rejected = false;
+      armed = false;
       target = null;
       if (e.touches.length !== 1 || !touch) {
         rejected = true;
         return;
       }
-      // 가로 스크롤 영역(코드블록·표) 위에서는 스와이프를 잡지 않는다
       const el = touch.target as HTMLElement | null;
       if (el?.closest("pre, table, [data-no-swipe]")) {
         rejected = true;
@@ -95,7 +117,6 @@ export function PostSwipe({
       }
       startX = touch.clientX;
       startY = touch.clientY;
-      vw = window.innerWidth;
     };
 
     const onMove = (e: TouchEvent) => {
@@ -107,7 +128,7 @@ export function PostSwipe({
 
       if (!engaged) {
         if (Math.abs(dx) < 10 || Math.abs(dx) < Math.abs(dy) * 1.2) {
-          if (Math.abs(dy) > 12) rejected = true; // 세로 스크롤로 확정
+          if (Math.abs(dy) > 12) rejected = true;
           return;
         }
         const wantNewer = dx < 0;
@@ -117,53 +138,45 @@ export function PostSwipe({
           return;
         }
         dirSign = wantNewer ? -1 : 1;
-        // 프리뷰 내용 채우기
         if (labelRef.current)
           labelRef.current.textContent = wantNewer ? nextLabel : prevLabel;
         if (titleRef.current) titleRef.current.textContent = target.title;
+        card.style.left = wantNewer ? "auto" : "12px";
+        card.style.right = wantNewer ? "12px" : "auto";
+        card.classList.toggle("swipe-card--back", !wantNewer);
         engaged = true;
-        setTransition(false);
+        main.style.transition = "none";
+        card.style.transition = "none";
       }
 
       if (engaged) {
         e.preventDefault();
-        // 방향이 맞을 때만 따라오고, 반대로 밀면 저항(제자리 근처)
-        const follow = dirSign < 0 ? Math.min(dx, 0) : Math.max(dx, 0);
-        paint(follow);
+        const pull = dirSign < 0 ? Math.max(0, -dx) : Math.max(0, dx);
+        paint(pull);
       }
     };
 
     const onEnd = () => {
       if (!engaged || !target) {
-        rejected = false;
         engaged = false;
+        rejected = false;
         return;
       }
-      const current = new DOMMatrix(getComputedStyle(main).transform);
-      const dx = current.m41; // 현재 translateX(px)
-      const committed = Math.abs(dx) > vw * 0.3;
       const dest = target.href;
-
-      setTransition(true);
-      if (committed) {
-        // 끝까지 밀어내고 프리뷰를 중앙으로 → 이동
-        main.style.transform = `translateX(${dirSign * vw}px)`;
-        preview.style.transform = "translateX(0px)";
-        preview.style.opacity = "1";
-        window.setTimeout(() => {
-          router.push(dest);
-          // 새 페이지가 프리뷰 뒤에서 렌더된 뒤 원위치 복구
-          window.setTimeout(reset, 160);
-        }, 360);
-      } else {
-        // 스냅백
-        main.style.transform = "translateX(0px)";
-        const base = dirSign < 0 ? vw : -vw;
-        preview.style.transform = `translateX(${base}px)`;
-        preview.style.opacity = "0";
-        window.setTimeout(reset, 420);
-      }
+      const dir = dirSign < 0 ? "forward" : "back";
       engaged = false;
+
+      if (armed) {
+        // 카드는 부드럽게 걷히고, 페이지 전체 슬라이드 전환이 이어받는다
+        card.style.transition = "opacity 0.2s ease";
+        card.style.opacity = "0";
+        main.style.transition = "none";
+        main.style.transform = "";
+        window.setTimeout(resetStyles, 220);
+        slideNavigate(tRouter, dest, dir);
+      } else {
+        springBack();
+      }
       target = null;
     };
 
@@ -176,19 +189,19 @@ export function PostSwipe({
       window.removeEventListener("touchmove", onMove);
       window.removeEventListener("touchend", onEnd);
       window.removeEventListener("touchcancel", onEnd);
-      reset();
+      resetStyles();
     };
-  }, [mounted, older, newer, prevLabel, nextLabel, router]);
+  }, [mounted, older, newer, prevLabel, nextLabel, router, tRouter]);
 
   if (!mounted || (!older && !newer)) return null;
 
-  // main에 걸리는 transform에 갇히지 않도록 프리뷰는 body로 포탈
   return createPortal(
-    <div ref={previewRef} className="swipe-preview" aria-hidden>
-      <div className="swipe-preview-inner">
-        <span ref={labelRef} className="swipe-preview-label" />
-        <h2 ref={titleRef} className="swipe-preview-title" />
-      </div>
+    <div ref={cardRef} className="swipe-card" aria-hidden>
+      <span className="swipe-card-arrow">→</span>
+      <span className="min-w-0">
+        <span ref={labelRef} className="swipe-card-label" />
+        <span ref={titleRef} className="swipe-card-title" />
+      </span>
     </div>,
     document.body
   );
