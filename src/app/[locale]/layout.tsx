@@ -141,7 +141,7 @@ export function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
 }
 
-const themeInit = `(function(){try{var d=document.documentElement,t=localStorage.getItem("theme");if(t==="dark"||t==="light")d.dataset.theme=t;var s=localStorage.getItem("reading-size");if(s==="sm"||s==="lg")d.dataset.readingSize=s;if(localStorage.getItem("reading-focus")==="on")d.dataset.readingFocus="on"}catch(e){}})()`;
+const themeInit = `(function(){try{var d=document.documentElement,t=localStorage.getItem("theme");if(t==="dark"||t==="light")d.dataset.theme=t;var s=localStorage.getItem("reading-size");if(s==="sm"||s==="lg")d.dataset.readingSize=s;if(localStorage.getItem("reading-focus")==="on")d.dataset.readingFocus="on";if(sessionStorage.getItem("locale-switched")){d.dataset.langEnter="";setTimeout(function(){delete d.dataset.langEnter},520)}}catch(e){}addEventListener("pageshow",function(){delete d.dataset.langExit})})()`;
 
 export default async function RootLayout({
   children,

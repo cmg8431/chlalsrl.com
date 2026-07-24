@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { changeLanguage, SUPPORTED_LOCALES, useLocale, useT } from "../libs";
+import { SUPPORTED_LOCALES, switchLocale, useLocale, useT } from "../libs";
 
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
   const locale = useLocale();
@@ -76,7 +76,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
                     role="menuitem"
                     onClick={() => {
                       setOpen(false);
-                      changeLanguage(loc);
+                      switchLocale(loc);
                     }}
                     className={`flex w-full items-center justify-between gap-6 rounded-lg px-3 py-1.5 text-left text-sm transition-colors ${
                       active

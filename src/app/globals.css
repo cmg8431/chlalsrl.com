@@ -232,6 +232,53 @@ body::before {
   view-transition-name: none !important;
 }
 
+/* 언어 전환 — 로케일이 루트 레이아웃 세그먼트라 항상 풀 내비게이션이다.
+   뷰 트랜지션 대신 뷰포트 고정 오버레이가 화면을 흐려 덮었다가(exit)
+   새 문서에서 걷히며(enter) 두 문서를 한 동작으로 잇는다.
+   body에 filter/transform을 걸면 fixed 요소(아일랜드)의 컨테이닝 블록이
+   바뀌어 튀므로, 블러는 오버레이의 backdrop-filter로만 건다 */
+:root[data-lang-exit]::after,
+:root[data-lang-enter]::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  background: var(--background);
+}
+:root[data-lang-exit]::after {
+  animation: lang-exit 0.2s ease-in both;
+}
+:root[data-lang-enter]::after {
+  animation: lang-enter 0.42s var(--ease-out) both;
+}
+@keyframes lang-exit {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(7px);
+  }
+}
+@keyframes lang-enter {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(7px);
+  }
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-lang-exit]::after,
+  :root[data-lang-enter]::after {
+    content: none;
+  }
+}
+
 /* 가장자리에서 배경색 그라데이션이 스며 나오고 제목이 떠오른다. 뉴트럴 톤만 사용 */
 .swipe-overlay {
   position: fixed;
