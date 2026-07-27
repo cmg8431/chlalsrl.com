@@ -62,7 +62,6 @@
     "copied": "복사했어요"
   },
   "resume": {
-    "print": "인쇄",
     "experience": "경력",
     "projects": "프로젝트",
     "education": "학력 · 자격",
@@ -70,7 +69,12 @@
     "situation": "상황",
     "action": "행동",
     "result": "결과",
-    "side": "사이드"
+    "side": "사이드",
+    "evidence": "근거",
+    "summaryOpen": "요약 다시 보기",
+    "close": "닫기",
+    "like": "좋아요",
+    "comments": "댓글"
   },
   "categories": {
     "all": "전체",

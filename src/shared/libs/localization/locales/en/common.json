@@ -64,7 +64,6 @@
     "copied": "Copied"
   },
   "resume": {
-    "print": "Print",
     "experience": "Experience",
     "projects": "Projects",
     "education": "Education & Certifications",
@@ -72,7 +71,12 @@
     "situation": "Situation",
     "action": "Action",
     "result": "Result",
-    "side": "Side work"
+    "side": "Side work",
+    "evidence": "Evidence",
+    "summaryOpen": "Show summary",
+    "close": "Close",
+    "like": "Like",
+    "comments": "Comments"
   },
   "categories": {
     "all": "All",

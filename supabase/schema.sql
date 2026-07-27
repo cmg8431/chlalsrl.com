@@ -89,3 +89,32 @@ create policy "anyone can read highlights" on highlights for select using (true)
 drop policy if exists "anyone can write highlights" on highlights;
 create policy "anyone can write highlights" on highlights for insert
   with check (char_length(text) between 8 and 300);
+
+-- 이력서 열람: 회사별 링크(/resume/<회사>)가 언제 · 얼마나 · 어디까지 읽혔는지.
+-- 사람을 되짚을 수 있는 값은 넣지 않는다 — IP도 UA도 저장하지 않고,
+-- session_id 는 브라우저가 스스로 만든 난수다.
+create table if not exists resume_views (
+  id uuid primary key default gen_random_uuid(),
+  company text,
+  locale text not null,
+  session_id uuid not null,
+  referrer text,
+  seconds integer not null default 0,
+  deepest_section text,
+  created_at timestamptz not null default now()
+);
+create index if not exists resume_views_company_idx
+  on resume_views (company, created_at desc);
+alter table resume_views enable row level security;
+
+-- 쓰기만 연다. 읽기 정책이 없으므로 공개 키로는 아무도 조회하지 못한다.
+-- 통계는 서비스 롤 키를 쓰는 서버(/resume/stats)에서만 읽는다.
+drop policy if exists "anyone can record a resume view" on resume_views;
+create policy "anyone can record a resume view" on resume_views for insert
+  with check (
+    seconds between 0 and 86400
+    and (company is null or char_length(company) between 1 and 60)
+    and char_length(locale) between 2 and 8
+    and (referrer is null or char_length(referrer) <= 500)
+    and (deepest_section is null or char_length(deepest_section) <= 80)
+  );

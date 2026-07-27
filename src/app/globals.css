@@ -1160,31 +1160,46 @@ html[data-reading-focus="on"] .prose-blog > * {
   font-weight: 600;
 }
 
-/* 이력서는 사이트가 아니라 문서다 — 테마를 따라가지 않고 늘 같은 흰 바탕에 놓는다.
-   :root에 걸어야 고정 배치인 아일랜드까지 같은 톤으로 따라온다.
-   잉크는 사이트보다 진하게 — 정보 밀도가 높은 문서는 같은 회색도 흐리게 읽힌다 */
-/* 이력서는 중성 그레이만 쓴다 — 색이 하나라도 끼면 문서가 아니라 홍보물이 된다.
-   대비는 사이트보다 세게: 본문 #1f1f1f, 보조 #4a4a48, 메타 #75746f.
-   회색 단계를 셋으로 묶어 어느 줄이 본문이고 어느 줄이 메타인지 바로 갈리게 한다 */
-:root:has(.resume-doc) {
-  color-scheme: light;
-  --background: #fdfdfd;
-  --background-soft: #f1f1f0;
-  --foreground: #1f1f1f;
-  --bright: #0a0a0a;
-  --muted: #4a4a48;
-  --faint: #75746f;
-  --line: #e0e0dd;
-  --accent: #1f1f1f;
-  --island-bg: #ffffff;
-  --island-border: #e4e4e1;
-  --island-shadow:
-    0 1px 2px rgb(20 20 20 / 0.05), 0 12px 28px -14px rgb(20 20 20 / 0.24);
+/* 이력서도 사이트와 같은 웜 뉴트럴 톤을 쓰고 테마도 그대로 따라간다.
+   다만 정보 밀도가 높은 문서는 같은 회색이 더 흐리게 읽히므로 잉크만 한 단계 민다 —
+   색 계열은 건드리지 않고 대비만 올린다. 문서에 색이 끼면 홍보물이 되는 건 여전하다.
+   :root이 아니라 .resume-doc에 걸어야 사이트 표면(아일랜드)이 제 톤을 지킨다.
+
+   --color-* 까지 같이 덮는 이유: @theme inline의 `--color-muted: var(--muted)`는
+   :root에서 이미 치환을 끝내고 그 결과값이 내려온다. 사이트 토큰만 덮으면
+   생 CSS(라벨)만 밝아지고 Tailwind 유틸리티(text-muted)는 꿈쩍도 하지 않는다 */
+.resume-doc {
+  --foreground: #24221d;
+  --bright: #100f0e;
+  --muted: #4d4b45;
+  --faint: #757369;
+  --line: #e0dfda;
+
+  --color-foreground: var(--foreground);
+  --color-bright: var(--bright);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
 }
 
-/* 종이 위에서 테마 토글은 아무 일도 하지 않는다 — 눌러보게 두지 않는다 */
-:root:has(.resume-doc) [aria-label="Toggle theme"] {
-  display: none;
+/* 어두운 바탕에서는 같은 회색이 훨씬 더 죽는다. 본문 13:1, 라벨·기간 8:1까지 올린다.
+   특히 --faint는 11px 라벨과 10.5px 기간이 함께 쓰는 값이라 여기서 밀리면 다 안 읽힌다.
+   --bright만 순백으로 두고 본문을 한 단 아래 둔다 — 전부 흰색이면 위계가 사라진다 */
+:root[data-theme="dark"] .resume-doc {
+  --foreground: #f2f1ee;
+  --bright: #ffffff;
+  --muted: #d8d6d0;
+  --faint: #adaba3;
+  --line: #3f3f39;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .resume-doc {
+    --foreground: #f2f1ee;
+    --bright: #ffffff;
+    --muted: #d8d6d0;
+    --faint: #adaba3;
+    --line: #3f3f39;
+  }
 }
 
 /* 진입 스테이지 — 순번만 마크업에서 주고 지연·질감은 여기서 정한다 */
@@ -1376,6 +1391,15 @@ html[data-reading-focus="on"] .prose-blog > * {
   background: var(--faint);
   opacity: 0.55;
 }
+/* 어두운 바탕에서 55%는 점이 그냥 사라진다 — 눌러 두는 건 밝은 쪽에서만 */
+:root[data-theme="dark"] .resume-bullet::before {
+  opacity: 0.85;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .resume-bullet::before {
+    opacity: 0.85;
+  }
+}
 
 /* 변화폭 게이지 — 숫자 아래 얇은 선이 --fill 만큼 차오른다 */
 .resume-gauge {
@@ -1540,44 +1564,75 @@ html[data-reading-focus="on"] .prose-blog > * {
   color: var(--muted);
 }
 
+/* 근거 — PR · 커밋 · 배포된 화면. 접어두고 의심이 든 사람만 편다.
+   펼쳐 늘어놓으면 성과보다 URL이 먼저 읽힌다 */
+.resume-evidence {
+  margin-top: 0.85rem;
+  margin-left: 3.1rem;
+}
+.resume-evidence-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.16rem 0.5rem;
+  margin-left: -0.5rem;
+  border-radius: 999px;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+  transition:
+    color 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out);
+}
+.resume-evidence-summary::-webkit-details-marker {
+  display: none;
+}
+/* 펼침 상태를 부호 하나로만 알린다 — 삼각형 화살표는 문서 톤을 깬다 */
+.resume-evidence-summary::after {
+  content: "+";
+  font-size: 11px;
+  line-height: 1;
+}
+.resume-evidence[open] .resume-evidence-summary::after {
+  content: "−";
+}
+.resume-evidence-summary:hover {
+  background: var(--background-soft);
+  color: var(--bright);
+}
+.resume-evidence-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+@media (max-width: 47.99rem) {
+  .resume-evidence {
+    margin-left: 0;
+  }
+}
+
 /* ai native 섹션 — 이력서에서 유일하게 파란 톤을 쓰는 자리.
-   문서의 다른 잉크 톤과 대비되어 "AI 시대 인재" 주장이 눈에 먼저 든다 */
+   상자로 두르지 않는다. 테두리를 치면 본문에서 떨어져 나온 광고처럼 보인다.
+   파란 결은 위쪽 헤어라인과 라벨 · 세로줄에만 남겨 문서의 일부로 둔다 */
 .ai-native {
   --ai: #3b82f6;
   --ai-soft: #60a5fa;
   position: relative;
-  padding: 1.5rem 1.6rem 1.65rem;
-  border: 1px solid color-mix(in srgb, var(--ai) 22%, var(--line));
-  border-radius: 16px;
-  background:
-    radial-gradient(
-      120% 80% at 0% 0%,
-      color-mix(in srgb, var(--ai) 8%, transparent) 0%,
-      transparent 55%
-    ),
-    color-mix(in srgb, var(--ai) 3%, var(--background));
-  overflow: hidden;
+  padding-top: 1.4rem;
 }
 :root[data-theme="dark"] .ai-native {
   --ai: #60a5fa;
-  background:
-    radial-gradient(
-      120% 80% at 0% 0%,
-      color-mix(in srgb, var(--ai) 12%, transparent) 0%,
-      transparent 55%
-    ),
-    color-mix(in srgb, var(--ai) 5%, var(--background));
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .ai-native {
     --ai: #60a5fa;
-    background:
-      radial-gradient(
-        120% 80% at 0% 0%,
-        color-mix(in srgb, var(--ai) 12%, transparent) 0%,
-        transparent 55%
-      ),
-      color-mix(in srgb, var(--ai) 5%, var(--background));
   }
 }
 /* 상단 헤어라인 — 파란 빛이 위에서 스며드는 결 */
@@ -1588,13 +1643,13 @@ html[data-reading-focus="on"] .prose-blog > * {
   height: 1px;
   background: linear-gradient(
     90deg,
-    transparent,
-    color-mix(in srgb, var(--ai) 60%, transparent),
+    color-mix(in srgb, var(--ai) 55%, transparent),
+    color-mix(in srgb, var(--ai) 18%, transparent) 45%,
     transparent
   );
 }
 .ai-native-head {
-  margin-bottom: 1.3rem;
+  margin-bottom: 1.1rem;
 }
 .ai-native-badge {
   display: inline-flex;
@@ -1628,9 +1683,10 @@ html[data-reading-focus="on"] .prose-blog > * {
   word-break: keep-all;
   color: var(--bright);
 }
+/* 넷을 다 편다. 접어두면 읽는 사람은 누르지 않는다 */
 .ai-native-grid {
   display: grid;
-  gap: 1.15rem 1.6rem;
+  gap: 1.05rem 1.7rem;
   grid-template-columns: 1fr;
 }
 @media (min-width: 40rem) {
@@ -1640,7 +1696,7 @@ html[data-reading-focus="on"] .prose-blog > * {
 }
 .ai-native-point {
   position: relative;
-  padding-left: 0.95rem;
+  padding-left: 0.85rem;
 }
 .ai-native-point::before {
   content: "";
@@ -1678,61 +1734,575 @@ html[data-reading-focus="on"] .prose-blog > * {
   word-break: keep-all;
   color: var(--muted);
 }
-/* 인쇄 시 파란 배경·글로우는 잉크 낭비라 걷어내고 경계선만 남긴다 */
+/* 종이에서는 파란 헤어라인이 옅은 얼룩으로만 찍힌다. 걷어내고 줄만 좁힌다 */
 @media print {
   .ai-native {
-    background: none;
-    border-color: var(--line);
+    padding-top: 0.7rem;
   }
   .ai-native::before {
     display: none;
   }
+  .ai-native-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem 1.3rem;
+  }
 }
 
-/* 안내 알약 — 지금 읽고 있는 섹션을 비춘다.
-   아일랜드와 같은 표면 토큰을 써서 사이트의 다른 떠 있는 것들과 한 식구로 보이게 한다 */
-.resume-guide {
+/* 30초 요약 — 화면 아래 띠에만 그라데이션을 깔고 그 위에 글자를 올린다.
+   전체를 덮으면 이력서를 보러 온 사람의 화면을 뺏는 꼴이라, 본문은 위쪽에
+   그대로 열어두고 아래쪽만 물린다. 클릭도 통과시켜 문서를 막지 않는다.
+   이력서에서 파란 톤을 쓰는 자리는 여기와 AI Native 둘뿐이고, 같은 파랑을 쓴다 */
+.resume-brief {
+  --ai: #3b82f6;
   position: fixed;
-  z-index: 60;
-  bottom: 1.25rem;
+  z-index: 58;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: min(26rem, 58vh);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 1.5rem 1.75rem;
+  pointer-events: none;
+  /* 글자가 앉는 아래쪽은 완전히 덮는다. 반투명하게 두면 본문 글줄이 요약 글자
+     사이로 비쳐 둘 다 안 읽힌다 — 위쪽 4할만 흘려 띠의 경계를 지운다 */
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--ai) 17%, var(--background)) 0%,
+    color-mix(in srgb, var(--ai) 11%, var(--background)) 42%,
+    color-mix(in srgb, var(--ai) 6%, var(--background)) 62%,
+    color-mix(in srgb, var(--background) 62%, transparent) 80%,
+    transparent 100%
+  );
+  animation: resume-brief-in 0.62s var(--ease-out) both;
+}
+/* 블러는 아래쪽에서만 걸고 위로 갈수록 풀린다 — 경계선이 보이면 띠가 상자가 된다 */
+.resume-brief::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(14px) saturate(1.1);
+  mask-image: linear-gradient(to top, #000 62%, transparent 96%);
+}
+@keyframes resume-brief-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+}
+/* 뚝 끊기면 없었던 일처럼 보인다 — 내려가면서 사라진다 */
+.resume-brief.is-leaving {
+  animation: resume-brief-out 0.38s var(--ease-out) both;
+}
+@keyframes resume-brief-out {
+  to {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+}
+
+.resume-brief-pill {
+  --ai: #3b82f6;
+  position: fixed;
+  z-index: 58;
   left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+}
+:root[data-theme="dark"] .resume-brief,
+:root[data-theme="dark"] .resume-brief-pill {
+  --ai: #5b9bff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .resume-brief,
+  :root:not([data-theme="light"]) .resume-brief-pill {
+    --ai: #5b9bff;
+  }
+}
+
+/* 글자만 손에 잡힌다 — 띠는 통과시키고 이 덩어리에서만 호버를 센다.
+   스크롤바는 감춘다. 잠깐 떴다 가는 물건에 막대가 걸리면 창처럼 보인다 */
+.resume-brief-inner {
+  position: relative;
+  pointer-events: auto;
+  width: min(37rem, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.resume-brief-inner::-webkit-scrollbar {
+  display: none;
+}
+
+/* 배지를 진짜 가운데 세우려면 닫기를 흐름에서 빼야 한다 —
+   나란히 두면 닫기 너비만큼 배지가 왼쪽으로 밀린다 */
+.resume-brief-head {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  min-height: 1.75rem;
+  align-items: center;
+}
+.resume-brief-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ai);
+}
+/* 글이 올라오는 동안만 숨을 쉰다 — 쓰이는 중이라는 신호 */
+.resume-brief-badge svg {
+  animation: resume-brief-spark 1.6s var(--ease-out) 2;
+}
+@keyframes resume-brief-spark {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.86);
+  }
+}
+
+.resume-brief-close {
+  position: absolute;
+  top: 50%;
+  right: 0;
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  max-width: min(92vw, 28rem);
-  padding: 0.5rem 0.95rem;
-  border: 1px solid var(--island-border);
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid color-mix(in srgb, var(--ai) 24%, var(--island-border));
   border-radius: 999px;
-  background: var(--island-bg);
-  box-shadow: var(--island-shadow);
-  opacity: 0;
-  transform: translate(-50%, 0.75rem);
-  pointer-events: none;
+  color: var(--faint);
+  cursor: pointer;
+  transform: translateY(-50%);
   transition:
-    opacity 0.28s var(--ease-out),
-    transform 0.36s var(--ease-spring);
+    color 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out);
 }
-.resume-guide.is-shown {
-  opacity: 1;
-  transform: translate(-50%, 0);
-  pointer-events: auto;
+.resume-brief-close:hover {
+  border-color: color-mix(in srgb, var(--ai) 45%, transparent);
+  background: color-mix(in srgb, var(--ai) 14%, transparent);
+  color: var(--bright);
 }
 
-.resume-guide-dot {
-  flex: none;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--faint);
-  transition: background-color 0.2s var(--ease-out);
-}
-.resume-guide-label {
-  overflow: hidden;
-  font-size: 13px;
-  font-weight: 500;
+/* 어절이 하나씩 올라온다 — 써 내려가는 결로 등장시킨다 */
+.resume-brief-headline {
+  margin-top: 0.75rem;
+  text-align: center;
+  text-wrap: balance;
+  font-size: clamp(17px, 2.2vw, 21px);
+  font-weight: 600;
+  line-height: 1.48;
+  letter-spacing: -0.02em;
+  word-break: keep-all;
   color: var(--bright);
-  text-overflow: ellipsis;
+}
+.resume-brief-word {
+  display: inline-block;
+  margin-right: 0.25em;
+  animation: resume-brief-word 0.5s var(--ease-out) backwards;
+  animation-delay: calc(150ms + var(--w) * 32ms);
+}
+@keyframes resume-brief-word {
+  from {
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(0.4em);
+  }
+  60% {
+    filter: blur(0);
+  }
+}
+
+/* 본문은 왼쪽으로 — 긴 한국어 문장을 가운데 맞추면 줄머리가 흔들려 읽기 힘들다.
+   대신 셋을 가로로 나눠 띠 안에 눕힌다 */
+.resume-brief-points {
+  display: grid;
+  gap: 0.9rem 1.6rem;
+  margin-top: 1.35rem;
+  text-align: left;
+}
+@media (min-width: 48rem) {
+  .resume-brief-points {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.resume-brief-point {
+  /* 없으면 긴 근거 칩이 칸을 밀어내 띠 밖으로 삐져나가고 가로 스크롤이 생긴다 */
+  min-width: 0;
+  animation: resume-brief-point 0.55s var(--ease-out) backwards;
+  animation-delay: calc(700ms + var(--p) * 170ms);
+}
+@keyframes resume-brief-point {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+}
+
+.resume-brief-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+  color: var(--bright);
+}
+.resume-brief-check {
+  flex: none;
+  transform: translateY(1px);
+  color: var(--ai);
+}
+.resume-brief-body {
+  margin-top: 0.3rem;
+  margin-left: 0.95rem;
+  font-size: 12px;
+  line-height: 1.66;
+  word-break: keep-all;
+  color: var(--muted);
+}
+.resume-brief-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.26rem;
+  margin-top: 0.45rem;
+  margin-left: 0.95rem;
+}
+.resume-brief-source {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0.12rem 0.48rem;
+  border: 1px solid color-mix(in srgb, var(--ai) 28%, transparent);
+  border-radius: 999px;
+  font-size: 10px;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--faint);
+  cursor: pointer;
+  transition:
+    color 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out);
+}
+.resume-brief-source:hover {
+  border-color: color-mix(in srgb, var(--ai) 50%, transparent);
+  background: color-mix(in srgb, var(--ai) 15%, transparent);
+  color: var(--bright);
+}
+
+/* 스스로 사라지는 물건이라 다시 부를 자리가 있어야 한다 */
+.resume-brief-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.42rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--ai) 28%, var(--island-border));
+  border-radius: 999px;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--ai) 18%, var(--island-bg)),
+    var(--island-bg) 72%
+  );
+  backdrop-filter: blur(14px);
+  box-shadow: var(--island-shadow);
+  font-size: 11.5px;
+  color: var(--muted);
+  cursor: pointer;
+  animation: resume-brief-pill-in 0.4s var(--ease-spring) both;
+  transition:
+    color 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out);
+}
+@keyframes resume-brief-pill-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 0.6rem);
+  }
+}
+.resume-brief-pill svg {
+  color: var(--ai);
+}
+.resume-brief-pill:hover {
+  border-color: color-mix(in srgb, var(--ai) 48%, transparent);
+  color: var(--bright);
+}
+
+@media (max-width: 47.99rem) {
+  .resume-brief {
+    height: min(28rem, 62vh);
+    padding: 0 1.1rem 1.35rem;
+  }
+  /* 오른쪽 아래 독과 겹치지 않게 비켜 앉는다 */
+  .resume-brief-pill {
+    left: 1.1rem;
+    bottom: 1.35rem;
+    transform: none;
+  }
+  @keyframes resume-brief-pill-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.6rem);
+    }
+  }
+}
+
+/* 낮은 창에서는 띠가 화면을 다 먹는다. 근거만 남기고 설명을 접어
+   제목 · 근거로 줄인다 — 스크롤을 만드느니 덜 보여주는 편이 낫다 */
+@media (max-height: 40rem) {
+  .resume-brief {
+    height: auto;
+    max-height: 86vh;
+    padding-bottom: 1.1rem;
+  }
+  .resume-brief-headline {
+    margin-top: 0.5rem;
+    font-size: 16px;
+  }
+  .resume-brief-points {
+    margin-top: 0.95rem;
+    gap: 0.55rem 1.4rem;
+  }
+  .resume-brief-body {
+    display: none;
+  }
+}
+
+/* 반응 독 — 문서 오른쪽에 떠 있다. 이력서 밑에 댓글창을 길게 붙이면
+   문서가 끝나고 게시판이 시작되는 꼴이 되므로, 반응은 문서 밖에 둔다.
+   앰버 그라데이션 유리면 — 사이트가 이미 쓰는 accent 하나만 쓴다 */
+.resume-dock {
+  position: fixed;
+  z-index: 55;
+  right: 1.25rem;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.3rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--island-border));
+  border-radius: 999px;
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--accent) 17%, var(--island-bg)),
+    var(--island-bg) 62%
+  );
+  backdrop-filter: blur(14px);
+  box-shadow: var(--island-shadow);
+  transform: translateY(-50%);
+  animation: resume-dock-in 0.55s var(--ease-spring) 0.55s backwards;
+}
+@keyframes resume-dock-in {
+  from {
+    opacity: 0;
+    transform: translate(0.75rem, -50%);
+  }
+}
+.resume-dock-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.12rem;
+  padding: 0.42rem 0.5rem;
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    color 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out),
+    transform 0.2s var(--ease-spring);
+}
+.resume-dock-btn:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--bright);
+}
+.resume-dock-btn:active {
+  transform: scale(0.93);
+}
+.resume-dock-btn[aria-pressed="true"] {
+  color: var(--accent);
+}
+.resume-dock-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.resume-dock-sep {
+  width: 55%;
+  height: 1px;
+  background: var(--island-border);
+}
+.resume-dock-beat {
+  animation: resume-dock-beat 0.45s var(--ease-spring);
+}
+@keyframes resume-dock-beat {
+  40% {
+    transform: scale(1.35);
+  }
+}
+
+/* 좁은 화면에는 세로로 세울 자리가 없다 — 오른쪽 아래에 눕힌다.
+   이때 아이콘 아래에 숫자를 쌓으면 알약이 두 줄 높이로 부풀고 가운데가 안 맞는다.
+   가로로 눕혀 아이콘과 숫자를 같은 줄에 세우고, 구분선은 알약 높이를 따라간다 */
+@media (max-width: 47.99rem) {
+  .resume-dock {
+    top: auto;
+    bottom: 1.1rem;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0.1rem;
+    padding: 0.28rem 0.34rem;
+    transform: none;
+    animation-name: resume-dock-in-sm;
+  }
+  @keyframes resume-dock-in-sm {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+  }
+  .resume-dock-btn {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.36rem;
+    padding: 0.42rem 0.62rem;
+  }
+  .resume-dock-count {
+    font-size: 11px;
+    line-height: 1;
+  }
+  .resume-dock-sep {
+    width: 1px;
+    height: auto;
+    align-self: stretch;
+    margin: 0.3rem 0;
+  }
+}
+
+/* 댓글 패널 — 오른쪽에서 밀려 들어온다. 읽던 자리를 잃지 않아야 한다 */
+.resume-panel {
+  position: fixed;
+  z-index: 70;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(26rem, 92vw);
+  border-left: 1px solid
+    color-mix(in srgb, var(--accent) 20%, var(--island-border));
+  background: linear-gradient(
+    200deg,
+    color-mix(in srgb, var(--accent) 13%, var(--island-bg)),
+    var(--island-bg) 46%
+  );
+  backdrop-filter: blur(18px);
+  box-shadow: -22px 0 60px -32px rgb(0 0 0 / 0.5);
+  opacity: 0;
+  transform: translateX(100%);
+  pointer-events: none;
+  transition:
+    transform 0.42s var(--ease-out),
+    opacity 0.28s var(--ease-out);
+}
+.resume-panel.is-open {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.resume-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.05rem 1.15rem;
+  border-bottom: 1px solid var(--island-border);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bright);
+}
+.resume-panel-count {
+  margin-left: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+}
+.resume-panel-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-right: -0.4rem;
+  border-radius: 999px;
+  color: var(--faint);
+  cursor: pointer;
+  transition:
+    color 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out);
+}
+.resume-panel-close:hover {
+  background: color-mix(in srgb, var(--faint) 14%, transparent);
+  color: var(--bright);
+}
+.resume-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.15rem 1.15rem 2rem;
+  overscroll-behavior: contain;
+}
+
+/* 댓글은 글 하단에 붙는 걸 전제로 짜여 있어서, 패널에 그대로 넣으면
+   위가 크게 비고 제목이 두 번 뜬다. 좁은 폭에 맞춰 다시 잡는다 */
+.resume-panel-body > section {
+  margin-top: 0;
+}
+/* 제목은 패널 머리가 이미 달고 있다 */
+.resume-panel-body > section > h2 {
+  display: none;
+}
+.resume-panel-body .comment-card {
+  margin-top: 0;
+}
+.resume-panel-body .comment-card + * {
+  margin-top: 1.5rem;
+}
+/* 26rem 폭에서 2rem 간격이면 한 화면에 댓글 두 개가 겨우 들어온다 */
+.resume-panel-body ul > li + li {
+  margin-top: 1.5rem;
+}
+/* 답글 입력은 카드 안에 다시 뜨므로 위 간격만 좁힌다 */
+.resume-panel-body .comment-card .comment-card {
+  margin-top: 0.75rem;
+}
+.resume-panel-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  cursor: default;
+  background: color-mix(in srgb, var(--background) 52%, transparent);
+  backdrop-filter: blur(2px);
+  animation: resume-scrim-in 0.28s var(--ease-out) both;
+}
+@keyframes resume-scrim-in {
+  from {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1742,6 +2312,14 @@ html[data-reading-focus="on"] .prose-blog > * {
   .resume-word,
   .resume-doc [data-stage],
   .resume-headline,
+  .resume-brief,
+  .resume-brief.is-leaving,
+  .resume-brief-word,
+  .resume-brief-point,
+  .resume-brief-badge svg,
+  .resume-brief-pill,
+  .resume-dock,
+  .resume-panel-scrim,
   .resume-doc section > h2 {
     animation: none;
   }
@@ -1977,6 +2555,167 @@ textarea:focus-visible {
   }
   .resume-doc h2,
   .resume-doc h3 {
+    break-after: avoid;
+  }
+}
+
+/* 종이 조판 — 화면 값을 그대로 내보내면 다섯 장이 된다.
+   덜어낼 내용은 이미 다 덜어냈으니, 여기서부터는 조판만 좁힌다.
+   급수를 한 단씩 내리고 여백을 걷으면 같은 문장이 세 장에 들어간다.
+   위계는 크기 차이가 아니라 잉크 농도가 이미 만들고 있어서 줄여도 무너지지 않는다 */
+@media print {
+  /* 화면용 급수 표를 종이용 급수 표로 통째로 바꿔 끼운다.
+     개별 요소를 쫓아다니며 고치면 새 화면을 붙일 때마다 또 새는데,
+     Tailwind 의 임의값 클래스는 여기 한 곳에 다 모여 있다 */
+  .resume-doc .text-\[34px\] {
+    font-size: 23px;
+  }
+  .resume-doc .text-\[28px\] {
+    font-size: 18px;
+  }
+  .resume-doc .text-\[22px\] {
+    font-size: 15.5px;
+  }
+  .resume-doc .text-\[15px\] {
+    font-size: 12px;
+  }
+  .resume-doc .text-\[14\.5px\] {
+    font-size: 11.5px;
+  }
+  .resume-doc .text-\[13\.5px\],
+  .resume-doc .text-\[13px\] {
+    font-size: 10.8px;
+  }
+  .resume-doc .text-\[12\.5px\],
+  .resume-doc .text-\[12px\] {
+    font-size: 10px;
+  }
+  .resume-doc .text-\[11\.5px\],
+  .resume-doc .text-\[11px\] {
+    font-size: 9.5px;
+  }
+  .resume-doc .text-\[10\.5px\] {
+    font-size: 8.8px;
+  }
+  .ai-native-lead {
+    font-size: 11.5px;
+    line-height: 1.45;
+    margin-top: 0.5rem;
+  }
+  .ai-native-title {
+    font-size: 10.8px;
+  }
+  .ai-native-body {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .ai-native-badge {
+    font-size: 8.8px;
+    padding: 0.18rem 0.5rem;
+  }
+  .ai-native-head {
+    margin-bottom: 0.7rem;
+  }
+  .resume-block-label {
+    font-size: 9px;
+  }
+  .resume-chip {
+    font-size: 9.5px;
+  }
+
+  /* Tailwind 의 space-y-* 는 `.space-y-9 > :not([hidden]) ~ :not([hidden])` 라
+     클래스 하나짜리 규칙을 늘 이긴다. 같은 자리에서 되받으려면 이 방법뿐이다 */
+  .resume-doc .space-y-12 > * + * {
+    margin-top: 1rem;
+  }
+  .resume-doc .space-y-9 > * + * {
+    margin-top: 0.85rem;
+  }
+  .resume-doc .space-y-3\.5 > * + * {
+    margin-top: 0.38rem;
+  }
+  .resume-doc .space-y-3 > * + * {
+    margin-top: 0.32rem;
+  }
+  .resume-doc .space-y-2 > * + * {
+    margin-top: 0.18rem;
+  }
+  .resume-doc .space-y-1\.5 > * + * {
+    margin-top: 0.12rem;
+  }
+
+  /* 화면에서 숨 쉬라고 준 세로 여백은 종이에서 그대로 페이지가 된다 */
+  .resume-doc .mt-12 {
+    margin-top: 0.85rem;
+  }
+  .resume-doc .mt-10 {
+    margin-top: 0.75rem;
+  }
+  .resume-doc .mt-9 {
+    margin-top: 0.8rem;
+  }
+  .resume-doc .mt-7 {
+    margin-top: 0.6rem;
+  }
+  .resume-doc .mt-4 {
+    margin-top: 0.42rem;
+  }
+  .resume-doc .mb-6 {
+    margin-bottom: 0.5rem;
+  }
+  .resume-doc .gap-y-4 {
+    row-gap: 0.5rem;
+  }
+  .resume-doc > section {
+    padding-top: 0.4rem;
+  }
+  .resume-exp-meta {
+    margin-bottom: 0.45rem !important;
+  }
+  .resume-gauge {
+    margin-top: 0.3rem;
+  }
+  .resume-doc p,
+  .resume-doc li {
+    line-height: 1.5;
+  }
+}
+
+/* 회사 블록 — 화면에서는 성과 옆에 세워두는 칼럼이라 네 줄로 쌓여 있다.
+   종이에서는 본문 위로 올라오면서 그 네 줄이 그대로 세로 공간이 된다.
+   회사 · 직무 · 지역 · 기간은 한 줄에 나란히 놓아도 다 읽힌다 */
+@media print {
+  .resume-exp-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 0.65rem;
+    margin-bottom: 0.35rem !important;
+  }
+  .resume-exp-meta > * {
+    margin: 0 !important;
+  }
+  .resume-doc > section {
+    margin-top: 0.7rem;
+    padding-top: 0.2rem;
+  }
+}
+
+/* 근거는 화면에서 접어두지만 종이에서는 접을 이유가 없다.
+   닫힌 채로 인쇄되면 "근거 1" 이라는 쓸모없는 줄만 찍히고 정작 주소가 사라진다 */
+@media print {
+  .resume-evidence-summary {
+    display: none;
+  }
+  .resume-evidence::details-content {
+    content-visibility: visible;
+  }
+  .resume-evidence-list {
+    display: block;
+  }
+
+  /* 성과 제목만 앞 페이지 바닥에 남고 본문이 넘어가면 둘 다 안 읽힌다 */
+  .resume-doc h4 {
     break-after: avoid;
   }
 }

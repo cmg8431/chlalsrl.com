@@ -154,6 +154,22 @@ export async function fetchComments(slug: string): Promise<CommentRow[]> {
   return (await res.json()) as CommentRow[];
 }
 
+/**
+ * 댓글이 하나 달렸다는 신호. 목록은 자기 상태를 스스로 갱신하지만, 같은 화면의
+ * 다른 자리(이력서 독의 개수 같은)는 알 길이 없어 매번 낡은 수를 들고 있었다.
+ */
+export const COMMENT_ADDED = "guestbook:comment-added";
+
+export interface CommentAddedDetail {
+  slug: string;
+}
+
+function announceComment(slug: string): void {
+  window.dispatchEvent(
+    new CustomEvent<CommentAddedDetail>(COMMENT_ADDED, { detail: { slug } }),
+  );
+}
+
 export async function addComment(
   slug: string,
   author: string,
@@ -170,6 +186,7 @@ export async function addComment(
       parent_id: parentId,
     });
     localStorage.setItem(`dev-comments:${slug}`, JSON.stringify(rows));
+    announceComment(slug);
     return;
   }
   await rest(`/comments`, {
@@ -177,4 +194,5 @@ export async function addComment(
     headers: { Prefer: "return=minimal" },
     body: JSON.stringify({ slug, author, body, parent_id: parentId }),
   });
+  announceComment(slug);
 }

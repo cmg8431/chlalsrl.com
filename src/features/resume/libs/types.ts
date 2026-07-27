@@ -14,6 +14,12 @@ export interface ResumeAchievement {
   title: string;
   period?: string;
   href?: string;
+  /**
+   * 확인할 수 있는 근거 — PR · 커밋 · 배포된 화면 · 글.
+   * 접어두고 필요할 때만 펼친다. 비어 있으면 아무것도 렌더하지 않으니
+   * 확인 가능한 것만 넣는다. href 는 이 목록에 자동으로 합류한다.
+   */
+  evidence?: ResumeLink[];
   /** 제목 아래 한 줄 — 무엇을 어떻게 했고 뭐가 달라졌는지 압축 */
   summary: string;
   /** 왜 이 일이 필요했나 */
@@ -83,6 +89,18 @@ export interface Resume {
   }[];
   /** 자기소개 두 문단 — 무엇을 잘하는가 / 어떻게 일하는가 */
   intro: string[];
+  /**
+   * 30초 요약. 훑는 사람이 본문을 읽기 전에 한 덩어리로 집어갈 자리다.
+   *
+   * 본문을 줄여 쓴 게 아니라 결론만 먼저 말한다. 각 항목의 sources 는
+   * achievement.title 과 정확히 같아야 한다 — 그 문자열로 data-guide-label 을
+   * 찾아 스크롤하기 때문에, 오타가 나면 눌러도 조용히 아무 일도 없다.
+   */
+  summary: {
+    label: string;
+    headline: string;
+    points: { title: string; body: string; sources: string[] }[];
+  };
   /**
    * AI Native 섹션 — 왜 AI 시대의 인재인가를 실제 방식으로 증명한다.
    * 파란 톤의 독립 블록으로, 도구 숙련이 아니라 오케스트레이션을 보여준다.

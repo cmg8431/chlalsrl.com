@@ -1,4 +1,16 @@
-import type { ResumeAchievement } from "../libs";
+import type { ResumeAchievement, ResumeLink } from "../libs";
+
+/** 항목에 걸린 href도 같은 근거 목록에 합류시킨다 — 근거는 한 곳에서만 센다 */
+function evidenceOf(item: ResumeAchievement): ResumeLink[] {
+  const links = [...(item.evidence ?? [])];
+  if (item.href && !links.some((link) => link.href === item.href)) {
+    links.push({
+      label: item.href.replace(/^https?:\/\//, "").replace(/\/$/, ""),
+      href: item.href,
+    });
+  }
+  return links;
+}
 
 /**
  * 성과를 상황 · 행동 · 결과 세 칸으로 나눠 세운다.
@@ -48,10 +60,15 @@ export function AchievementList({
   labels,
 }: {
   achievements: ResumeAchievement[];
-  labels: { situation: string; action: string; result: string };
+  labels: {
+    situation: string;
+    action: string;
+    result: string;
+    evidence: string;
+  };
 }) {
   return (
-    <div className="mt-7 space-y-9">
+    <div className="resume-achievements mt-7 space-y-9">
       {achievements.map((item, index) => (
         <article
           key={item.title}
@@ -81,16 +98,34 @@ export function AchievementList({
             <Block label={labels.result} items={item.result} strong />
           </div>
 
-          {item.href && (
-            <a
-              href={item.href}
-              target="_blank"
-              rel="noreferrer"
-              className="link-quiet mt-3 ml-[3.1rem] inline-block font-mono text-[11px] text-faint"
-            >
-              {item.href.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-            </a>
-          )}
+          {/* 근거는 접어둔다. 링크를 늘어놓으면 성과보다 URL이 먼저 읽힌다 —
+              의심이 든 사람만 펼치면 되고, 그때는 전부 여기 모여 있어야 한다 */}
+          {(() => {
+            const links = evidenceOf(item);
+            if (links.length === 0) return null;
+            return (
+              <details className="resume-evidence">
+                <summary className="resume-evidence-summary">
+                  {labels.evidence}
+                  <span className="tabular-nums">{links.length}</span>
+                </summary>
+                <ul className="resume-evidence-list">
+                  {links.map((link) => (
+                    <li key={link.href}>
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="link-quiet"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            );
+          })()}
         </article>
       ))}
     </div>

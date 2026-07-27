@@ -68,7 +68,6 @@
     "copied": "コピーしました"
   },
   "resume": {
-    "print": "印刷",
     "experience": "経歴",
     "projects": "プロジェクト",
     "education": "学歴 · 資格",
@@ -76,7 +75,12 @@
     "situation": "状況",
     "action": "行動",
     "result": "結果",
-    "side": "サイド"
+    "side": "サイド",
+    "evidence": "根拠",
+    "summaryOpen": "要約を見る",
+    "close": "閉じる",
+    "like": "いいね",
+    "comments": "コメント"
   },
   "comments": {
     "title": "コメント",
