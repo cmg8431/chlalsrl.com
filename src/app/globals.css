@@ -1160,6 +1160,458 @@ html[data-reading-focus="on"] .prose-blog > * {
   font-weight: 600;
 }
 
+/* 이력서는 사이트가 아니라 문서다 — 테마를 따라가지 않고 늘 같은 흰 바탕에 놓는다.
+   :root에 걸어야 고정 배치인 아일랜드까지 같은 톤으로 따라온다.
+   잉크는 사이트보다 진하게 — 정보 밀도가 높은 문서는 같은 회색도 흐리게 읽힌다 */
+/* 이력서는 중성 그레이만 쓴다 — 색이 하나라도 끼면 문서가 아니라 홍보물이 된다.
+   대비는 사이트보다 세게: 본문 #1f1f1f, 보조 #4a4a48, 메타 #75746f.
+   회색 단계를 셋으로 묶어 어느 줄이 본문이고 어느 줄이 메타인지 바로 갈리게 한다 */
+:root:has(.resume-doc) {
+  color-scheme: light;
+  --background: #fdfdfd;
+  --background-soft: #f1f1f0;
+  --foreground: #1f1f1f;
+  --bright: #0a0a0a;
+  --muted: #4a4a48;
+  --faint: #75746f;
+  --line: #e0e0dd;
+  --accent: #1f1f1f;
+  --island-bg: #ffffff;
+  --island-border: #e4e4e1;
+  --island-shadow:
+    0 1px 2px rgb(20 20 20 / 0.05), 0 12px 28px -14px rgb(20 20 20 / 0.24);
+}
+
+/* 종이 위에서 테마 토글은 아무 일도 하지 않는다 — 눌러보게 두지 않는다 */
+:root:has(.resume-doc) [aria-label="Toggle theme"] {
+  display: none;
+}
+
+/* 진입 스테이지 — 순번만 마크업에서 주고 지연·질감은 여기서 정한다 */
+@keyframes resume-stage-in {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(14px) scale(0.985);
+  }
+  60% {
+    filter: blur(0);
+  }
+}
+
+/* 헤드라인만 스케일까지 준다 — 한 번 커지며 자리를 잡아야 첫 문장이 사건이 된다 */
+.resume-headline {
+  animation: resume-headline-in 0.8s var(--ease-spring) backwards;
+  animation-delay: 150ms;
+  transform-origin: left center;
+}
+@keyframes resume-headline-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.93);
+  }
+}
+
+/* 섹션 제목은 뷰포트에 들어오며 커진다. 스크롤 위치 계산은 CSS에 맡긴다 */
+@supports (animation-timeline: view()) {
+  .resume-doc section > h2 {
+    animation: resume-section-in linear both;
+    animation-timeline: view();
+    animation-range: entry 5% entry 65%;
+  }
+}
+@keyframes resume-section-in {
+  from {
+    opacity: 0.2;
+    transform: translateY(10px) scale(0.94);
+    transform-origin: left bottom;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    transform-origin: left bottom;
+  }
+}
+
+/* 진입 커튼 — 다크에서 들어와도 톤이 튀지 않게 한 번 덮었다가 걷힌다.
+   화면이 바뀌는 순간을 감추는 대신 전환 자체를 하나의 동작으로 보이게 한다 */
+.resume-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  background: var(--background);
+  animation: resume-intro-out 0.72s var(--ease-out) both;
+}
+@keyframes resume-intro-out {
+  0%,
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 요소들이 흐릿한 상태에서 선명해지며 제자리를 잡는다 */
+.resume-doc [data-stage] {
+  animation: resume-stage-in 0.85s var(--ease-spring) backwards;
+  animation-delay: calc(220ms + var(--stage, 0) * 80ms);
+}
+
+/* 첫 화면 수치는 눌러서 근거로 갈 수 있다 */
+.resume-metric {
+  border-radius: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  margin: -0.35rem -0.5rem;
+  transition:
+    background-color 0.25s var(--ease-out),
+    transform 0.25s var(--ease-spring);
+}
+@media (hover: hover) {
+  .resume-metric:hover {
+    background: color-mix(in srgb, var(--background-soft) 70%, transparent);
+    transform: translateY(-2px);
+  }
+  .resume-metric:hover .resume-gauge::after {
+    background: var(--bright);
+  }
+}
+.resume-metric:active {
+  transform: scale(0.98);
+}
+
+/* 수치를 눌러 도착한 항목은 한 번 반짝인다 */
+.resume-item[data-landed] {
+  animation: resume-landed 1.2s var(--ease-out);
+}
+@keyframes resume-landed {
+  0%,
+  100% {
+    background: transparent;
+  }
+  25% {
+    background: color-mix(in srgb, var(--background-soft) 90%, transparent);
+  }
+}
+
+/* 수치에서 뛰어왔을 때 화면 가운데에 서게 한다 */
+.resume-item {
+  position: relative;
+  scroll-margin-block: 6rem;
+}
+
+/* 번호는 본문 폭 바깥 여백에 흘린다 — 글줄을 밀지 않고 결만 만든다.
+   좁은 화면에는 흘릴 여백이 없어 아예 내보내지 않는다 */
+.resume-index {
+  display: none;
+}
+@media (min-width: 48rem) {
+  .resume-index {
+    position: absolute;
+    display: block;
+    top: 0.2rem;
+    left: -2.7rem;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+    color: var(--line);
+    transition: color 0.28s var(--ease-out);
+  }
+  .resume-item:hover .resume-index {
+    color: var(--faint);
+  }
+}
+
+/* 경력만 2단으로 세운다. 성과를 열 건 훑는 동안 회사·기간이 옆에 붙어 있어야
+   지금 누구 밑에서 한 일인지 놓치지 않는다. 좁은 화면에서는 위로 눕힌다 */
+.resume-exp > .resume-exp-meta {
+  margin-bottom: 1.25rem;
+}
+@media (min-width: 48rem) {
+  .resume-exp {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 0 2.75rem;
+  }
+  .resume-exp-meta {
+    position: sticky;
+    top: 5.75rem;
+    margin-bottom: 0;
+    align-self: start;
+  }
+  /* 왼쪽 레일이 이미 축을 세우므로 성과 번호까지 흘리면 두 축이 겹친다 */
+  .resume-exp .resume-index {
+    display: none;
+  }
+}
+
+/* 상황 · 행동 · 결과 — 라벨을 왼쪽 칸에 세우고 본문은 한 축으로 흐른다.
+   선을 긋는 대신 라벨 칼럼 자체가 구분선 역할을 한다 */
+.resume-block {
+  display: grid;
+  grid-template-columns: 3.1rem 1fr;
+  align-items: start;
+}
+.resume-block-label {
+  padding-top: 0.16rem;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--faint);
+}
+
+/* 불릿은 점 하나만 — 기본 글머리표는 문서 톤을 깬다 */
+.resume-bullet {
+  position: relative;
+  padding-left: 0.75rem;
+}
+.resume-bullet::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--faint);
+  opacity: 0.55;
+}
+
+/* 변화폭 게이지 — 숫자 아래 얇은 선이 --fill 만큼 차오른다 */
+.resume-gauge {
+  position: relative;
+  height: 2px;
+  margin-top: 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--line) 65%, transparent);
+  overflow: hidden;
+}
+.resume-gauge::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  border-radius: inherit;
+  background: var(--bright);
+  transform: scaleX(var(--fill, 0));
+  transform-origin: left;
+  transition: transform 1s var(--ease-out) 0.12s;
+}
+
+/* 링크 밑줄이 왼쪽에서 그어진다 — 정적인 밑줄보다 손이 닿은 느낌이 난다 */
+.resume-doc a.link-quiet {
+  position: relative;
+  text-decoration: none;
+}
+.resume-doc a.link-quiet::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.28;
+  transform: scaleX(1);
+  transform-origin: left;
+  transition:
+    transform 0.32s var(--ease-out),
+    opacity 0.32s var(--ease-out);
+}
+@media (hover: hover) {
+  .resume-doc a.link-quiet::after {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+  .resume-doc a.link-quiet:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+    opacity: 0.7;
+  }
+}
+
+/* 커서를 따라오는 옅은 빛. 색은 쓰지 않고 밝기만 건드린다 */
+.resume-doc {
+  position: relative;
+  --pop: 0;
+}
+.resume-doc::before {
+  content: "";
+  position: absolute;
+  inset: -6rem;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--pop);
+  transition: opacity 0.5s var(--ease-out);
+  background: radial-gradient(
+    22rem 22rem at var(--px, 50%) var(--py, 0%),
+    color-mix(in srgb, var(--bright) 5%, transparent),
+    transparent 70%
+  );
+}
+
+/* 헤드라인 어절이 하나씩 올라온다 */
+.resume-word {
+  display: inline-block;
+  margin-right: 0.28em;
+  animation: resume-word-in 0.8s var(--ease-spring) backwards;
+  animation-delay: calc(300ms + var(--w) * 60ms);
+}
+@keyframes resume-word-in {
+  from {
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(0.55em) scale(0.96);
+  }
+  55% {
+    filter: blur(0);
+  }
+}
+
+/* 성과에 손을 얹으면 그 항목만 살아난다 — 다 펼쳐둔 목록에서 지금 읽는
+   덩어리의 경계를 알려준다 */
+.resume-item {
+  border-radius: 0.4rem;
+  transition:
+    background-color 0.28s var(--ease-out),
+    box-shadow 0.28s var(--ease-out);
+}
+@media (hover: hover) {
+  .resume-item:hover {
+    background: color-mix(in srgb, var(--background-soft) 60%, transparent);
+    box-shadow: 0 0 0 0.55rem
+      color-mix(in srgb, var(--background-soft) 60%, transparent);
+  }
+}
+
+/* 프로젝트 카드 — 테두리 대신 이미지가 덩어리를 만든다. 선을 아끼는 대신
+   호버에서만 표면이 살짝 반응하게 해 만질 수 있다는 걸 알린다 */
+/* 가로로 눕힌 카드 — 세로 카드는 프로젝트가 경력보다 커 보이게 만든다 */
+.resume-card {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+.resume-shot {
+  position: relative;
+  flex: none;
+  width: 6.5rem;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: 0.4rem;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--background-soft) 60%, var(--background)),
+    var(--background-soft)
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 70%, transparent);
+}
+.resume-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  color: color-mix(in srgb, var(--faint) 80%, transparent);
+  transition:
+    transform 0.5s var(--ease-out),
+    color 0.35s var(--ease-out);
+}
+.resume-card:hover .resume-thumb {
+  transform: scale(1.06);
+  color: var(--muted);
+}
+.resume-shot-tag {
+  display: inline-block;
+  margin-top: 0.4rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  background: var(--background-soft);
+  font-size: 10.5px;
+  color: var(--faint);
+}
+
+/* 자격증은 문장으로 늘어놓지 않고 칩으로 접는다 — 줄 수를 아끼는 자리 */
+.resume-chip {
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  background: var(--background-soft);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* 안내 알약 — 지금 읽고 있는 섹션을 비춘다.
+   아일랜드와 같은 표면 토큰을 써서 사이트의 다른 떠 있는 것들과 한 식구로 보이게 한다 */
+.resume-guide {
+  position: fixed;
+  z-index: 60;
+  bottom: 1.25rem;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  max-width: min(92vw, 28rem);
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--island-border);
+  border-radius: 999px;
+  background: var(--island-bg);
+  box-shadow: var(--island-shadow);
+  opacity: 0;
+  transform: translate(-50%, 0.75rem);
+  pointer-events: none;
+  transition:
+    opacity 0.28s var(--ease-out),
+    transform 0.36s var(--ease-spring);
+}
+.resume-guide.is-shown {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+.resume-guide-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--faint);
+  transition: background-color 0.2s var(--ease-out);
+}
+.resume-guide-label {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bright);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resume-intro,
+  .resume-item[data-landed],
+  .resume-gauge::after,
+  .resume-word,
+  .resume-doc [data-stage],
+  .resume-headline,
+  .resume-doc section > h2 {
+    animation: none;
+  }
+}
+
+/* 숨 쉴 폭. 좁히면 정돈돼 보이는 대신 답답해진다 */
+@media (min-width: 48rem) {
+  .resume-doc {
+    width: calc(100% + 9rem);
+    margin-left: -4.5rem;
+  }
+}
+@media (min-width: 72rem) {
+  .resume-doc {
+    width: calc(100% + 15rem);
+    margin-left: -7.5rem;
+  }
+}
+
 /* 넓은 화면 확장 — 상세·이력서가 같은 폭 규칙을 공유 */
 @media (min-width: 80rem) {
   .expand-x {
@@ -1253,5 +1705,129 @@ textarea:focus-visible {
   .reveal {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* 기본 1인치 여백은 본문 폭을 너무 좁혀 한 줄짜리 문장이 계속 접힌다.
+   여백을 줄여 폭을 넓히는 것이 글자를 줄이는 것보다 먼저다 */
+@page {
+  margin: 13mm 14mm;
+}
+
+/* 인쇄하면 종이는 진짜 종이가 된다 — 테두리도 그림자도 여백도 프린터가 준다.
+   위쪽 print 블록보다 뒤에 와야 이력서 전용 값이 이긴다 */
+@media print {
+  :root:has(.resume-doc),
+  body:has(.resume-doc) {
+    background: #ffffff !important;
+  }
+
+  /* 포커스로만 나타나는 링크지만 인쇄에는 찍힌다 */
+  .skip-link {
+    display: none !important;
+  }
+
+  /* 화면 상단 앰비언트 광원 — 종이에는 옅은 얼룩으로만 찍힌다 */
+  body::before,
+  .resume-doc::before,
+  .resume-intro {
+    content: none;
+    display: none;
+  }
+
+  /* 등장 모션은 종이에서 의미가 없다. 인쇄가 애니메이션 도중에 걸리면
+     제목이 반쯤 흐린 채로, 문단은 아예 빈 채로 찍힌다 — 끝난 상태로 고정한다 */
+  .resume-doc [data-stage],
+  .resume-headline,
+  .resume-word,
+  .resume-doc section > h2 {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* 화면용 뷰포트 여백이 남으면 빈 페이지가 한 장 더 나온다 */
+  :root:has(.resume-doc) .min-h-dvh {
+    min-height: 0 !important;
+  }
+  :root:has(.resume-doc) #main {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .resume-doc {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+  .resume-exp {
+    display: block !important;
+  }
+  .resume-exp-meta {
+    position: static !important;
+    margin-bottom: 0.75rem !important;
+  }
+  .resume-doc > section {
+    margin-top: 0.95rem;
+  }
+
+  /* 화면용 여백은 종이에서 과하다 */
+  .resume-doc > section {
+    margin-top: 0.9rem;
+    padding-top: 0.75rem;
+  }
+  .resume-doc > section > h2 {
+    margin-bottom: 0.6rem;
+  }
+  .resume-doc > header > p {
+    margin-top: 0.8rem;
+  }
+  .resume-item {
+    margin-top: 0.85rem;
+  }
+  .resume-doc p,
+  .resume-doc li {
+    line-height: 1.55;
+  }
+
+  .resume-shot {
+    display: none;
+  }
+  .resume-gauge::after {
+    transform: scaleX(1);
+    transition: none;
+  }
+  /* A4 폭에서 2단을 유지하면 오른쪽 칼럼이 눌려 제목까지 줄바꿈된다.
+     종이에서는 메타를 본문 위로 올려 한 단으로 편다 */
+  .resume-row {
+    display: block !important;
+  }
+  .resume-row > div:first-child {
+    position: static !important;
+    margin-bottom: 0.35rem;
+  }
+
+  /* 날짜 한 줄짜리 행까지 두 줄로 펴면 종이만 낭비된다 — 같은 줄에 붙인다 */
+  .resume-row--compact {
+    display: flex !important;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 0.9rem;
+  }
+  .resume-row--compact > div:first-child {
+    margin-bottom: 0;
+    flex: none;
+    width: 7.5rem;
+  }
+
+  /* 쪼개지면 안 되는 단위는 상황 · 행동 · 결과 한 묶음이다.
+     성과 전체에 걸면 열 줄짜리 덩어리가 통째로 밀려 페이지 절반이 빈다 */
+  .resume-block,
+  .resume-doc li {
+    break-inside: avoid;
+  }
+  .resume-doc h2,
+  .resume-doc h3 {
+    break-after: avoid;
   }
 }

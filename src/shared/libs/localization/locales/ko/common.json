@@ -63,10 +63,14 @@
   },
   "resume": {
     "print": "인쇄",
-    "experience": "Experience",
-    "projects": "Projects",
-    "skills": "Skills",
-    "education": "Education"
+    "experience": "경력",
+    "projects": "프로젝트",
+    "education": "학력 · 자격",
+    "awards": "수상",
+    "situation": "상황",
+    "action": "행동",
+    "result": "결과",
+    "side": "사이드"
   },
   "categories": {
     "all": "전체",

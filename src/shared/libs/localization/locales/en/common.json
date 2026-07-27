@@ -67,8 +67,12 @@
     "print": "Print",
     "experience": "Experience",
     "projects": "Projects",
-    "skills": "Skills",
-    "education": "Education"
+    "education": "Education & Certifications",
+    "awards": "Awards",
+    "situation": "Situation",
+    "action": "Action",
+    "result": "Result",
+    "side": "Side work"
   },
   "categories": {
     "all": "All",

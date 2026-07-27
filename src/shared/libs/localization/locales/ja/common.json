@@ -69,10 +69,14 @@
   },
   "resume": {
     "print": "印刷",
-    "experience": "Experience",
-    "projects": "Projects",
-    "skills": "Skills",
-    "education": "Education"
+    "experience": "経歴",
+    "projects": "プロジェクト",
+    "education": "学歴 · 資格",
+    "awards": "受賞",
+    "situation": "状況",
+    "action": "行動",
+    "result": "結果",
+    "side": "サイド"
   },
   "comments": {
     "title": "コメント",
