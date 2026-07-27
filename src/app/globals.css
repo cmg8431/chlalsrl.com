@@ -1540,6 +1540,155 @@ html[data-reading-focus="on"] .prose-blog > * {
   color: var(--muted);
 }
 
+/* ai native 섹션 — 이력서에서 유일하게 파란 톤을 쓰는 자리.
+   문서의 다른 잉크 톤과 대비되어 "AI 시대 인재" 주장이 눈에 먼저 든다 */
+.ai-native {
+  --ai: #3b82f6;
+  --ai-soft: #60a5fa;
+  position: relative;
+  padding: 1.5rem 1.6rem 1.65rem;
+  border: 1px solid color-mix(in srgb, var(--ai) 22%, var(--line));
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      120% 80% at 0% 0%,
+      color-mix(in srgb, var(--ai) 8%, transparent) 0%,
+      transparent 55%
+    ),
+    color-mix(in srgb, var(--ai) 3%, var(--background));
+  overflow: hidden;
+}
+:root[data-theme="dark"] .ai-native {
+  --ai: #60a5fa;
+  background:
+    radial-gradient(
+      120% 80% at 0% 0%,
+      color-mix(in srgb, var(--ai) 12%, transparent) 0%,
+      transparent 55%
+    ),
+    color-mix(in srgb, var(--ai) 5%, var(--background));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ai-native {
+    --ai: #60a5fa;
+    background:
+      radial-gradient(
+        120% 80% at 0% 0%,
+        color-mix(in srgb, var(--ai) 12%, transparent) 0%,
+        transparent 55%
+      ),
+      color-mix(in srgb, var(--ai) 5%, var(--background));
+  }
+}
+/* 상단 헤어라인 — 파란 빛이 위에서 스며드는 결 */
+.ai-native::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--ai) 60%, transparent),
+    transparent
+  );
+}
+.ai-native-head {
+  margin-bottom: 1.3rem;
+}
+.ai-native-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ai) 14%, transparent);
+  color: var(--ai);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.ai-native-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ai);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--ai) 90%, transparent);
+}
+.ai-native-lead {
+  margin-top: 0.85rem;
+  max-width: 40rem;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+  color: var(--bright);
+}
+.ai-native-grid {
+  display: grid;
+  gap: 1.15rem 1.6rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 40rem) {
+  .ai-native-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.ai-native-point {
+  position: relative;
+  padding-left: 0.95rem;
+}
+.ai-native-point::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.15rem;
+  bottom: 0.15rem;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    180deg,
+    var(--ai),
+    color-mix(in srgb, var(--ai) 20%, transparent)
+  );
+}
+.ai-native-label {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ai);
+}
+.ai-native-title {
+  margin-top: 0.35rem;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--bright);
+}
+.ai-native-body {
+  margin-top: 0.4rem;
+  font-size: 12.5px;
+  line-height: 1.62;
+  word-break: keep-all;
+  color: var(--muted);
+}
+/* 인쇄 시 파란 배경·글로우는 잉크 낭비라 걷어내고 경계선만 남긴다 */
+@media print {
+  .ai-native {
+    background: none;
+    border-color: var(--line);
+  }
+  .ai-native::before {
+    display: none;
+  }
+}
+
 /* 안내 알약 — 지금 읽고 있는 섹션을 비춘다.
    아일랜드와 같은 표면 토큰을 써서 사이트의 다른 떠 있는 것들과 한 식구로 보이게 한다 */
 .resume-guide {

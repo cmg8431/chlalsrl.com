@@ -28,31 +28,57 @@ const INPOCK = "https://link.inpock.co.kr/";
 const ko: Resume = {
   name: "최민기",
   alias: "Mingi Choe",
-  role: "프론트엔드 개발자",
+  role: "프로덕트 엔지니어",
   location: "Seoul, KR",
   headline:
-    "4년 굴린 서비스를 React로 다시 세우고, 공통 번들을 40% 덜어냈습니다.",
+    "매니저를 디자인부터 프론트엔드까지 혼자 만들어, 매출 10배 성장을 이끌었습니다.",
   highlights: [
     {
-      value: "318KB → 191KB",
-      label: "공통 번들 First Load JS",
-      source: "번들 · 청크 구조 개선",
-    },
-    {
-      value: "v0.1 → v1.5",
-      label: "인포크 매니저, 4개월",
-      source: "인포크 매니저 0 → v1.5",
+      value: "10x",
+      label: "인포크 매니저 매출 성장",
+      source: "매니저 디자인+개발 엔드투엔드",
     },
     {
       value: "0 → 1",
       label: "결제 · 매니저 · 딜 · AI 4개 라인",
-      source: "결제 시스템 0 → 1 구축",
+      source: "새 라인마다 0에서 구축",
+    },
+    {
+      value: "4 → 20",
+      label: "구조조정 후 팀 재건 · 흑자 전환",
+      source: "4명에서 다시 20명으로",
     },
   ],
   intro: [
-    "열여덟에 실습생으로 인포크에 들어와 링크인바이오 서비스를 4년째 만들고 있습니다. 결제·매니저·딜·AI까지 새 라인이 열릴 때마다 0에서 시작하는 쪽을 맡았습니다.",
-    "재현이 안 되는 오류는 로그로 좁히고, 인증처럼 숨은 경우가 많은 일은 단계적 수정보다 한 번에 묶는 쪽을 택합니다. 결정의 맥락은 블로그와 사내 문서에 남겨 같은 논의가 반복되지 않게 합니다. toss/es-hangul과 vercel/turborepo에 PR을 머지했습니다.",
+    "인포크에서 링크인바이오 서비스를 4년째 만들며, 결제·매니저·딜·AI까지 새 라인이 열릴 때마다 0에서 1을 만드는 쪽을 맡았습니다. 그중 매니저는 디자인부터 프론트엔드까지 엔드투엔드로 맡아 매출 10배 성장을 이끈 서비스입니다. 구조조정으로 4명까지 줄었던 팀에서 흑자 전환을 함께 만들고, 다시 20명 규모로 키웠습니다.",
+    "조직의 임팩트를 먼저 생각하고, 이를 오래 지탱하기 위해 유연하고 테스트하기 쉬운 구조를 추구합니다. 언어와 프레임워크는 문제를 푸는 도구로 보고, 트레이드오프를 따져 상황에 맞는 최선을 고릅니다. 재현이 안 되는 오류는 로그로 좁히고, 인증처럼 숨은 경우가 많은 일은 한 번에 묶어 중간 상태를 남기지 않습니다. 결정의 맥락은 근거와 함께 문서로 남겨 같은 논의가 반복되지 않게 합니다.",
   ],
+  aiNative: {
+    title: "AI Native",
+    lead: "AI를 많이 쓰는 사람이 아니라, AI가 낸 결과를 검증하고 조율해 임팩트로 잇는 방식으로 일합니다.",
+    points: [
+      {
+        label: "검증",
+        title: "AI 결과를 그대로 믿지 않습니다",
+        body: "AI가 조용히 바꿔놓은 부분까지 잡아야 하기에, 재현이 안 되는 오류는 로그로 좁혀 원인을 특정합니다. 감쇠 계수나 스크롤 임계값 같은 손끝의 값은 AI가 아니라 실제 화면을 만지며 정합니다.",
+      },
+      {
+        label: "분해",
+        title: "문제를 AI가 다룰 단위로 쪼갭니다",
+        body: "맡길 단위와 제가 결정할 단위를 나눕니다. 인증처럼 숨은 경우가 많은 일은 한 번에 묶어 중간 상태를 없애고, 1,990커밋의 레거시도 착지 지점을 먼저 만든 뒤 빅뱅으로 옮겼습니다.",
+      },
+      {
+        label: "구축",
+        title: "AI 라인을 0에서 세웁니다",
+        body: "제품에 AI를 붙이는 라인을 0에서 맡아 나노바나나·AI 3.0 Chat·Agent Hub를 세웠고, 프롬프트와 스냅샷을 코드처럼 관리하는 파이프라인을 만들고 있습니다. 이 블로그도 AI와 함께 사흘 69커밋으로 완성했습니다.",
+      },
+      {
+        label: "기록",
+        title: "결정의 맥락을 코드처럼 남깁니다",
+        body: "왜 이렇게 결정했는지를 근거와 함께 블로그와 사내 문서에 남깁니다. 같은 논의가 반복되지 않고, AI도 코드베이스와 맥락을 이해할 수 있게 하기 위해서입니다.",
+      },
+    ],
+  },
   links: LINKS,
   experience: [
     {
@@ -403,30 +429,56 @@ const en: Resume = {
   ...ko,
   name: "Mingi Choe",
   alias: "최민기",
-  role: "Frontend Engineer",
+  role: "Product Engineer",
   headline:
-    "I rebuilt a four-year-old service on React and cut its shared bundle by 40%.",
+    "I built inpock manager end to end, from design to frontend, and drove a 10x revenue growth.",
   highlights: [
     {
-      value: "318KB → 191KB",
-      label: "Shared First Load JS",
-      source: "Bundle and chunk restructuring",
-    },
-    {
-      value: "v0.1 → v1.5",
-      label: "inpock manager, 4 months",
-      source: "inpock manager, 0 to v1.5",
+      value: "10x",
+      label: "inpock manager revenue",
+      source: "Manager, design to frontend, end to end",
     },
     {
       value: "0 → 1",
       label: "Payments · manager · deal · AI",
-      source: "Payments from zero to one",
+      source: "Built each new line from zero",
+    },
+    {
+      value: "4 → 20",
+      label: "Rebuilt the team, back to profit",
+      source: "From four back to twenty",
     },
   ],
   intro: [
-    "I joined inpock at eighteen as an intern and have been building its link-in-bio service for four years. Whenever a new product line opened — payments, manager, deal, AI — I took the part that starts from zero.",
-    "I narrow unreproducible errors down with logs, and for work with many hidden cases, like authentication, I prefer one bundled release over a long chain of fixes. I write down why decisions were made so the same discussion doesn't repeat. Merged PRs into toss/es-hangul and vercel/turborepo.",
+    "I've built inpock's link-in-bio service for four years, taking the zero-to-one part whenever a new line opened: payments, manager, deal, AI. I owned manager end to end, from design to frontend, and it drove a 10x revenue growth. When restructuring shrank the team to four, I helped turn it profitable and grow it back to twenty.",
+    "I put the organization's impact first, and pursue flexible, testable structure to sustain it. I treat languages and frameworks as tools for solving problems, weighing trade-offs to pick what fits. I narrow unreproducible errors down with logs, and bundle work with many hidden cases, like authentication, into a single release instead of leaving intermediate states. I record the context behind decisions, with evidence, so the same discussion never repeats.",
   ],
+  aiNative: {
+    title: "AI Native",
+    lead: "Not someone who uses AI a lot, but someone who verifies and orchestrates what AI produces into real impact.",
+    points: [
+      {
+        label: "Verify",
+        title: "I don't take AI output at face value",
+        body: "AI quietly changes things, so I narrow unreproducible errors down with logs to pin the cause. Feel-based values like damping coefficients or scroll thresholds I set by hand on a real screen, not by AI.",
+      },
+      {
+        label: "Decompose",
+        title: "I split problems into units AI can handle",
+        body: "I separate what to delegate from what I decide. Work with many hidden cases, like authentication, I bundle into one release to remove intermediate states, and I moved 1,990 commits of legacy in a big bang after first building a landing point.",
+      },
+      {
+        label: "Build",
+        title: "I stand up AI lines from zero",
+        body: "I owned the line that brings AI into the product from zero, building Nano Banana, AI 3.0 Chat and Agent Hub, and I'm building a pipeline that manages prompts and snapshots like code. I also finished this blog with AI in three days and 69 commits.",
+      },
+      {
+        label: "Record",
+        title: "I keep the context of decisions like code",
+        body: "I write down why each decision was made, with evidence, on my blog and in internal docs. So the same discussion doesn't repeat, and so AI can understand the codebase and its context too.",
+      },
+    ],
+  },
   experience: [
     {
       company: "Inpock (Team AB-Z)",

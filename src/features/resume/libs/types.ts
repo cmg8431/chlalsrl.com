@@ -83,6 +83,15 @@ export interface Resume {
   }[];
   /** 자기소개 두 문단 — 무엇을 잘하는가 / 어떻게 일하는가 */
   intro: string[];
+  /**
+   * AI Native 섹션 — 왜 AI 시대의 인재인가를 실제 방식으로 증명한다.
+   * 파란 톤의 독립 블록으로, 도구 숙련이 아니라 오케스트레이션을 보여준다.
+   */
+  aiNative: {
+    title: string;
+    lead: string;
+    points: { label: string; title: string; body: string }[];
+  };
   links: ResumeLink[];
   experience: ResumeExperience[];
   /** 만든 것 — 프로젝트 섹션에서 사이드와 함께 세운다 */

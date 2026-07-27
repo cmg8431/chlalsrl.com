@@ -236,6 +236,28 @@ export default async function ResumePage({
         </div>
       </header>
 
+      {/* AI Native — 도구 숙련이 아니라 조율을 보여주는 파란 강조 블록 */}
+      <section
+        data-stage
+        style={{ "--stage": 7 } as React.CSSProperties}
+        className="ai-native mt-10"
+        aria-label={resume.aiNative.title}
+      >
+        <div className="ai-native-head">
+          <span className="ai-native-badge">{resume.aiNative.title}</span>
+          <p className="ai-native-lead">{resume.aiNative.lead}</p>
+        </div>
+        <div className="ai-native-grid">
+          {resume.aiNative.points.map((point) => (
+            <div key={point.label} className="ai-native-point">
+              <span className="ai-native-label">{point.label}</span>
+              <h3 className="ai-native-title">{point.title}</h3>
+              <p className="ai-native-body">{point.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <Section index={1} title={t("resume.experience")}>
         <div className="space-y-12">
           {resume.experience.map((exp) => (
