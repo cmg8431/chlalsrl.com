@@ -60,7 +60,6 @@ function ExperienceBlock({
     situation: string;
     action: string;
     result: string;
-    evidence: string;
   };
 }) {
   return (
@@ -130,7 +129,6 @@ export async function ResumeDocument({
     situation: t("resume.situation"),
     action: t("resume.action"),
     result: t("resume.result"),
-    evidence: t("resume.evidence"),
   };
 
   return (
@@ -141,43 +139,42 @@ export async function ResumeDocument({
         <div
           data-stage
           style={{ "--stage": 0 } as React.CSSProperties}
-          className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2"
+          className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1.5"
         >
-          <h1 className="text-[34px] font-bold leading-none tracking-[-0.035em] text-bright">
+          <h1 className="resume-name text-[34px] font-bold leading-none tracking-[-0.035em] text-bright">
             <Wordmark
               primary={localizedNames(locale).primary}
               secondary={localizedNames(locale).secondary}
             />
           </h1>
+
+          {/* 직무와 사는 곳은 이름과 같은 줄에 앉힌다. 이름에 손을 얹으면
+              영문이 올라올 자리를 내주려 잠깐 비켜난다 (resume-name 참고) */}
+          <p className="resume-title flex flex-wrap items-baseline gap-x-2.5 text-[13.5px] font-medium text-muted">
+            {resume.role}
+            <span className="font-mono text-[11px] font-normal text-faint">
+              {resume.location}
+            </span>
+          </p>
         </div>
 
-        {/* 직무 한 줄, 연락 한 줄. 이름 옆에 붙이면 이름이 먼저 안 읽힌다 */}
-        <p
-          data-stage
-          style={{ "--stage": 1 } as React.CSSProperties}
-          className="mt-2.5 text-[13.5px] font-medium text-muted"
-        >
-          {resume.role}
-        </p>
-
-        {/* 주소·링크는 모노로 — 라틴 문자만 남는 줄이라 자간이 고르게 선다 */}
+        {/* 라틴 문자만 남는 줄이라 모노로 세운다. 흐리게 두면 아무도 못 찾는다 —
+            밑줄을 얕게 깔아 누를 수 있다는 것만 알린다 */}
         <div
           data-stage
           style={{ "--stage": 2 } as React.CSSProperties}
-          className="mt-1.5 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-[11px] text-faint"
+          className="resume-contact"
         >
-          <span>{resume.location}</span>
           {resume.links.map((link) => (
-            <span key={link.label} className="flex items-center">
-              <a
-                href={link.href}
-                target={link.href.startsWith("http") ? "_blank" : undefined}
-                rel="noreferrer"
-                className="link-quiet"
-              >
-                {link.label}
-              </a>
-            </span>
+            <a
+              key={link.label}
+              href={link.href}
+              target={link.href.startsWith("http") ? "_blank" : undefined}
+              rel="noreferrer"
+              className="resume-contact-link"
+            >
+              {link.label}
+            </a>
           ))}
         </div>
 

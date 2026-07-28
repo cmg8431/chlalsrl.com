@@ -23,14 +23,14 @@ import type { Resume } from "./types";
  * 눌러도 조용히 아무 일도 일어나지 않는다.
  */
 
+/** 연락 수단부터 세운다 — 주소보다 먼저 필요한 건 닿는 방법이다 */
 const LINKS: Resume["links"] = [
-  { label: "chlalsrl.com", href: "https://www.chlalsrl.com" },
+  { label: "mingi@ab-z.com", href: "mailto:mingi@ab-z.com" },
   { label: "github.com/cmg8431", href: "https://github.com/cmg8431" },
   {
     label: "linkedin.com/in/cmg8431",
     href: "https://www.linkedin.com/in/cmg8431/",
   },
-  { label: "mingi@ab-z.com", href: "mailto:mingi@ab-z.com" },
 ];
 
 const INPOCK = "https://link.inpock.co.kr/";

@@ -1,5 +1,6 @@
-import { ResumeDocument } from "@/features/resume";
+import { RESUME_SLUG, ResumeDocument } from "@/features/resume";
 import { type LocaleType, translation } from "@/shared";
+import { ResumeDock } from "./resume-dock";
 
 export async function generateMetadata({
   params,
@@ -18,5 +19,10 @@ export default async function ResumePage({
 }) {
   const { locale } = await params;
 
-  return <ResumeDocument locale={locale} />;
+  return (
+    <>
+      <ResumeDocument locale={locale} />
+      <ResumeDock slug={RESUME_SLUG} />
+    </>
+  );
 }

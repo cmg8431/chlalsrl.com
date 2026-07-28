@@ -1528,57 +1528,54 @@ html[data-reading-focus="on"] .prose-blog > * {
   color: var(--muted);
 }
 
-/* 근거 — PR · 커밋 · 배포된 화면. 접어두고 의심이 든 사람만 편다.
-   펼쳐 늘어놓으면 성과보다 URL이 먼저 읽힌다 */
-.resume-evidence {
-  margin-top: 0.85rem;
-  margin-left: 3.1rem;
+/* 이력서 헤더의 이름 — 워드마크는 갈리는 두 이름을 한 칸에 겹쳐 두므로
+   폭을 긴 쪽(영문)에 맞춘다. 그대로 두면 옆에 붙인 직무가 그만큼 밀려난다.
+   영문 이름을 띄워 폭에서 빼고, 대신 올라오는 동안 직무가 잠깐 비켜선다 */
+.resume-name .wordmark {
+  position: relative;
 }
-.resume-evidence-summary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.16rem 0.5rem;
-  margin-left: -0.5rem;
-  border-radius: 999px;
-  cursor: pointer;
-  list-style: none;
+.resume-name .wm-b {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.resume-title {
+  transition: opacity 0.16s var(--ease-out);
+}
+.resume-name:hover + .resume-title,
+.resume-name:focus-within + .resume-title {
+  opacity: 0;
+}
+
+/* 연락 줄 — 흐린 회색 한 톤으로 늘어놓으면 눈이 걸릴 곳이 없다.
+   본문 잉크까지 밀어 올리고 밑줄을 얕게 깔아 누를 수 있다는 것만 알린다 */
+.resume-contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 1.15rem;
+  margin-top: 0.7rem;
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  color: var(--faint);
+  font-size: 11.5px;
+}
+.resume-contact-link {
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklab, var(--muted) 28%, transparent);
   transition:
     color 0.2s var(--ease-out),
-    background-color 0.2s var(--ease-out);
+    text-decoration-color 0.2s var(--ease-out);
 }
-.resume-evidence-summary::-webkit-details-marker {
-  display: none;
-}
-/* 펼침 상태를 부호 하나로만 알린다 — 삼각형 화살표는 문서 톤을 깬다 */
-.resume-evidence-summary::after {
-  content: "+";
-  font-size: 11px;
-  line-height: 1;
-}
-.resume-evidence[open] .resume-evidence-summary::after {
-  content: "−";
-}
-.resume-evidence-summary:hover {
-  background: var(--background-soft);
+.resume-contact-link:hover {
   color: var(--bright);
+  text-decoration-color: currentColor;
 }
-.resume-evidence-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  margin-top: 0.55rem;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--faint);
-}
-@media (max-width: 47.99rem) {
-  .resume-evidence {
-    margin-left: 0;
+/* 종이에서는 밑줄이 잉크만 먹는다 — 주소는 어차피 눌리지 않는다 */
+@media print {
+  .resume-contact-link {
+    text-decoration: none;
   }
 }
 
@@ -2666,19 +2663,7 @@ textarea:focus-visible {
   }
 }
 
-/* 근거는 화면에서 접어두지만 종이에서는 접을 이유가 없다.
-   닫힌 채로 인쇄되면 "근거 1" 이라는 쓸모없는 줄만 찍히고 정작 주소가 사라진다 */
 @media print {
-  .resume-evidence-summary {
-    display: none;
-  }
-  .resume-evidence::details-content {
-    content-visibility: visible;
-  }
-  .resume-evidence-list {
-    display: block;
-  }
-
   /* 성과 제목만 앞 페이지 바닥에 남고 본문이 넘어가면 둘 다 안 읽힌다 */
   .resume-doc h4 {
     break-after: avoid;
