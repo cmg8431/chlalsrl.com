@@ -2,47 +2,6 @@
 
 import { useEffect } from "react";
 
-/**
- * 문서 위를 커서가 지나가면 아주 옅은 빛이 따라온다.
- * 색을 쓰지 않고 밝기만 건드려서 문서 톤을 깨지 않으면서도
- * 화면이 죽어 있지 않다는 신호를 준다. 좌표만 CSS 변수로 넘기고
- * 그리는 일은 전부 CSS가 한다.
- */
-export function ResumeSpotlight() {
-  useEffect(() => {
-    const root = document.querySelector<HTMLElement>(".resume-doc");
-    if (!root) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    // 손가락 입력에는 커서가 없다 — 붙일 이유도 없다
-    if (!window.matchMedia("(hover: hover)").matches) return;
-
-    let frame = 0;
-    const onMove = (event: PointerEvent) => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        const rect = root.getBoundingClientRect();
-        root.style.setProperty("--px", `${event.clientX - rect.left}px`);
-        root.style.setProperty("--py", `${event.clientY - rect.top}px`);
-      });
-    };
-    const onLeave = () => root.style.setProperty("--pop", "0");
-    const onEnter = () => root.style.setProperty("--pop", "1");
-
-    root.addEventListener("pointermove", onMove);
-    root.addEventListener("pointerenter", onEnter);
-    root.addEventListener("pointerleave", onLeave);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      root.removeEventListener("pointermove", onMove);
-      root.removeEventListener("pointerenter", onEnter);
-      root.removeEventListener("pointerleave", onLeave);
-    };
-  }, []);
-
-  return null;
-}
-
 /** "61% → 78%" 처럼 앞뒤 수가 있는 값에서 숫자만 뽑는다 */
 function parseNumber(text: string): { value: number; decimals: number } | null {
   const match = text.match(/-?\d+(?:\.\d+)?/);

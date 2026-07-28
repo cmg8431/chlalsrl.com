@@ -8,9 +8,7 @@ import type { ResumeExperience } from "../libs";
 import { getResume } from "../libs";
 import { AchievementList } from "./achievement-list";
 import { AiNative } from "./ai-native";
-import { HighlightCard } from "./highlight-card";
 import { ProjectThumb } from "./project-thumb";
-import { ResumeSpotlight } from "./resume-motion";
 import { ResumeSummary } from "./resume-summary";
 import { ResumeView } from "./resume-view";
 
@@ -166,12 +164,11 @@ export async function ResumeDocument({
         <div
           data-stage
           style={{ "--stage": 2 } as React.CSSProperties}
-          className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] text-faint"
+          className="mt-1.5 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-[11px] text-faint"
         >
           <span>{resume.location}</span>
           {resume.links.map((link) => (
-            <span key={link.label} className="flex items-center gap-2">
-              <span className="text-line">·</span>
+            <span key={link.label} className="flex items-center">
               <a
                 href={link.href}
                 target={link.href.startsWith("http") ? "_blank" : undefined}
@@ -184,46 +181,24 @@ export async function ResumeDocument({
           ))}
         </div>
 
-        {/* 어절 단위로 올라온다 — 한 덩어리로 나타나면 문장이 사건이 되지 않는다 */}
-        <h2 className="resume-headline mt-9 max-w-[36rem] break-keep text-[28px] font-semibold leading-[1.32] tracking-[-0.022em] text-bright">
-          {resume.headline.split(" ").map((word, index) => (
-            <span
-              key={`${word}-${index}`}
-              className="resume-word"
-              style={{ "--w": index } as React.CSSProperties}
-            >
-              {word}
-            </span>
-          ))}
-        </h2>
-
-        {/* 훑고 지나가는 6초 안에 눈이 멈출 자리. 선 대신 여백으로만 띄운다 */}
-        <dl className="mt-7 grid max-w-[40rem] grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
-          {resume.highlights.map((highlight, index) => (
-            <HighlightCard
-              key={highlight.label}
-              value={highlight.value}
-              label={highlight.label}
-              source={highlight.source}
-              stage={3 + index}
-            />
-          ))}
-        </dl>
+        {/* 인사 한 줄로 연다. 훅을 세우려 애쓸수록 이력서가 광고처럼 읽힌다 */}
+        <p
+          data-stage
+          style={{ "--stage": 3 } as React.CSSProperties}
+          className="mt-8 max-w-[41rem] break-keep text-[16px] font-semibold leading-[1.55] tracking-[-0.012em] text-bright"
+        >
+          {resume.headline}
+        </p>
 
         <div
           data-stage
-          style={{ "--stage": 6 } as React.CSSProperties}
-          className="mt-7 max-w-[41rem] space-y-2"
+          style={{ "--stage": 4 } as React.CSSProperties}
+          className="mt-3.5 max-w-[41rem] space-y-2.5"
         >
-          {/* 첫 문단은 리드 — 한 급 크고 진하게 두어 눈이 여기서 시작하게 한다 */}
-          {resume.intro.map((paragraph, index) => (
+          {resume.intro.map((paragraph) => (
             <p
               key={paragraph}
-              className={
-                index === 0
-                  ? "break-keep text-[14.5px] leading-[1.68] text-foreground"
-                  : `break-keep ${TYPE.body} text-muted`
-              }
+              className="break-keep text-[13.5px] leading-[1.75] text-muted"
             >
               {paragraph}
             </p>
@@ -358,8 +333,6 @@ export async function ResumeDocument({
           </div>
         </div>
       </Section>
-
-      <ResumeSpotlight />
     </div>
   );
 }

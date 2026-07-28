@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Resume } from "../libs";
-import { jumpToAchievement } from "../libs";
 
 /** 한 세션에 한 번만 스스로 올라온다. 두 번째부터는 눌러서 부른다 */
 const SEEN_KEY = "resume-summary-seen";
@@ -190,50 +189,8 @@ export function ResumeSummary({
           ))}
         </h2>
 
-        <div className="resume-brief-points">
-          {data.points.map((point, index) => (
-            <div
-              key={point.title}
-              className="resume-brief-point"
-              style={{ "--p": index } as React.CSSProperties}
-            >
-              <h3 className="resume-brief-title">
-                <svg
-                  viewBox="0 0 14 14"
-                  width="11"
-                  height="11"
-                  aria-hidden
-                  className="resume-brief-check"
-                >
-                  <path
-                    d="M2 7.5l3.2 3.2L12 3.5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                  />
-                </svg>
-                {point.title}
-              </h3>
-              <p className="resume-brief-body">{point.body}</p>
-
-              {/* 출처는 바깥 링크가 아니라 이 문서 안의 성과다 */}
-              <div className="resume-brief-sources">
-                {point.sources.map((source) => (
-                  <button
-                    key={source}
-                    type="button"
-                    onClick={() => jumpToAchievement(source)}
-                    className="resume-brief-source"
-                  >
-                    {source}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* 본문은 다시 쓰는 중 — 지금은 여닫는 동작만 보이게 둔다 */}
+        <p className="resume-brief-wip">작업 중</p>
       </div>
     </section>
   );

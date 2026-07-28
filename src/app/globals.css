@@ -1378,28 +1378,8 @@ html[data-reading-focus="on"] .prose-blog > * {
 /* 불릿은 점 하나만 — 기본 글머리표는 문서 톤을 깬다 */
 .resume-bullet {
   position: relative;
-  padding-left: 0.75rem;
-}
-.resume-bullet::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.72em;
-  width: 3px;
-  height: 3px;
-  border-radius: 999px;
-  background: var(--faint);
-  opacity: 0.55;
 }
 /* 어두운 바탕에서 55%는 점이 그냥 사라진다 — 눌러 두는 건 밝은 쪽에서만 */
-:root[data-theme="dark"] .resume-bullet::before {
-  opacity: 0.85;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .resume-bullet::before {
-    opacity: 0.85;
-  }
-}
 
 /* 변화폭 게이지 — 숫자 아래 얇은 선이 --fill 만큼 차오른다 */
 .resume-gauge {
@@ -1454,24 +1434,8 @@ html[data-reading-focus="on"] .prose-blog > * {
   }
 }
 
-/* 커서를 따라오는 옅은 빛. 색은 쓰지 않고 밝기만 건드린다 */
 .resume-doc {
   position: relative;
-  --pop: 0;
-}
-.resume-doc::before {
-  content: "";
-  position: absolute;
-  inset: -6rem;
-  z-index: -1;
-  pointer-events: none;
-  opacity: var(--pop);
-  transition: opacity 0.5s var(--ease-out);
-  background: radial-gradient(
-    22rem 22rem at var(--px, 50%) var(--py, 0%),
-    color-mix(in srgb, var(--bright) 5%, transparent),
-    transparent 70%
-  );
 }
 
 /* 헤드라인 어절이 하나씩 올라온다 */
@@ -1664,14 +1628,6 @@ html[data-reading-focus="on"] .prose-blog > * {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-}
-.ai-native-badge::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--ai);
-  box-shadow: 0 0 8px color-mix(in srgb, var(--ai) 90%, transparent);
 }
 .ai-native-lead {
   margin-top: 0.85rem;
@@ -1928,6 +1884,16 @@ html[data-reading-focus="on"] .prose-blog > * {
 
 /* 본문은 왼쪽으로 — 긴 한국어 문장을 가운데 맞추면 줄머리가 흔들려 읽기 힘들다.
    대신 셋을 가로로 나눠 띠 안에 눕힌다 */
+/* 본문을 다시 쓰는 동안 자리만 지킨다 */
+.resume-brief-wip {
+  padding: 1.6rem 0 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
 .resume-brief-points {
   display: grid;
   gap: 0.9rem 1.6rem;
@@ -2456,7 +2422,6 @@ textarea:focus-visible {
 
   /* 화면 상단 앰비언트 광원 — 종이에는 옅은 얼룩으로만 찍힌다 */
   body::before,
-  .resume-doc::before,
   .resume-intro {
     content: none;
     display: none;
