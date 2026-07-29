@@ -9,7 +9,6 @@ import { getResume } from "../libs";
 import { AchievementList } from "./achievement-list";
 import { AiNative } from "./ai-native";
 import { ProjectThumb } from "./project-thumb";
-import { ResumeSummary } from "./resume-summary";
 import { ResumeView } from "./resume-view";
 
 /** 본문 · 메타 두 단계만 쓴다. 크기를 늘리는 대신 잉크 농도로 위계를 만든다 */
@@ -202,13 +201,6 @@ export async function ResumeDocument({
           ))}
         </div>
       </header>
-
-      {/* 30초 요약 — 문서 흐름 밖에서 아래로부터 떠오른다 */}
-      <ResumeSummary
-        data={resume.summary}
-        openLabel={t("resume.summaryOpen")}
-        closeLabel={t("resume.close")}
-      />
 
       {/* AI Native — 도구 숙련이 아니라 조율을 보여주는 블록 */}
       <div
