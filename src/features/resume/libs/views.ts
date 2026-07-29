@@ -27,11 +27,13 @@ function sessionId(): string {
 }
 
 export interface ResumeViewRecord {
+  /** 방문 하나를 가리키는 난수. 같은 값으로 여러 번 보내면 한 줄이 갱신된다 */
+  visitId: string;
   /** 회사별 링크로 들어왔을 때만 채워진다. 맨 URL이면 null */
   company: string | null;
   locale: string;
   referrer: string | null;
-  /** 문서에 머문 시간(초) */
+  /** 화면에 실제로 떠 있던 시간(초) */
   seconds: number;
   /** 가장 깊이 내려간 섹션 — 어디서 덮었는지가 곧 관심사다 */
   deepestSection: string | null;
@@ -48,22 +50,22 @@ export function recordResumeView(record: ResumeViewRecord): void {
   }
 
   // keepalive: 탭이 닫히는 중에도 요청이 끝까지 살아남는다
-  void fetch(`${URL}/rest/v1/resume_views`, {
+  void fetch(`${URL}/rest/v1/rpc/record_resume_view`, {
     method: "POST",
     keepalive: true,
     headers: {
       apikey: KEY,
       Authorization: `Bearer ${KEY}`,
       "Content-Type": "application/json",
-      Prefer: "return=minimal",
     },
     body: JSON.stringify({
-      company: record.company,
-      locale: record.locale,
-      session_id: session,
-      referrer: record.referrer,
-      seconds: record.seconds,
-      deepest_section: record.deepestSection,
+      visit: record.visitId,
+      sid: session,
+      view_company: record.company,
+      view_locale: record.locale,
+      view_referrer: record.referrer,
+      view_seconds: record.seconds,
+      view_deepest: record.deepestSection,
     }),
   }).catch(() => {
     // 기록이 하나 빠지는 것보다 조용한 편이 낫다
