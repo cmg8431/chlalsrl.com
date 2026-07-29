@@ -124,8 +124,66 @@ const ko: Resume = {
       period: "2022.11 ~ 현재",
       location: "Seoul, South Korea",
       context:
-        "인플루언서를 위한 올인원 서비스 인포크를 개발합니다. 링크인바이오 인포크링크를 4년간 메인으로 맡았고, 매니저, 딜, 스토어, AI까지 사내 프론트엔드 30여 개 저장소에 머지된 PR 1,799건을 남겼습니다. 아래에 담지 못한 일로는 외부에 넘기던 결제를 5개월에 자체 구축한 결제와 정산 시스템, 제품에 AI를 붙이는 라인을 0에서 세운 나노바나나, AI 3.0 Chat, Agent Hub, 인포크딜 역제안 흐름과 Sendbird 실시간 채팅이 있습니다.",
+        "가입 인플루언서 40만 명, MAU 2,400만인 인플루언서 올인원 서비스 인포크를 개발합니다. 링크인바이오 인포크링크를 4년간 메인으로 맡았고, 매니저, 딜, 스토어, AI까지 사내 프론트엔드 30여 개 저장소에 머지된 PR 1,799건을 남겼습니다. 아래에 담지 못한 일로는 외부에 넘기던 결제를 5개월에 자체 구축한 결제와 정산 시스템, 제품에 AI를 붙이는 라인을 0에서 세운 나노바나나, AI 3.0 Chat, Agent Hub, 인포크딜 역제안 흐름과 Sendbird 실시간 채팅이 있습니다.",
       achievements: [
+        {
+          title: "멀티 계정과 httpOnly 쿠키 보안 개편",
+          period: "2026.05 ~ 2026.06",
+          summary:
+            "토큰 XSS 노출과 단일 계정 제약을, 인증에 얽힌 세 갈래를 묶은 단일 릴리즈로 한 번에 해소했습니다",
+          situation: [
+            "인증 토큰이 JS에서 접근 가능한 저장소에 있어 XSS에 그대로 노출",
+            "계정을 하나만 연결할 수 있고, 401 처리가 SSR과 CSR에 따로 있어 SSR에서 터지는 경로가 남아 있었음",
+          ],
+          action: [
+            "나눠 고치면 중간 상태가 오래 남는다고 보고, httpOnly 전환과 멀티 계정, 401 분기 통합을 단일 릴리즈로 묶음",
+            "계정 선택 모달과 바텀시트로 전환 UX를 만들고, 부모 도메인과 host 양쪽의 잔여 쿠키 정리",
+            "앱 웹뷰의 만료 토큰 재주입으로 만료 페이지 무한 루프 차단",
+          ],
+          result: [
+            "토큰이 JS에서 접근 불가능해지고, 로그아웃 없이 계정 전환 가능",
+            "SSR과 CSR로 갈려 있던 401 처리를 한 갈래로 모으고, 앱 웹뷰 만료 루프 해소",
+          ],
+        },
+        {
+          title: "번들과 청크 구조 개선",
+          period: "2026.01",
+          summary:
+            "Vue 시절부터 이어진 단일 공통 청크를 진입점별로 쪼개고 방문자 경로의 불필요한 SDK를 걷어내, 공통 번들을 318KB에서 191KB로 줄였습니다",
+          situation: [
+            "First Load JS shared가 318KB라 어느 페이지로 들어와도 같은 무게를 먼저 부담",
+            "pages/_app에 방문자와 어드민 코드가 함께 묶여 방문자도 어드민 코드를 받고 있었음",
+          ],
+          action: [
+            "공통 청크를 진입점별로 분할하고 pages/_app을 방문자와 어드민으로 갈라냄",
+            "방문자 경로의 핵클 SDK를 제외하되, 지우기 전에 의도된 수집인지 데이터 담당자에게 먼저 확인",
+            "청크 개수가 늘어난 만큼의 요청 수 증가는 배포 후 모니터링하기로 합의",
+          ],
+          result: [
+            "공통 번들 318KB → 191KB (-40%), pages/_app 217KB → 88.6KB (-59%)",
+            "방문자 페이지 394KB → 257KB (-35%), 어드민 편집 592KB → 375KB (-37%)",
+          ],
+        },
+        {
+          title: "인포크링크 React 전면 마이그레이션과 디자인 시스템 통합",
+          period: "2025.11 ~ 2026.01",
+          summary:
+            "누적 1,990 커밋의 Vue/Nuxt 메인 서비스를 점진 이관 대신 빅뱅으로 옮기고, 전 라인을 하나의 디자인 시스템과 서비스별 병렬 배포 위에 세웠습니다",
+          href: INPOCK,
+          situation: [
+            "메인 서비스가 4년간 Vue/Nuxt로 굴러 1,990 커밋의 레거시가 쌓여 있었음",
+            "공용 UI가 서비스마다 갈라져 옮겨 앉을 착지 지점 자체가 없었음",
+          ],
+          action: [
+            "병행 운영은 길어질수록 중복 구현 비용이 커진다고 보고, ids v2와 공용 사이드바로 착지 지점을 먼저 만든 뒤 빅뱅 전환으로 결정",
+            "모노레포에 link 패키지를 세워 v1.0.0 출시, 한 달간 후속 수정 20여 건으로 v1.0.5까지 안정화",
+            "전체 배포를 서비스별 병렬 워크플로우로 쪼개고 Dockerfile의 pnpm 버전 통일",
+          ],
+          result: [
+            "병행 운영 기간 없이 한 번에 전환, 4년 치 Vue/Nuxt 레거시 종료",
+            "링크, 매니저, 딜, 외부앱이 같은 디자인 시스템 위에 정렬되고 독립 배포",
+          ],
+        },
         {
           title: "인포크 매니저 0 → v1.5",
           period: "2024.09 ~ 2024.12",
@@ -145,64 +203,6 @@ const ko: Resume = {
             "이후 1년간 인포크 프로덕트 매출 10배 성장, 온보딩 이탈 지점을 지표로 확인",
           ],
         },
-        {
-          title: "번들과 청크 구조 개선",
-          period: "2026.07",
-          summary:
-            "Vue 시절부터 이어진 단일 공통 청크를 진입점별로 쪼개고 방문자 경로의 불필요한 SDK를 걷어내, 공통 번들을 318KB에서 191KB로 줄였습니다",
-          situation: [
-            "First Load JS shared가 318KB라 어느 페이지로 들어와도 같은 무게를 먼저 부담",
-            "pages/_app에 방문자와 어드민 코드가 함께 묶여 방문자도 어드민 코드를 받고 있었음",
-          ],
-          action: [
-            "공통 청크를 진입점별로 분할하고 pages/_app을 방문자와 어드민으로 갈라냄",
-            "방문자 경로의 핵클 SDK를 제외하되, 지우기 전에 의도된 수집인지 데이터 담당자에게 먼저 확인",
-            "청크 개수가 늘어난 만큼의 요청 수 증가는 배포 후 모니터링하기로 합의",
-          ],
-          result: [
-            "공통 번들 318KB → 191KB (-40%), pages/_app 217KB → 88.6KB (-59%)",
-            "방문자 페이지 394KB → 257KB (-35%), 어드민 편집 592KB → 375KB (-37%)",
-          ],
-        },
-        {
-          title: "인포크링크 React 전면 마이그레이션과 디자인 시스템 통합",
-          period: "2025.10 ~ 2026.01",
-          summary:
-            "누적 1,990 커밋의 Vue/Nuxt 메인 서비스를 점진 이관 대신 빅뱅으로 옮기고, 전 라인을 하나의 디자인 시스템과 서비스별 병렬 배포 위에 세웠습니다",
-          href: INPOCK,
-          situation: [
-            "메인 서비스가 4년간 Vue/Nuxt로 굴러 1,990 커밋의 레거시가 쌓여 있었음",
-            "공용 UI가 서비스마다 갈라져 옮겨 앉을 착지 지점 자체가 없었음",
-          ],
-          action: [
-            "병행 운영은 길어질수록 중복 구현 비용이 커진다고 보고, ids v2와 공용 사이드바로 착지 지점을 먼저 만든 뒤 빅뱅 전환으로 결정",
-            "모노레포에 link 패키지를 세워 v1.0.0 출시, 한 달간 후속 수정 20여 건으로 v1.0.7까지 안정화",
-            "전체 배포를 서비스별 병렬 워크플로우로 쪼개고 Dockerfile의 pnpm 버전 통일",
-          ],
-          result: [
-            "병행 운영 기간 없이 한 번에 전환, 방문자 번들 385KB → 304KB (-21%)",
-            "링크, 매니저, 딜, 외부앱이 같은 디자인 시스템 위에 정렬되고 독립 배포",
-          ],
-        },
-        {
-          title: "멀티 계정과 httpOnly 쿠키 보안 개편",
-          period: "2026.05 ~ 2026.06",
-          summary:
-            "토큰 XSS 노출과 단일 계정 제약을, 인증에 얽힌 네 갈래를 묶은 단일 릴리즈로 한 번에 해소했습니다",
-          situation: [
-            "인증 토큰이 JS에서 접근 가능한 저장소에 있어 XSS에 그대로 노출",
-            "계정을 하나만 연결할 수 있고, 401 처리가 SSR과 CSR에 따로 있어 SSR에서 터지는 경로가 남아 있었음",
-          ],
-          action: [
-            "나눠 고치면 중간 상태가 오래 남는다고 보고, httpOnly 전환, 멀티 계정, 401 분기 통합, utm 쿠키 영속화를 단일 릴리즈로 묶음",
-            "계정 선택 모달과 바텀시트로 전환 UX를 만들고, 부모 도메인과 host 양쪽의 잔여 쿠키 정리",
-            "앱 웹뷰의 만료 토큰 재주입으로 만료 페이지 무한 루프 차단",
-          ],
-          result: [
-            "토큰이 JS에서 접근 불가능해지고, 로그아웃 없이 계정 전환 가능",
-            "쿠키 휘발로 새던 광고 어트리뷰션 동시 해소, 한 달간 hotfix 8건으로 안정화",
-          ],
-        },
       ],
     },
   ],
@@ -217,7 +217,7 @@ const ko: Resume = {
       achievements: [
         {
           title: "SieMatic 코리아 웹사이트 구축",
-          period: "2026.03 ~ 2026.06",
+          period: "2026.03 ~ 2026.05",
           summary:
             "독일 주방 브랜드의 한국 웹사이트에서 프론트엔드를 단독으로 맡아 이미지 자산 575MB를 79MB로 줄이고, 계약부터 정산까지 직접 처리했습니다",
           situation: [
@@ -239,7 +239,7 @@ const ko: Resume = {
     {
       company: "왓타 whata",
       role: "리드, 프론트엔드, 디자인, 마케팅",
-      period: "2023.10 ~ 2024.01",
+      period: "2023.10 ~ 2023.12",
       context:
         "티켓팅에 쓰는 서버시간 서비스를 세 명 팀으로 만들었습니다. 리드를 맡아 프론트엔드와 디자인, 마케팅을 메인으로 가져갔고, 광고비 없이 실제로 쓰인 장면을 콘텐츠로 만들어 DAU 400, MAU 1,000까지 올렸습니다. 게시물 1건이 1만 노출과 재게시 34회를 기록했습니다.",
       achievements: [
@@ -385,8 +385,66 @@ const en: Resume = {
       period: "Nov 2022 - Present",
       location: "Seoul, South Korea",
       context:
-        "I build inpock, an all-in-one service for influencers. I owned the link-in-bio product for four years and left 1,799 merged PRs across ~30 internal frontend repos. Work not covered below includes the in-house payments and settlement system I built in five months, the AI line I took from zero (Nano Banana, AI 3.0 Chat, Agent Hub), the inpock deal reverse-offer flow, and Sendbird realtime chat.",
+        "I build inpock, an all-in-one service for influencers with 400K signed-up creators and 24M MAU. I owned the link-in-bio product for four years and left 1,799 merged PRs across ~30 internal frontend repos. Work not covered below includes the in-house payments and settlement system I built in five months, the AI line I took from zero (Nano Banana, AI 3.0 Chat, Agent Hub), the inpock deal reverse-offer flow, and Sendbird realtime chat.",
       achievements: [
+        {
+          title: "Multi-account and httpOnly cookie overhaul",
+          period: "May 2026 - Jun 2026",
+          summary:
+            "Fixed token exposure and the single-account limit in one release that bundled three tangled strands of authentication",
+          situation: [
+            "Auth tokens lived in JS-readable storage, fully exposed to XSS",
+            "Only one account could connect, and 401 handling was split between SSR and CSR, crashing on window during SSR",
+          ],
+          action: [
+            "Judging that split fixes would leave intermediate states for months, I bundled httpOnly migration, multi-account and unified 401 handling into one release",
+            "Built account switching with a picker modal and bottom sheet, clearing leftover cookies on both the parent domain and the host",
+            "Re-injected expired tokens in the app webview to stop the expiry-page loop",
+          ],
+          result: [
+            "Tokens are no longer reachable from JS, and accounts switch without logging out",
+            "401 handling converged from split SSR/CSR paths into one, and the app webview expiry loop is gone",
+          ],
+        },
+        {
+          title: "Bundle and chunk restructuring",
+          period: "Jan 2026",
+          summary:
+            "Split a single shared chunk inherited from the Vue era into per-entry chunks and dropped an SDK the visitor path never needed, cutting shared JS from 318KB to 191KB",
+          situation: [
+            "First Load JS shared sat at 318KB, so every entry point paid the same weight first",
+            "pages/_app bundled visitor and admin code together, shipping admin code to visitors",
+          ],
+          action: [
+            "Split the shared chunk per entry point and separated visitor from admin code in pages/_app",
+            "Dropped the Hackle SDK from the visitor path, but confirmed with the data owner first that the logging was not intentional collection",
+            "Agreed to monitor request count after release, weighing the size win against that cost",
+          ],
+          result: [
+            "Shared bundle 318KB → 191KB (-40%), pages/_app 217KB → 88.6KB (-59%)",
+            "Visitor page 394KB → 257KB (-35%), admin editor 592KB → 375KB (-37%)",
+          ],
+        },
+        {
+          title: "Full React migration and design system consolidation",
+          period: "Nov 2025 - Jan 2026",
+          summary:
+            "Moved a 1,990-commit Vue/Nuxt main service in one cutover instead of a long parallel migration, and put every line on one design system and per-service deploys",
+          href: INPOCK,
+          situation: [
+            "The main service had run on Vue/Nuxt for four years with 1,990 commits of legacy",
+            "Shared UI had drifted apart per service, so there was nowhere to land",
+          ],
+          action: [
+            "Judging that parallel stacks only get more expensive the longer they run, I landed ids v2 and a shared sidebar first, then committed to a big-bang cutover",
+            "Stood up a link package in the monorepo, shipped v1.0.0, and merged 20+ fixes to v1.0.5 within a month",
+            "Split the single deploy job into parallel per-service workflows and unified pnpm across Dockerfiles",
+          ],
+          result: [
+            "One cutover with no parallel-run period, retiring four years of Vue/Nuxt legacy",
+            "Link, manager, deal and external apps share one design system and deploy independently",
+          ],
+        },
         {
           title: "inpock manager, v0.1 to v1.5",
           period: "Sep 2024 - Dec 2024",
@@ -406,64 +464,6 @@ const en: Resume = {
             "10x growth in inpock product revenue over the following year, with onboarding drop-off now visible",
           ],
         },
-        {
-          title: "Bundle and chunk restructuring",
-          period: "Jul 2026",
-          summary:
-            "Split a single shared chunk inherited from the Vue era into per-entry chunks and dropped an SDK the visitor path never needed, cutting shared JS from 318KB to 191KB",
-          situation: [
-            "First Load JS shared sat at 318KB, so every entry point paid the same weight first",
-            "pages/_app bundled visitor and admin code together, shipping admin code to visitors",
-          ],
-          action: [
-            "Split the shared chunk per entry point and separated visitor from admin code in pages/_app",
-            "Dropped the Hackle SDK from the visitor path, but confirmed with the data owner first that the logging was not intentional collection",
-            "Agreed to monitor request count after release, weighing the size win against that cost",
-          ],
-          result: [
-            "Shared bundle 318KB → 191KB (-40%), pages/_app 217KB → 88.6KB (-59%)",
-            "Visitor page 394KB → 257KB (-35%), admin editor 592KB → 375KB (-37%)",
-          ],
-        },
-        {
-          title: "Full React migration and design system consolidation",
-          period: "Oct 2025 - Jan 2026",
-          summary:
-            "Moved a 1,990-commit Vue/Nuxt main service in one cutover instead of a long parallel migration, and put every line on one design system and per-service deploys",
-          href: INPOCK,
-          situation: [
-            "The main service had run on Vue/Nuxt for four years with 1,990 commits of legacy",
-            "Shared UI had drifted apart per service, so there was nowhere to land",
-          ],
-          action: [
-            "Judging that parallel stacks only get more expensive the longer they run, I landed ids v2 and a shared sidebar first, then committed to a big-bang cutover",
-            "Stood up a link package in the monorepo, shipped v1.0.0, and merged 20+ fixes to v1.0.7 within a month",
-            "Split the single deploy job into parallel per-service workflows and unified pnpm across Dockerfiles",
-          ],
-          result: [
-            "One cutover with no parallel-run period; visitor bundle 385KB → 304KB (-21%)",
-            "Link, manager, deal and external apps share one design system and deploy independently",
-          ],
-        },
-        {
-          title: "Multi-account and httpOnly cookie overhaul",
-          period: "May 2026 - Jun 2026",
-          summary:
-            "Fixed token exposure and the single-account limit in one release that bundled four tangled strands of authentication",
-          situation: [
-            "Auth tokens lived in JS-readable storage, fully exposed to XSS",
-            "Only one account could connect, and 401 handling was split between SSR and CSR, crashing on window during SSR",
-          ],
-          action: [
-            "Judging that split fixes would leave intermediate states for months, I bundled httpOnly migration, multi-account, unified 401 handling and utm cookie persistence into one release",
-            "Built account switching with a picker modal and bottom sheet, clearing leftover cookies on both the parent domain and the host",
-            "Re-injected expired tokens in the app webview to stop the expiry-page loop",
-          ],
-          result: [
-            "Tokens are no longer reachable from JS, and accounts switch without logging out",
-            "Fixed ad attribution leaking through volatile cookies; stabilised with 8 hotfixes",
-          ],
-        },
       ],
     },
   ],
@@ -478,7 +478,7 @@ const en: Resume = {
       achievements: [
         {
           title: "SieMatic Korea website",
-          period: "Mar 2026 - Jun 2026",
+          period: "Mar 2026 - May 2026",
           summary:
             "Owned the frontend for a German kitchen brand's Korean site, cutting image assets from 575MB to 79MB, and handled everything from contract to settlement myself",
           situation: [
@@ -500,7 +500,7 @@ const en: Resume = {
     {
       company: "whata",
       role: "Lead, Frontend, Design, Marketing",
-      period: "Oct 2023 - Jan 2024",
+      period: "Oct 2023 - Dec 2023",
       context:
         "Built a server-time service for ticket rushes with a team of three. I led it and owned frontend, design and marketing, turning real usage into content with no ad budget and reaching 400 DAU and 1,000 MAU. One post hit 10k impressions and 34 reposts.",
       achievements: [
